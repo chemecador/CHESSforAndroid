@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CHESS for Android</string>
+    <string name="offline">Offline</string>
+    <string name="online">Online</string>
+</resources>
