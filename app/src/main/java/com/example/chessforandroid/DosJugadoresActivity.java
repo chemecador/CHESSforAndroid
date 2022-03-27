@@ -3,6 +3,7 @@ package com.example.chessforandroid;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +17,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class DosJugadoresActivity extends AppCompatActivity {
+public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int NUM_FILAS = 8;
     private static final int NUM_COLUMNAS = 8;
     private GridLayout oGameBoard;
@@ -28,13 +29,25 @@ public class DosJugadoresActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dos_jugadores);
-        casillas = new ArrayList<>();
-        tablero = new int[NUM_FILAS][NUM_COLUMNAS];
+        this.casillas = new ArrayList<>();
+        this.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
         this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoard);
         this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoard);
         this.oGameBoard.getViewTreeObserver().addOnGlobalLayoutListener(this.SquareIfy());
         crearTablero();
         mostrarTablero();
+        addListeners();
+    }
+
+    private void addListeners() {
+        Log.i("**", "Entro al listener");
+        int p = 0;
+        for(ImageButton cs : casillas){
+            Log.i("**", "Casilla numero " + p);
+            cs.setOnClickListener(this);
+            p++;
+        }
+        onResume();
     }
 
     ViewTreeObserver.OnGlobalLayoutListener SquareIfy() {
@@ -52,7 +65,83 @@ public class DosJugadoresActivity extends AppCompatActivity {
                 double smallestSize = Math.min(sizeA, sizeB);
                 int smallestSizeInt = (int) Math.floor(smallestSize);
                 boolean cambiar = false;
-                for (int x = 0; x <= tileCount - 1; x++) {
+                int x = 0;
+                for (int i = 0; i < NUM_FILAS; i++) {
+                    for (int j = 0; j < NUM_COLUMNAS; j++) {
+                        try {
+                            if (x % 8 == 0) {
+                                cambiar = !cambiar;
+                            }
+                            ImageButton b = new ImageButton(DosJugadoresActivity.this);
+                            if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
+                                //casillas negras
+                                b.setBackgroundColor(Color.parseColor("#A4552A"));
+                            } else {
+                                //casillas blancas
+                                b.setBackgroundColor(Color.parseColor("#F7FCFB"));
+                            }
+                            //piezas negras
+                            if (x == 0 || x == 7) {
+                                b.setImageResource(R.drawable.ntorre);
+                            }
+                            if (x == 1 || x == 6) {
+                                b.setImageResource(R.drawable.ncaballo);
+                            }
+                            if (x == 2 || x == 5) {
+                                b.setImageResource(R.drawable.nalfil);
+                            }
+                            if (x == 3) {
+                                b.setImageResource(R.drawable.ndama);
+                            }
+                            if (x == 4) {
+                                b.setImageResource(R.drawable.nrey);
+                            }
+                            if (x > 7 && x < 16) {
+                                b.setImageResource(R.drawable.npeon);
+                            }
+
+                            //piezas blancas
+                            if (x == 56 || x == 63) {
+                                b.setImageResource(R.drawable.btorre);
+                            }
+                            if (x == 57 || x == 62) {
+                                b.setImageResource(R.drawable.bcaballo);
+                            }
+                            if (x == 58 || x == 61) {
+                                b.setImageResource(R.drawable.balfil);
+                            }
+                            if (x == 59) {
+                                b.setImageResource(R.drawable.bdama);
+                            }
+                            if (x == 60) {
+                                b.setImageResource(R.drawable.brey);
+                            }
+                            if (x > 47 && x < 56) {
+                                b.setImageResource(R.drawable.bpeon);
+                            }
+                            b.setPadding(0, 0, 0, 0);
+
+                            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+                            lp.width = smallestSizeInt;
+                            lp.height = smallestSizeInt;
+                            lp.leftMargin = 0;
+                            lp.rightMargin = 0;
+                            lp.topMargin = 0;
+                            lp.bottomMargin = 0;
+                            b.setLayoutParams(lp);
+                            casillas.add(b);
+
+                            oGameBoard.addView(b);
+                            oGameBoard.getLayoutParams().width = smallestSizeInt * NUM_COLUMNAS;
+                            oGameBoard.getLayoutParams().height = smallestSizeInt * NUM_FILAS;
+                            x++;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+
+                /*for (int x = 0; x <= tileCount - 1; x++) {
                     try {
                         if (x % 8 == 0) {
                             cambiar = !cambiar;
@@ -122,7 +211,7 @@ public class DosJugadoresActivity extends AppCompatActivity {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                }
+                }*/
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                     DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -188,5 +277,12 @@ public class DosJugadoresActivity extends AppCompatActivity {
             t += "\n";
         }
         Log.i("Tablero: ", "\n" + t);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Toast.makeText(getApplicationContext(),
+                "Has pulsado " + view.getId(),
+                Toast.LENGTH_SHORT).show();
     }
 }
