@@ -3,9 +3,11 @@ package com.example.chessforandroid;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.GridLayout;
@@ -20,7 +22,7 @@ import com.example.chessforandroid.Piezas.Rey;
 import com.example.chessforandroid.Piezas.Torre;
 
 
-public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener {
+public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener{
     private static final int NUM_FILAS = 8;
     private static final int NUM_COLUMNAS = 8;
     private GridLayout oGameBoard;
@@ -32,11 +34,13 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dos_jugadores);
+        Tablero t = new Tablero();
+        t.execute();
         this.casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
         this.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
         this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoard);
         this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoard);
-        this.oGameBoard.getViewTreeObserver().addOnGlobalLayoutListener(this.SquareIfy());
+        this.oGameBoard.getViewTreeObserver().addOnGlobalLayoutListener(t.SquareIfy());
         crearTablero();
         mostrarTablero();
         addListeners();
@@ -48,122 +52,134 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         Casilla c;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-                Log.i("**", "Casilla numero " + p);
-                c = new Casilla(this,i,j);
+                c = new Casilla(this, i, j);
                 c.setOnClickListener(this);
+
+                Log.i("**", "Casilla numero " + p);
                 p++;
             }
         }
         onResume();
     }
 
-    ViewTreeObserver.OnGlobalLayoutListener SquareIfy() {
-        return new ViewTreeObserver.OnGlobalLayoutListener() {
+    public class Tablero extends AsyncTask<String, Void, Void> {
 
-            @Override
-            public void onGlobalLayout() {
-                int width = DosJugadoresActivity.this.oGameBoardShell.getMeasuredWidth();
-                int height = DosJugadoresActivity.this.oGameBoardShell.getMeasuredHeight();
-                double sizeA = (width / NUM_COLUMNAS);
-                double sizeB = (height / NUM_FILAS);
+        ViewTreeObserver.OnGlobalLayoutListener SquareIfy() {
+            return new ViewTreeObserver.OnGlobalLayoutListener() {
 
-                double smallestSize = Math.min(sizeA, sizeB);
-                int smallestSizeInt = (int) Math.floor(smallestSize);
-                boolean cambiar = false;
-                int x = 0;
-                for (int i = 0; i < NUM_FILAS; i++) {
-                    for (int j = 0; j < NUM_COLUMNAS; j++) {
-                        try {
-                            if (x % 8 == 0) {
-                                cambiar = !cambiar;
-                            }
-                            Casilla b = new Casilla(DosJugadoresActivity.this, i, j);
-                            if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
-                                //casillas negras
-                                b.setBackgroundColor(Color.parseColor("#A4552A"));
-                            } else {
-                                //casillas blancas
-                                b.setBackgroundColor(Color.parseColor("#F7FCFB"));
-                            }
-                            //piezas negras
-                            if (x == 0 || x == 7) {
-                                b.setPieza(new Torre(i,j,false));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x == 1 || x == 6) {
-                                b.setPieza(new Caballo(i,j,false));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x == 2 || x == 5) {
-                                b.setPieza(new Alfil(i,j,false));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x == 3) {
-                                b.setPieza(new Dama(i,j,false));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x == 4) {
-                                b.setPieza(new Rey(i,j,false));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x > 7 && x < 16) {
-                                b.setPieza(new Peon(i,j,false));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
+                @Override
+                public void onGlobalLayout() {
+                    int width = DosJugadoresActivity.this.oGameBoardShell.getMeasuredWidth();
+                    int height = DosJugadoresActivity.this.oGameBoardShell.getMeasuredHeight();
+                    double sizeA = (width / NUM_COLUMNAS);
+                    double sizeB = (height / NUM_FILAS);
 
-                            //piezas blancas
-                            if (x == 56 || x == 63) {
-                                b.setPieza(new Torre(i,j,true));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x == 57 || x == 62) {
-                                b.setPieza(new Caballo(i,j,true));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x == 58 || x == 61) {
-                                b.setPieza(new Alfil(i,j,true));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x == 59) {
-                                b.setPieza(new Dama(i,j,true));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x == 60) {
-                                b.setPieza(new Rey(i,j,true));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            if (x > 47 && x < 56) {
-                                b.setPieza(new Peon(i, j, true));
-                                b.setImageResource(b.getPieza().getDrawable());
-                            }
-                            b.setPadding(0, 0, 0, 0);
+                    double smallestSize = Math.min(sizeA, sizeB);
+                    int smallestSizeInt = (int) Math.floor(smallestSize);
+                    boolean cambiar = false;
+                    int x = 0;
+                    for (int i = 0; i < NUM_FILAS; i++) {
+                        for (int j = 0; j < NUM_COLUMNAS; j++) {
+                            try {
+                                if (x % 8 == 0) {
+                                    cambiar = !cambiar;
+                                }
+                                Casilla b = new Casilla(DosJugadoresActivity.this, i, j);
+                                b.setClickable(true);
+                                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
+                                    //casillas negras
+                                    b.setBackgroundColor(Color.parseColor("#A4552A"));
+                                } else {
+                                    //casillas blancas
+                                    b.setBackgroundColor(Color.parseColor("#F7FCFB"));
+                                }
+                                //piezas negras
+                                if (x == 0 || x == 7) {
+                                    b.setPieza(new Torre(i, j, false));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x == 1 || x == 6) {
+                                    b.setPieza(new Caballo(i, j, false));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x == 2 || x == 5) {
+                                    b.setPieza(new Alfil(i, j, false));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x == 3) {
+                                    b.setPieza(new Dama(i, j, false));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x == 4) {
+                                    b.setPieza(new Rey(i, j, false));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x > 7 && x < 16) {
+                                    b.setPieza(new Peon(i, j, false));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
 
-                            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                            lp.width = smallestSizeInt;
-                            lp.height = smallestSizeInt;
-                            lp.leftMargin = 0;
-                            lp.rightMargin = 0;
-                            lp.topMargin = 0;
-                            lp.bottomMargin = 0;
-                            b.setLayoutParams(lp);
-                            casillas[i][j] = b;
-                            oGameBoard.addView(b);
-                            oGameBoard.getLayoutParams().width = smallestSizeInt * NUM_COLUMNAS;
-                            oGameBoard.getLayoutParams().height = smallestSizeInt * NUM_FILAS;
-                            x++;
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                                //piezas blancas
+                                if (x == 56 || x == 63) {
+                                    b.setPieza(new Torre(i, j, true));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x == 57 || x == 62) {
+                                    b.setPieza(new Caballo(i, j, true));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x == 58 || x == 61) {
+                                    b.setPieza(new Alfil(i, j, true));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x == 59) {
+                                    b.setPieza(new Dama(i, j, true));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x == 60) {
+                                    b.setPieza(new Rey(i, j, true));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                if (x > 47 && x < 56) {
+                                    b.setPieza(new Peon(i, j, true));
+                                    b.setImageResource(b.getPieza().getDrawable());
+                                }
+                                b.setPadding(0, 0, 0, 0);
+
+                                GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+                                lp.width = smallestSizeInt;
+                                lp.height = smallestSizeInt;
+                                lp.leftMargin = 0;
+                                lp.rightMargin = 0;
+                                lp.topMargin = 0;
+                                lp.bottomMargin = 0;
+                                b.setLayoutParams(lp);
+                                casillas[i][j] = b;
+                                oGameBoard.addView(b);
+                                oGameBoard.getLayoutParams().width = smallestSizeInt * NUM_COLUMNAS;
+                                oGameBoard.getLayoutParams().height = smallestSizeInt * NUM_FILAS;
+                                x++;
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                         }
                     }
-                }
 
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                } else {
-                    DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
                 }
-            }
-        };
+            };
+
+
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            return null;
+        }
     }
 
     /***
@@ -229,4 +245,5 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 "Has pulsado " + view.getId(),
                 Toast.LENGTH_SHORT).show();
     }
+
 }
