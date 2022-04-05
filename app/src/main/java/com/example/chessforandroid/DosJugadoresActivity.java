@@ -2,12 +2,12 @@ package com.example.chessforandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.GridLayout;
@@ -40,31 +40,40 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         this.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
         this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoard);
         this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoard);
-        this.oGameBoard.getViewTreeObserver().addOnGlobalLayoutListener(t.SquareIfy());
+        this.oGameBoard.getViewTreeObserver().addOnGlobalLayoutListener(t.doInBackground());
         crearTablero();
         mostrarTablero();
-        addListeners();
     }
 
     private void addListeners() {
         Log.i("**", "Entro al listener");
         int p = 0;
-        Casilla c;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-                c = new Casilla(this, i, j);
-                c.setOnClickListener(this);
-
+                casillas[i][j].setOnClickListener(this);
                 Log.i("**", "Casilla numero " + p);
                 p++;
             }
         }
-        onResume();
     }
 
-    public class Tablero extends AsyncTask<String, Void, Void> {
+    public class Tablero extends AsyncTask<Void, Void, Void> {
 
-        ViewTreeObserver.OnGlobalLayoutListener SquareIfy() {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            doInBackground();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            addListeners();
+        }
+
+        protected ViewTreeObserver.OnGlobalLayoutListener doInBackground() {
+
             return new ViewTreeObserver.OnGlobalLayoutListener() {
 
                 @Override
@@ -175,11 +184,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
 
         }
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            return null;
-        }
     }
 
     /***
@@ -241,9 +245,11 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        Toast.makeText(getApplicationContext(),
-                "Has pulsado " + view.getId(),
+
+    Casilla c = (Casilla) view;
+
+    Toast.makeText(getApplicationContext(),
+                "Fila " +  c.getFila() + " Columna " + c.getColumna(),//view.getResources().getResourceName(view.getId()),
                 Toast.LENGTH_SHORT).show();
     }
-
 }

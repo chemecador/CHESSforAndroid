@@ -8,22 +8,32 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-
 /***
  *
  * DUDAS:
- * ¿es buena idea Casilla extends ImageButton?
- * ¿cómo añadir los listeners?
+ * ¿buenas idea el sistema de misiones?
+ * ¿base de datos para iniciar sesión? (contraseñas hash, etc - ¿sqlite? - ¿en el servidor de java?)
+ * ¿problema al jugar dos usuarios de distinta wifi?
+ *
+ * IDEAS:
+ * gestionar registro e inicio de sesión para guardar nivel, elo y editar perfil
+ * ver tabla con usuarios con más ELO / más nivel
+ * botón de recordar contraseña con 4 preguntas definidas desplegables con una respuesta correcta (¿mayor seguridad con nº tel, email, ... ?)
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button dosJugadores;
     private Button online;
+    private boolean isLogged;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent=getIntent();
+        isLogged = intent.getBooleanExtra("isLogged", false);
+
         dosJugadores = findViewById(R.id.bMain2P);
         online = findViewById(R.id.bMainOnline);
 
@@ -39,9 +49,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(dosJugadoresIntent);
                 break;
             case R.id.bMainOnline:
-                Toast.makeText(getApplicationContext(),
-                        "Función no disponible :(",
-                        Toast.LENGTH_SHORT).show();
+                if (isLogged) {
+                    Toast.makeText(getApplicationContext(),
+                            "Función no disponible :(",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent loginIntent = new Intent(this, LoginActivity.class);
+                    startActivity(loginIntent);
+                }
                 break;
         }
     }
