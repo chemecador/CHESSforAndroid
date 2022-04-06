@@ -41,9 +41,8 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         this.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
         this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoard);
         this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoard);
-        this.oGameBoard.getViewTreeObserver().addOnGlobalLayoutListener(t.doInBackground());
-        crearTablero();
-        mostrarTablero();
+        this.oGameBoard.getViewTreeObserver().addOnGlobalLayoutListener(t.pintarTablero());
+
     }
 
     private void addListeners() {
@@ -64,7 +63,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected Void doInBackground(Void... voids) {
-            doInBackground();
+            pintarTablero();
             return null;
         }
 
@@ -74,7 +73,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             addListeners();
         }
 
-        protected ViewTreeObserver.OnGlobalLayoutListener doInBackground() {
+        ViewTreeObserver.OnGlobalLayoutListener pintarTablero() {
 
             return new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -198,7 +197,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
      * 5: Caballo
      * 6: Peón
      */
-    private void crearTablero() {
+    private void escribirTablero() {
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 //colocar casillas en blanco
