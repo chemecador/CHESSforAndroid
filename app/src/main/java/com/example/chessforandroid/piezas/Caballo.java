@@ -1,4 +1,4 @@
-package com.example.chessforandroid.Piezas;
+package com.example.chessforandroid.piezas;
 
 import com.example.chessforandroid.R;
 

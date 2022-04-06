@@ -1,11 +1,10 @@
 package com.example.chessforandroid;
 
 import android.content.Context;
-import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 
-import com.example.chessforandroid.Piezas.Pieza;
+import com.example.chessforandroid.piezas.Pieza;
 
 public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
     private int fila;

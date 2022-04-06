@@ -2,7 +2,6 @@ package com.example.chessforandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,12 +13,12 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.chessforandroid.Piezas.Alfil;
-import com.example.chessforandroid.Piezas.Caballo;
-import com.example.chessforandroid.Piezas.Dama;
-import com.example.chessforandroid.Piezas.Peon;
-import com.example.chessforandroid.Piezas.Rey;
-import com.example.chessforandroid.Piezas.Torre;
+import com.example.chessforandroid.piezas.Alfil;
+import com.example.chessforandroid.piezas.Caballo;
+import com.example.chessforandroid.piezas.Dama;
+import com.example.chessforandroid.piezas.Peon;
+import com.example.chessforandroid.piezas.Rey;
+import com.example.chessforandroid.piezas.Torre;
 
 
 public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener {

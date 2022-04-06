@@ -1,4 +1,4 @@
-package com.example.chessforandroid.Piezas;
+package com.example.chessforandroid.piezas;
 
 public abstract class Pieza {
     protected boolean blancas;
