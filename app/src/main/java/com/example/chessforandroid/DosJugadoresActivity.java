@@ -45,6 +45,26 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     }
 
+
+    @Override
+    public void onClick(View view) {
+
+        Casilla c = (Casilla) view;
+
+        piezaSeleccionada = !piezaSeleccionada;
+
+        if(piezaSeleccionada){
+            Toast.makeText(this, "Está seleccionada la pieza:\n" +
+                    "Fila " + c.getFila() + " Columna " + c.getColumna(), Toast.LENGTH_SHORT).show();
+            c.setBackgroundColor(Color.parseColor("#36E0FA"));
+
+        }
+        else{
+            pintarFondo();
+            Toast.makeText(this, "No hay pieza seleccionada", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void addListeners() {
         pintarFondo();
         Log.i("**", "Entro al listener");
@@ -96,13 +116,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                                 }
                                 Casilla b = new Casilla(DosJugadoresActivity.this, i, j);
                                 b.setClickable(true);
-/*                                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
-                                    //casillas negras
-                                    b.setBackgroundColor(Color.parseColor("#A4552A"));
-                                } else {
-                                    //casillas blancas
-                                    b.setBackgroundColor(Color.parseColor("#F7FCFB"));
-                                }*/
                                 //piezas negras
                                 if (x == 0 || x == 7) {
                                     b.setPieza(new Torre(i, j, false));
@@ -186,6 +199,36 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
         }
     }
+    private void pintarFondo() {
+        boolean cambiar = false;
+        int x = 0;
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                if (x % 8 == 0) {
+                    cambiar = !cambiar;
+                }
+                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
+                    //casillas negras
+                    casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
+                } else {
+                    //casillas blancas
+                    casillas[i][j].setBackgroundColor(Color.parseColor("#F7FCFB"));
+                }
+                x++;
+            }
+        }
+    }
+
+    private void mostrarTablero() {
+        String t = "";
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                t += tablero[i][j] + " ";
+            }
+            t += "\n";
+        }
+        Log.i("Tablero: ", "\n" + t);
+    }
 
     /***
      * Desglose de piezas (positivo - blancas,  negativo - negras):
@@ -231,55 +274,5 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         tablero[7][5] = 4;
         tablero[7][3] = 2;
         tablero[7][4] = 1;
-    }
-
-    private void pintarFondo() {
-        boolean cambiar = false;
-        int x = 0;
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                if (x % 8 == 0) {
-                    cambiar = !cambiar;
-                }
-                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
-                    //casillas negras
-                    casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
-                } else {
-                    //casillas blancas
-                    casillas[i][j].setBackgroundColor(Color.parseColor("#F7FCFB"));
-                }
-                x++;
-            }
-        }
-    }
-
-    private void mostrarTablero() {
-        String t = "";
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                t += tablero[i][j] + " ";
-            }
-            t += "\n";
-        }
-        Log.i("Tablero: ", "\n" + t);
-    }
-
-    @Override
-    public void onClick(View view) {
-
-        Casilla c = (Casilla) view;
-
-        piezaSeleccionada = !piezaSeleccionada;
-
-        if(piezaSeleccionada){
-            Toast.makeText(this, "Está seleccionada la pieza:\n" +
-                    "Fila " + c.getFila() + " Columna " + c.getColumna(), Toast.LENGTH_SHORT).show();
-            c.setBackgroundColor(Color.parseColor("#36E0FA"));
-
-        }
-        else{
-            pintarFondo();
-            Toast.makeText(this, "No hay pieza seleccionada", Toast.LENGTH_SHORT).show();
-        }
     }
 }

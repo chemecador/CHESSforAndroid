@@ -35,7 +35,8 @@ public class Cliente {
         }
     }
 
-    public void hablar() {
+
+    public void registrarse(String user, String pass) {
 
         Thread thread = new Thread(new Runnable() {
 
@@ -43,9 +44,10 @@ public class Cliente {
             public void run() {
                 try {
                     try {
-                        Log.i("****", "voy a enviar ping");
-                        out.writeUTF("android envia ping");
-                        Log.i("****", "android recibe " + in.readUTF());
+                        out.writeUTF("signup");
+                        out.writeUTF(user);
+                        out.writeUTF(pass);
+                        Log.i("****", "el usuario es " + user + " y la pass " + pass);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -55,5 +57,6 @@ public class Cliente {
             }
         });
         thread.start();
+
     }
 }

@@ -18,11 +18,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText user;
     private EditText pass;
     private boolean isLogged;
-
+    private Cliente c;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        c = new Cliente();
 
         user = (EditText) findViewById(R.id.loginUser);
         user.setOnClickListener(this);
@@ -52,12 +54,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.bSignup:
-                Cliente c = new Cliente();
-                c.hablar();
                 if (user.getText().length() < 1 || pass.getText().length() < 1) {
                     Toast.makeText(this, "Rellena los campos de usuario y contraseña", Toast.LENGTH_SHORT).show();
                     break;
                 }
+                c.registrarse(user.getText().toString(),pass.getText().toString());
                 Intent mainIntentSignup = new Intent(this, MainActivity.class);
                 isLogged = true;
                 mainIntentSignup.putExtra("isLogged", isLogged);
