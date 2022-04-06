@@ -7,6 +7,7 @@ public class Alfil extends Pieza {
         this.blancas = blancas;
         this.x = x;
         this.y = y;
+        this.tag = "ALFIL";
         if (blancas) {
             this.drawable = R.drawable.balfil;
         } else {

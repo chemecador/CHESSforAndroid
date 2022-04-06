@@ -5,6 +5,7 @@ public abstract class Pieza {
     protected int x;
     protected int y;
     protected int drawable;
+    protected String tag;
 
 
     public boolean isBlancas() {
@@ -37,5 +38,13 @@ public abstract class Pieza {
 
     public void setDrawable(int drawable) {
         this.drawable = drawable;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

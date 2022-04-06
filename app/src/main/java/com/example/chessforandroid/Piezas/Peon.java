@@ -7,6 +7,7 @@ public class Peon extends Pieza {
         this.blancas = blancas;
         this.x = x;
         this.y = y;
+        this.tag = "PEON";
         if (blancas) {
             this.drawable = R.drawable.bpeon;
         } else {

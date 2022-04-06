@@ -2,7 +2,7 @@
     <string name="app_name">CHESS for Android</string>
     <string name="offline">Offline</string>
     <string name="online">Online</string>
-    <string name="dosjugadores">2 jugadores</string>
+    <string name="two_players">2 jugadores</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -15,5 +15,15 @@
     <string name="username">Nombre de usuario:</string>
     <string name="password">Contraseña:</string>
     <string name="login">Iniciar sesión</string>
-    <string name="sinconexion">Jugar sin conexión</string>
+    <string name="play_offline">Jugar sin conexión</string>
+    <string name="about_us">Acerca de...</string>
+    <string name="preferences">Preferencias</string>
+    <string name="level">Nivel:</string>
+    <string name="elo">ELO:</string>
+    <string name="my_account">MI CUENTA:</string>
+    <string name="history">Historial</string>
+    <string name="wins">Victorias:</string>
+    <string name="loss">Derrotas:</string>
+    <string name="draws">Tablas:</string>
+    <string name="signup">Registrarse</string>
 </resources>

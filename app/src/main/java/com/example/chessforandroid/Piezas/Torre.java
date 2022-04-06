@@ -7,6 +7,7 @@ public class Torre extends Pieza {
         this.blancas = blancas;
         this.x = x;
         this.y = y;
+        this.tag = "TORRE";
         if (blancas) {
             this.drawable = R.drawable.btorre;
         } else {

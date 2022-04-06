@@ -7,6 +7,7 @@ public class Dama extends Pieza {
         this.blancas = blancas;
         this.x = x;
         this.y = y;
+        this.tag = "DAMA";
         if (blancas) {
             this.drawable = R.drawable.bdama;
         } else {

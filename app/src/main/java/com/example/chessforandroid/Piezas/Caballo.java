@@ -7,6 +7,7 @@ public class Caballo extends Pieza {
         this.blancas = blancas;
         this.x = x;
         this.y = y;
+        this.tag = "CABALLO";
         if (blancas) {
             this.drawable = R.drawable.bcaballo;
         } else {

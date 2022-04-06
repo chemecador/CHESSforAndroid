@@ -22,17 +22,19 @@ import com.example.chessforandroid.Piezas.Rey;
 import com.example.chessforandroid.Piezas.Torre;
 
 
-public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener{
+public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int NUM_FILAS = 8;
     private static final int NUM_COLUMNAS = 8;
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;
     private Casilla[][] casillas;
     private int[][] tablero;
+    private boolean piezaSeleccionada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        piezaSeleccionada = false;
         setContentView(R.layout.activity_dos_jugadores);
         Tablero t = new Tablero();
         t.execute();
@@ -46,6 +48,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void addListeners() {
+        pintarFondo();
         Log.i("**", "Entro al listener");
         int p = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
@@ -95,13 +98,13 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                                 }
                                 Casilla b = new Casilla(DosJugadoresActivity.this, i, j);
                                 b.setClickable(true);
-                                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
+/*                                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
                                     //casillas negras
                                     b.setBackgroundColor(Color.parseColor("#A4552A"));
                                 } else {
                                     //casillas blancas
                                     b.setBackgroundColor(Color.parseColor("#F7FCFB"));
-                                }
+                                }*/
                                 //piezas negras
                                 if (x == 0 || x == 7) {
                                     b.setPieza(new Torre(i, j, false));
@@ -232,6 +235,26 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         tablero[7][4] = 1;
     }
 
+    private void pintarFondo() {
+        boolean cambiar = false;
+        int x = 0;
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                if (x % 8 == 0) {
+                    cambiar = !cambiar;
+                }
+                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
+                    //casillas negras
+                    casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
+                } else {
+                    //casillas blancas
+                    casillas[i][j].setBackgroundColor(Color.parseColor("#F7FCFB"));
+                }
+                x++;
+            }
+        }
+    }
+
     private void mostrarTablero() {
         String t = "";
         for (int i = 0; i < NUM_FILAS; i++) {
@@ -246,10 +269,19 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View view) {
 
-    Casilla c = (Casilla) view;
+        Casilla c = (Casilla) view;
 
-    Toast.makeText(getApplicationContext(),
-                "Fila " +  c.getFila() + " Columna " + c.getColumna(),//view.getResources().getResourceName(view.getId()),
-                Toast.LENGTH_SHORT).show();
+        piezaSeleccionada = !piezaSeleccionada;
+
+        if(piezaSeleccionada){
+            Toast.makeText(this, "Está seleccionada la pieza:\n" +
+                    "Fila " + c.getFila() + " Columna " + c.getColumna(), Toast.LENGTH_SHORT).show();
+            c.setBackgroundColor(Color.parseColor("#36E0FA"));
+
+        }
+        else{
+            pintarFondo();
+            Toast.makeText(this, "No hay pieza seleccionada", Toast.LENGTH_SHORT).show();
+        }
     }
 }
