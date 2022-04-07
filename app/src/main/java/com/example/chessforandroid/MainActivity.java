@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button dosJugadores;
     private Button online;
-    private boolean isLogged;
+    private String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        isLogged = intent.getBooleanExtra("isLogged", false);
+        user = intent.getStringExtra("user");
 
         dosJugadores = findViewById(R.id.bMain2P);
         online = findViewById(R.id.bMainOnline);
@@ -61,8 +61,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          * de la barra de menú de la aplicación*/
         switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
             case R.id.menu_preferencias:
-                if (isLogged) {
-                    startActivity(new Intent(this, PerfilActivity.class)); //lanzo la Activity de preferencias
+                if (user.length() > 0) {
+                    Intent i = new Intent(this, PerfilActivity.class);
+                    i.putExtra("user", user);
+                    startActivity(i); //lanzo la Activity de preferencias
                     return true;
                 }
                 startActivity(new Intent(this, LoginActivity.class));
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(dosJugadoresIntent);
                 break;
             case R.id.bMainOnline:
-                if (isLogged) {
+                if (user.length() > 0) {
                     Toast.makeText(getApplicationContext(),
                             "Función no disponible :(",
                             Toast.LENGTH_SHORT).show();
