@@ -5,23 +5,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.chessforandroid.cliente.Cliente;
+
 /***
  *
- * DUDAS:
- * ¿buenas idea el sistema de misiones?
- * ¿base de datos para iniciar sesión? (contraseñas hash, etc - ¿sqlite? - ¿en el servidor de java?)
- * ¿problema al jugar dos usuarios de distinta wifi?
- *
- * IDEAS:
- * gestionar registro e inicio de sesión para guardar nivel, elo y editar perfil
+ * BUGS CONOCIDOS:
+ * inconsistencia al crear el tablero
+ * imposibilidad de iniciar sesión en el segundo intento (si fallas el primero o entras sin iniciar
+   sesión, se congela la pantalla)
+
+
+ * TAREAS EXTRA:
  * ver tabla con usuarios con más ELO / más nivel
- * botón de recordar contraseña con 4 preguntas definidas desplegables con una respuesta correcta (¿mayor seguridad con nº tel, email, ... ?)
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button dosJugadores;
     private Button online;
     private String user;
-
+    private Cliente c;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
+        c = new Cliente();
+
 
         dosJugadores = findViewById(R.id.bMain2P);
         online = findViewById(R.id.bMainOnline);
@@ -62,8 +66,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
             case R.id.menu_preferencias:
                 if (user.length() > 0) {
+                    int[] datos = c.pedirDatos(user);
                     Intent i = new Intent(this, PerfilActivity.class);
                     i.putExtra("user", user);
+                    i.putExtra("datos",datos);
                     startActivity(i); //lanzo la Activity de preferencias
                     return true;
                 }

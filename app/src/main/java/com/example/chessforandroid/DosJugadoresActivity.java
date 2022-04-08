@@ -53,13 +53,12 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
         piezaSeleccionada = !piezaSeleccionada;
 
-        if(piezaSeleccionada){
+        if (piezaSeleccionada) {
             Toast.makeText(this, "Está seleccionada la pieza:\n" +
                     "Fila " + c.getFila() + " Columna " + c.getColumna(), Toast.LENGTH_SHORT).show();
             c.setBackgroundColor(Color.parseColor("#36E0FA"));
 
-        }
-        else{
+        } else {
             pintarFondo();
             Toast.makeText(this, "No hay pieza seleccionada", Toast.LENGTH_SHORT).show();
         }
@@ -199,6 +198,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
         }
     }
+
     private void pintarFondo() {
         boolean cambiar = false;
         int x = 0;

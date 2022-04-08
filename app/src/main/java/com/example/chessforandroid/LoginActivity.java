@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.example.chessforandroid.cliente.Cliente;
 
+import java.io.Serializable;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button login;
@@ -55,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (c.iniciarSesion(user.getText().toString(), pass.getText().toString())) {
                     Intent mainIntentLogin = new Intent(this, MainActivity.class);
                     mainIntentLogin.putExtra("user", user.getText().toString());
+                    c.cerrarConexion();
                     startActivity(mainIntentLogin);
                     finish();
                 } else {
@@ -79,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     case 1:
                         Intent mainIntentSignup = new Intent(this, MainActivity.class);
                         mainIntentSignup.putExtra("user", user.getText().toString());
+                        c.cerrarConexion();
                         startActivity(mainIntentSignup);
                         finish();
                         break;
@@ -88,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent mainIntentOffline = new Intent(this, MainActivity.class);
                 mainIntentOffline.putExtra("user", "");
                 startActivity(mainIntentOffline);
+                c.cerrarConexion();
                 finish();
                 break;
         }

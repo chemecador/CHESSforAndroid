@@ -98,6 +98,25 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/total" />
+
+            <TextView
+                android:id="@+id/pJugadas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
                 android:id="@+id/textView12"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,7 +124,7 @@
                 android:text="@string/wins" />
 
             <TextView
-                android:id="@+id/pWins"
+                android:id="@+id/pGanadas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -124,7 +143,7 @@
                 android:text="@string/loss" />
 
             <TextView
-                android:id="@+id/pLoss"
+                android:id="@+id/pDerrotas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -143,7 +162,7 @@
                 android:text="@string/draws" />
 
             <TextView
-                android:id="@+id/pDraws"
+                android:id="@+id/pTablas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />

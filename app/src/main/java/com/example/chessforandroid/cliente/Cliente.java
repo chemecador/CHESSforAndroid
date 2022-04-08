@@ -6,8 +6,10 @@ import android.util.Log;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class Cliente {
 
@@ -35,6 +37,16 @@ public class Cliente {
         }
     }
 
+    public void cerrarConexion(){
+        try {
+            conn.close();
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public int registrarse(String user, String pass) {
         int[] ret = {-3};
@@ -47,9 +59,7 @@ public class Cliente {
                         out.writeUTF("signup");
                         out.writeUTF(user);
                         out.writeUTF(pass);
-                        Log.i("****", "el usuario es " + user + " y la pass " + pass);
                         ret[0] = in.readInt();
-                        Log.i("**", "valor intermedio: " + ret[0]);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -76,9 +86,7 @@ public class Cliente {
                         out.writeUTF("login");
                         out.writeUTF(user);
                         out.writeUTF(pass);
-                        Log.i("****", "el usuario es " + user + " y la pass " + pass);
                         res[0] = in.readBoolean();
-                        Log.i("**", "valor intermedio: " + res[0]);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -88,9 +96,38 @@ public class Cliente {
             }
         });
         thread.start();
-        Log.i("**", "valor final: " + res[0]);
         while (res[0] == null) {
         }
         return res[0];
+    }
+
+    public int[] pedirDatos(String user) {
+        int[] res = new int[6];
+        for (int i = 0; i < res.length; i++){
+            res[i]=5;
+        }
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                        out.writeUTF("pedirdatos");
+                        out.writeUTF(user);
+
+                        res[0] = in.readInt();
+                        res[1] = in.readInt();
+                        res[2] = in.readInt();
+                        res[3] = in.readInt();
+                        res[4] = in.readInt();
+                        res[5] = in.readInt();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+        });
+        thread.start();
+        while (res[4] > 3) {
+        }
+        return res;
     }
 }
