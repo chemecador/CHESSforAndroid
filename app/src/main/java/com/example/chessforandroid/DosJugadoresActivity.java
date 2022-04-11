@@ -129,31 +129,37 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
 
         Casilla c = (Casilla) view;
-        if (c.getPieza() == null)
-            return;
 
-        haySeleccionada = !haySeleccionada;
-
-        if (haySeleccionada) {
+        if (!haySeleccionada) {
+            if (c.getPieza() == null)
+                return;
             c.setBackgroundColor(Color.parseColor("#36E0FA"));
             cInicial = c;
-
             this.movimientosPosibles = cargarMovimientos(casillas, cInicial.getPieza());
             Toast.makeText(this, "fila: " + c.getFila() + " columna: " + c.getColumna(), Toast.LENGTH_SHORT).show();
-
         } else {
             Toast.makeText(this, "fila: " + c.getFila() + " columna: " + c.getColumna(), Toast.LENGTH_SHORT).show();
-
             pintarFondo();
             intentarMover(casillas, cInicial, c, movimientosPosibles);
         }
+
+        haySeleccionada = !haySeleccionada;
     }
 
     private void intentarMover(Casilla[][] casillas, Casilla cInicial, Casilla cFinal, ArrayList<String> movimientosPosibles) {
         String coorFin = "" + cFinal.getFila() + cFinal.getColumna();
+        for (String s : movimientosPosibles) {
+            Log.i("********************** Movs posibles: ", s);
+        }
         Log.i("**********", "quiero mover a " + coorFin);
         if (movimientosPosibles.contains(coorFin)) {
-            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cFinal.getPieza());
+                Log.i("**********************", "entro");
+            cInicial.getPieza().setX(cFinal.getFila());
+            cInicial.getPieza().setY(cFinal.getColumna());
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
+            casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
+            casillas[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
+            casillas[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
         }
     }
 
@@ -162,29 +168,34 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         if (p.getTag().equalsIgnoreCase("PEON")) {
             movs = cargarMovsPeon(tablero, p);
         }
+
+        for (String s : movs) {
+            Log.i("********************** Movs: ", s);
+        }
         return movs;
     }
 
     private ArrayList<String> cargarMovsPeon(Casilla[][] tablero, Pieza p) {
+
+
+        Log.i("********************** Cargo movs: ", p.getTag() + " " + p.getX() +" "+ p.getY());
         //código sin optimimizar, se puede mejorar
-        String s;
+        String s = "";
         ArrayList<String> movs = new ArrayList<>();
         if (p.getX() == 0) {
             Toast.makeText(this, "coronando...", Toast.LENGTH_SHORT).show();
         }
-        if (tablero[p.getX() - 1][p.getY() - 1].getPieza() != null &&
+        if (p.getY() > 0 && tablero[p.getX() - 1][p.getY() - 1].getPieza() != null &&
                 tablero[p.getX() - 1][p.getY() - 1].getPieza().isBlancas()
-                        == tablero[p.getX() - 1][p.getY() - 1].getPieza().isBlancas()) {
+                        != tablero[p.getX() - 1][p.getY() - 1].getPieza().isBlancas()) {
             //y no está clavado... (FALTA)
-            s = "";
             s = String.valueOf(p.getX() - 1);
             s += String.valueOf(p.getY() - 1);
             movs.add(s);
         }
-        if (tablero[p.getX() - 1][p.getY() - +1].getPieza() != null &&
+        if (p.getY() < 7 && tablero[p.getX() - 1][p.getY() + 1].getPieza() != null &&
                 tablero[p.getX() - 1][p.getY() + 1].getPieza().isBlancas()
-                        == tablero[p.getX() - 1][p.getY() + 1].getPieza().isBlancas()) {
-            s = "";
+                        != tablero[p.getX() - 1][p.getY() + 1].getPieza().isBlancas()) {
             s = String.valueOf(p.getX() - 1);
             s += String.valueOf(p.getY() + 1);
             movs.add(s);
@@ -193,12 +204,10 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             return movs;
         }
         if (p.getX() == 6) {
-            s = "";
             s = String.valueOf(p.getX() - 2);
             s += String.valueOf(p.getY());
             movs.add(s);
         }
-        s = "";
         s = String.valueOf(p.getX() - 1);
         s += String.valueOf(p.getY());
         movs.add(s);
@@ -325,7 +334,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
      * 3: Torre
      * 4: Alfil
      * 5: Caballo
-     * 6: PeÃ³n
+     * 6: Peón
      */
     private void escribirTablero() {
         for (int i = 0; i < NUM_FILAS; i++) {
