@@ -17,8 +17,11 @@ import com.example.chessforandroid.piezas.Alfil;
 import com.example.chessforandroid.piezas.Caballo;
 import com.example.chessforandroid.piezas.Dama;
 import com.example.chessforandroid.piezas.Peon;
+import com.example.chessforandroid.piezas.Pieza;
 import com.example.chessforandroid.piezas.Rey;
 import com.example.chessforandroid.piezas.Torre;
+
+import java.util.ArrayList;
 
 
 public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,15 +32,18 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     private LinearLayout oGameBoardShell;
     private Casilla[][] casillas;
     private int[][] tablero;
-    private boolean piezaSeleccionada;
+    private boolean haySeleccionada;
+    private Casilla cInicial;
+    private ArrayList<String> movimientosPosibles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        piezaSeleccionada = false;
+        haySeleccionada = false;
         setContentView(R.layout.activity_dos_jugadores);
 
         this.casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
+        this.movimientosPosibles = new ArrayList<>();
         crearCasillas();
 
         this.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
@@ -49,7 +55,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    public void crearCasillas(){
+    public void crearCasillas() {
         boolean cambiar = false;
         int x = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
@@ -113,27 +119,90 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 }
                 b.setPadding(0, 0, 0, 0);
 
-
                 casillas[i][j] = b;
                 x++;
-            }}
+            }
+        }
     }
+
     @Override
     public void onClick(View view) {
 
         Casilla c = (Casilla) view;
+        if (c.getPieza() == null)
+            return;
 
-        piezaSeleccionada = !piezaSeleccionada;
+        haySeleccionada = !haySeleccionada;
 
-        if (piezaSeleccionada) {
-            Toast.makeText(this, "EstÃ¡ seleccionada la pieza:\n" +
-                    "Fila " + c.getFila() + " Columna " + c.getColumna(), Toast.LENGTH_SHORT).show();
+        if (haySeleccionada) {
             c.setBackgroundColor(Color.parseColor("#36E0FA"));
+            cInicial = c;
+
+            this.movimientosPosibles = cargarMovimientos(casillas, cInicial.getPieza());
+            Toast.makeText(this, "fila: " + c.getFila() + " columna: " + c.getColumna(), Toast.LENGTH_SHORT).show();
 
         } else {
+            Toast.makeText(this, "fila: " + c.getFila() + " columna: " + c.getColumna(), Toast.LENGTH_SHORT).show();
+
             pintarFondo();
-            Toast.makeText(this, "No hay pieza seleccionada", Toast.LENGTH_SHORT).show();
+            intentarMover(casillas, cInicial, c, movimientosPosibles);
         }
+    }
+
+    private void intentarMover(Casilla[][] casillas, Casilla cInicial, Casilla cFinal, ArrayList<String> movimientosPosibles) {
+        String coorFin = "" + cFinal.getFila() + cFinal.getColumna();
+        Log.i("**********", "quiero mover a " + coorFin);
+        if (movimientosPosibles.contains(coorFin)) {
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cFinal.getPieza());
+        }
+    }
+
+    private ArrayList<String> cargarMovimientos(Casilla[][] tablero, Pieza p) {
+        ArrayList<String> movs = new ArrayList<>();
+        if (p.getTag().equalsIgnoreCase("PEON")) {
+            movs = cargarMovsPeon(tablero, p);
+        }
+        return movs;
+    }
+
+    private ArrayList<String> cargarMovsPeon(Casilla[][] tablero, Pieza p) {
+        //código sin optimimizar, se puede mejorar
+        String s;
+        ArrayList<String> movs = new ArrayList<>();
+        if (p.getX() == 0) {
+            Toast.makeText(this, "coronando...", Toast.LENGTH_SHORT).show();
+        }
+        if (tablero[p.getX() - 1][p.getY() - 1].getPieza() != null &&
+                tablero[p.getX() - 1][p.getY() - 1].getPieza().isBlancas()
+                        == tablero[p.getX() - 1][p.getY() - 1].getPieza().isBlancas()) {
+            //y no está clavado... (FALTA)
+            s = "";
+            s = String.valueOf(p.getX() - 1);
+            s += String.valueOf(p.getY() - 1);
+            movs.add(s);
+        }
+        if (tablero[p.getX() - 1][p.getY() - +1].getPieza() != null &&
+                tablero[p.getX() - 1][p.getY() + 1].getPieza().isBlancas()
+                        == tablero[p.getX() - 1][p.getY() + 1].getPieza().isBlancas()) {
+            s = "";
+            s = String.valueOf(p.getX() - 1);
+            s += String.valueOf(p.getY() + 1);
+            movs.add(s);
+        }
+        if (tablero[p.getX() - 1][p.getY()].getPieza() != null) {
+            return movs;
+        }
+        if (p.getX() == 6) {
+            s = "";
+            s = String.valueOf(p.getX() - 2);
+            s += String.valueOf(p.getY());
+            movs.add(s);
+        }
+        s = "";
+        s = String.valueOf(p.getX() - 1);
+        s += String.valueOf(p.getY());
+        movs.add(s);
+        return movs;
     }
 
     private void addListeners() {
@@ -153,7 +222,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected Void doInBackground(Void... voids) {
-            tablero= pintarTablero();
+            tablero = pintarTablero();
 
             return null;
         }
@@ -166,7 +235,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         }
 
         ViewTreeObserver.OnGlobalLayoutListener pintarTablero() {
-            ViewTreeObserver.OnGlobalLayoutListener tablero=
+            ViewTreeObserver.OnGlobalLayoutListener tablero =
                     new ViewTreeObserver.OnGlobalLayoutListener() {
 
                         @Override
@@ -182,7 +251,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                             for (int i = 0; i < NUM_FILAS; i++) {
                                 for (int j = 0; j < NUM_COLUMNAS; j++) {
                                     try {
-                                        Casilla b=casillas[i][j];
+                                        Casilla b = casillas[i][j];
                                         b.setPadding(0, 0, 0, 0);
 
                                         GridLayout.LayoutParams lp = new GridLayout.LayoutParams();

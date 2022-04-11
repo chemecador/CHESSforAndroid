@@ -5,7 +5,7 @@ public abstract class Pieza {
     protected int x;
     protected int y;
     protected int drawable;
-    protected String tag;
+    protected String tag = "";
 
 
     public void mover(int x, int y) {

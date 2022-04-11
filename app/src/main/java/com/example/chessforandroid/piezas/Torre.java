@@ -3,7 +3,7 @@ package com.example.chessforandroid.piezas;
 import com.example.chessforandroid.R;
 
 public class Torre extends Pieza {
-    
+
     private boolean posInicial;
 
     public Torre(int x, int y, boolean blancas) {
