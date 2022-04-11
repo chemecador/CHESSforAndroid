@@ -21,14 +21,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button loginOffline;
     private EditText user;
     private EditText pass;
-    private Cliente c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        c = new Cliente();
 
         user = (EditText) findViewById(R.id.loginUser);
         user.setOnClickListener(this);
@@ -54,6 +52,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(this, "Rellena los campos de usuario y contraseña", Toast.LENGTH_SHORT).show();
                     break;
                 }
+
+                Cliente c = new Cliente();
                 if (c.iniciarSesion(user.getText().toString(), pass.getText().toString())) {
                     Intent mainIntentLogin = new Intent(this, MainActivity.class);
                     mainIntentLogin.putExtra("user", user.getText().toString());
@@ -69,6 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(this, "Rellena los campos de usuario y contraseña", Toast.LENGTH_SHORT).show();
                     break;
                 }
+                c = new Cliente();
                 int res = c.registrarse(user.getText().toString(), pass.getText().toString());
                 Log.i("**", "res vale: " + res);
                 switch (res) {
@@ -92,7 +93,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent mainIntentOffline = new Intent(this, MainActivity.class);
                 mainIntentOffline.putExtra("user", "");
                 startActivity(mainIntentOffline);
-                c.cerrarConexion();
                 finish();
                 break;
         }

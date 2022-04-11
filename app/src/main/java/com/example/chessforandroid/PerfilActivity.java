@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.chessforandroid.cliente.Cliente;
 
-public class PerfilActivity extends AppCompatActivity {
+public class PerfilActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button cerrarSesion;
     private TextView username, nivel, elo, jugadas, victorias, tablas, derrotas;
@@ -45,12 +45,13 @@ public class PerfilActivity extends AppCompatActivity {
         tablas.setText(String.valueOf(datos[5]));
 
         cerrarSesion = findViewById(R.id.bCerrarSesion);
-        cerrarSesion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //no finalizado !!
-                Toast.makeText(PerfilActivity.this, "cerrando sesión...", Toast.LENGTH_SHORT).show();
-            }
-        });
+        cerrarSesion.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        Toast.makeText(PerfilActivity.this, "cerrando sesión...", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, LoginActivity.class));
     }
 }

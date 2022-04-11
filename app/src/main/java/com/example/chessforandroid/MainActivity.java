@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
-        c = new Cliente();
+        if (user.length() > 0) {
+            c = new Cliente();
+        }
 
 
         dosJugadores = findViewById(R.id.bMain2P);

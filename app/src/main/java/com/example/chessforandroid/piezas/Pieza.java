@@ -8,9 +8,15 @@ public abstract class Pieza {
     protected String tag;
 
 
+    public void mover(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public boolean isBlancas() {
         return blancas;
     }
+
 
     public void setBlancas(boolean blancas) {
         this.blancas = blancas;
