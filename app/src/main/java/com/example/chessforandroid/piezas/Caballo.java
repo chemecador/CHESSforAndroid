@@ -5,8 +5,8 @@ import com.example.chessforandroid.R;
 public class Caballo extends Pieza {
     public Caballo(int x, int y, boolean blancas) {
         this.blancas = blancas;
-        this.x = x;
-        this.y = y;
+        this.fila = x;
+        this.columna = y;
         this.tag = "CABALLO";
         if (blancas) {
             this.drawable = R.drawable.bcaballo;

@@ -16,8 +16,14 @@ import com.example.chessforandroid.cliente.Cliente;
 
 /***
  *
+ *
+ * DUDAS:
+ * excesivo uso del return (DosJugadoresActivity)
+
+ *
  * BUGS CONOCIDOS:
- * inconsistencia al crear el tablero
+
+
  * imposibilidad de iniciar sesión en el segundo intento (si fallas el primero o entras sin iniciar
    sesión, se congela la pantalla)
 

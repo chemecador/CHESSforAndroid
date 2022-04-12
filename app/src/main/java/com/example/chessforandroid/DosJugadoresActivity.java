@@ -136,9 +136,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             c.setBackgroundColor(Color.parseColor("#36E0FA"));
             cInicial = c;
             this.movimientosPosibles = cargarMovimientos(casillas, cInicial.getPieza());
-            Toast.makeText(this, "fila: " + c.getFila() + " columna: " + c.getColumna(), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "fila: " + c.getFila() + " columna: " + c.getColumna(), Toast.LENGTH_SHORT).show();
             pintarFondo();
             intentarMover(casillas, cInicial, c, movimientosPosibles);
         }
@@ -153,11 +151,30 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         }
         Log.i("**********", "quiero mover a " + coorFin);
         if (movimientosPosibles.contains(coorFin)) {
-                Log.i("**********************", "entro");
-            cInicial.getPieza().setX(cFinal.getFila());
-            cInicial.getPieza().setY(cFinal.getColumna());
-            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
-            casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
+            Log.i("**********************", "entro");
+            Log.i("********************** quiero coronar: ", casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag() + " " +
+                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas() + " " +
+                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getFila() + " " +
+                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getColumna());
+
+            cInicial.getPieza().setFila(cFinal.getFila());
+            cInicial.getPieza().setColumna(cFinal.getColumna());
+            //coronación de peones
+            if (cInicial.getFila() == 1 &&
+                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
+                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
+                casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), true));
+                casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
+            } else if (cInicial.getFila() == 6 &&
+                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
+                    !casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
+                casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), false));
+                casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
+            } else {
+                //no coronan
+                casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
+                casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
+            }
             casillas[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
             casillas[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
         }
@@ -178,40 +195,68 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     private ArrayList<String> cargarMovsPeon(Casilla[][] tablero, Pieza p) {
 
 
-        Log.i("********************** Cargo movs: ", p.getTag() + " " + p.getX() +" "+ p.getY());
+        Log.i("********************** Cargo movs: ", p.getTag() + " " + p.isBlancas() + " " + p.getFila() + " " + p.getColumna());
         //código sin optimimizar, se puede mejorar
         String s = "";
         ArrayList<String> movs = new ArrayList<>();
-        if (p.getX() == 0) {
-            Toast.makeText(this, "coronando...", Toast.LENGTH_SHORT).show();
-        }
-        if (p.getY() > 0 && tablero[p.getX() - 1][p.getY() - 1].getPieza() != null &&
-                tablero[p.getX() - 1][p.getY() - 1].getPieza().isBlancas()
-                        != tablero[p.getX() - 1][p.getY() - 1].getPieza().isBlancas()) {
-            //y no está clavado... (FALTA)
-            s = String.valueOf(p.getX() - 1);
-            s += String.valueOf(p.getY() - 1);
+        if (p.isBlancas()) {
+            if (p.getColumna() > 0 && tablero[p.getFila() - 1][p.getColumna() - 1].getPieza() != null &&
+                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
+                            != tablero[p.getFila() - 1][p.getColumna() - 1].getPieza().isBlancas()) {
+                //y no está clavado... (FALTA)
+
+                s = String.valueOf(p.getFila() - 1);
+                s += String.valueOf(p.getColumna() - 1);
+                movs.add(s);
+            }
+            if (p.getColumna() < 7 && tablero[p.getFila() - 1][p.getColumna() + 1].getPieza() != null &&
+                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
+                            != tablero[p.getFila() - 1][p.getColumna() + 1].getPieza().isBlancas()) {
+                s = String.valueOf(p.getFila() - 1);
+                s += String.valueOf(p.getColumna() + 1);
+                movs.add(s);
+            }
+            if (tablero[p.getFila() - 1][p.getColumna()].getPieza() != null) {
+                return movs;
+            }
+            if (p.getFila() == 6) {
+                s = String.valueOf(p.getFila() - 2);
+                s += String.valueOf(p.getColumna());
+                movs.add(s);
+            }
+            s = String.valueOf(p.getFila() - 1);
+            s += String.valueOf(p.getColumna());
             movs.add(s);
-        }
-        if (p.getY() < 7 && tablero[p.getX() - 1][p.getY() + 1].getPieza() != null &&
-                tablero[p.getX() - 1][p.getY() + 1].getPieza().isBlancas()
-                        != tablero[p.getX() - 1][p.getY() + 1].getPieza().isBlancas()) {
-            s = String.valueOf(p.getX() - 1);
-            s += String.valueOf(p.getY() + 1);
+            return movs;
+        } else {
+            if (p.getColumna() > 0 && tablero[p.getFila() + 1][p.getColumna() - 1].getPieza() != null &&
+                    (tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
+                            != tablero[p.getFila() + 1][p.getColumna() - 1].getPieza().isBlancas())) {
+                //y no está clavado... (FALTA)
+                s = String.valueOf(p.getFila() + 1);
+                s += String.valueOf(p.getColumna() - 1);
+                movs.add(s);
+            }
+            if (p.getColumna() < 7 && tablero[p.getFila() + 1][p.getColumna() + 1].getPieza() != null &&
+                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
+                            != tablero[p.getFila() + 1][p.getColumna() + 1].getPieza().isBlancas()) {
+                s = String.valueOf(p.getFila() + 1);
+                s += String.valueOf(p.getColumna() + 1);
+                movs.add(s);
+            }
+            if (tablero[p.getFila() + 1][p.getColumna()].getPieza() != null) {
+                return movs;
+            }
+            if (p.getFila() == 1) {
+                s = String.valueOf(p.getFila() + 2);
+                s += String.valueOf(p.getColumna());
+                movs.add(s);
+            }
+            s = String.valueOf(p.getFila() + 1);
+            s += String.valueOf(p.getColumna());
             movs.add(s);
-        }
-        if (tablero[p.getX() - 1][p.getY()].getPieza() != null) {
             return movs;
         }
-        if (p.getX() == 6) {
-            s = String.valueOf(p.getX() - 2);
-            s += String.valueOf(p.getY());
-            movs.add(s);
-        }
-        s = String.valueOf(p.getX() - 1);
-        s += String.valueOf(p.getY());
-        movs.add(s);
-        return movs;
     }
 
     private void addListeners() {

@@ -2,15 +2,15 @@ package com.example.chessforandroid.piezas;
 
 public abstract class Pieza {
     protected boolean blancas;
-    protected int x;
-    protected int y;
+    protected int fila;
+    protected int columna;
     protected int drawable;
     protected String tag = "";
 
 
-    public void mover(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public void mover(int fila, int columna) {
+        this.fila = fila;
+        this.columna = columna;
     }
 
     public boolean isBlancas() {
@@ -22,20 +22,20 @@ public abstract class Pieza {
         this.blancas = blancas;
     }
 
-    public int getX() {
-        return x;
+    public int getFila() {
+        return fila;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setFila(int fila) {
+        this.fila = fila;
     }
 
-    public int getY() {
-        return y;
+    public int getColumna() {
+        return columna;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setColumna(int columna) {
+        this.columna = columna;
     }
 
     public int getDrawable() {

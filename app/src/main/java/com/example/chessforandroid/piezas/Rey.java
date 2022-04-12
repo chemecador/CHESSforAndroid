@@ -8,8 +8,8 @@ public class Rey extends Pieza {
 
     public Rey(int x, int y, boolean blancas) {
         this.blancas = blancas;
-        this.x = x;
-        this.y = y;
+        this.fila = x;
+        this.columna = y;
         this.tag = "REY";
         this.posInicial = true;
         if (blancas) {

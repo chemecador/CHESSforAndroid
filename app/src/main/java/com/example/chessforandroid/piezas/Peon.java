@@ -6,8 +6,8 @@ public class Peon extends Pieza {
 
     public Peon(int x, int y, boolean blancas) {
         this.blancas = blancas;
-        this.x = x;
-        this.y = y;
+        this.fila = x;
+        this.columna = y;
         this.tag = "PEON";
         if (blancas) {
             this.drawable = R.drawable.bpeon;
