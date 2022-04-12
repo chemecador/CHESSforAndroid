@@ -34,7 +34,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     private int[][] tablero;
     private boolean haySeleccionada;
     private Casilla cInicial;
-    private ArrayList<String> movimientosPosibles;
+    //private ArrayList<String> movimientosPosibles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_dos_jugadores);
 
         this.casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
-        this.movimientosPosibles = new ArrayList<>();
+        //this.movimientosPosibles = new ArrayList<>();
         crearCasillas();
 
         this.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
@@ -55,75 +55,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    public void crearCasillas() {
-        boolean cambiar = false;
-        int x = 0;
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-
-                if (x % 8 == 0) {
-                    cambiar = !cambiar;
-                }
-                Casilla b = new Casilla(DosJugadoresActivity.this, i, j);
-                b.setClickable(true);
-                //piezas negras
-                if (x == 0 || x == 7) {
-                    b.setPieza(new Torre(i, j, false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 1 || x == 6) {
-                    b.setPieza(new Caballo(i, j, false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 2 || x == 5) {
-                    b.setPieza(new Alfil(i, j, false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 3) {
-                    b.setPieza(new Dama(i, j, false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 4) {
-                    b.setPieza(new Rey(i, j, false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x > 7 && x < 16) {
-                    b.setPieza(new Peon(i, j, false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-
-                //piezas blancas
-                if (x == 56 || x == 63) {
-                    b.setPieza(new Torre(i, j, true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 57 || x == 62) {
-                    b.setPieza(new Caballo(i, j, true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 58 || x == 61) {
-                    b.setPieza(new Alfil(i, j, true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 59) {
-                    b.setPieza(new Dama(i, j, true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 60) {
-                    b.setPieza(new Rey(i, j, true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x > 47 && x < 56) {
-                    b.setPieza(new Peon(i, j, true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                b.setPadding(0, 0, 0, 0);
-
-                casillas[i][j] = b;
-                x++;
-            }
-        }
-    }
 
     @Override
     public void onClick(View view) {
@@ -135,10 +66,11 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 return;
             c.setBackgroundColor(Color.parseColor("#36E0FA"));
             cInicial = c;
-            this.movimientosPosibles = cargarMovimientos(casillas, cInicial.getPieza());
+            //this.movimientosPosibles = cargarMovimientos(casillas, cInicial.getPieza());
         } else {
             pintarFondo();
-            intentarMover(casillas, cInicial, c, movimientosPosibles);
+            //intentarMover(casillas, cInicial, c, movimientosPosibles);
+
         }
 
         haySeleccionada = !haySeleccionada;
@@ -146,17 +78,9 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     private void intentarMover(Casilla[][] casillas, Casilla cInicial, Casilla cFinal, ArrayList<String> movimientosPosibles) {
         String coorFin = "" + cFinal.getFila() + cFinal.getColumna();
-        for (String s : movimientosPosibles) {
-            Log.i("********************** Movs posibles: ", s);
-        }
         Log.i("**********", "quiero mover a " + coorFin);
         if (movimientosPosibles.contains(coorFin)) {
             Log.i("**********************", "entro");
-            Log.i("********************** quiero coronar: ", casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag() + " " +
-                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas() + " " +
-                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getFila() + " " +
-                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getColumna());
-
             cInicial.getPieza().setFila(cFinal.getFila());
             cInicial.getPieza().setColumna(cFinal.getColumna());
             //coronación de peones
@@ -180,84 +104,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private ArrayList<String> cargarMovimientos(Casilla[][] tablero, Pieza p) {
-        ArrayList<String> movs = new ArrayList<>();
-        if (p.getTag().equalsIgnoreCase("PEON")) {
-            movs = cargarMovsPeon(tablero, p);
-        }
-
-        for (String s : movs) {
-            Log.i("********************** Movs: ", s);
-        }
-        return movs;
-    }
-
-    private ArrayList<String> cargarMovsPeon(Casilla[][] tablero, Pieza p) {
-
-
-        Log.i("********************** Cargo movs: ", p.getTag() + " " + p.isBlancas() + " " + p.getFila() + " " + p.getColumna());
-        //código sin optimimizar, se puede mejorar
-        String s = "";
-        ArrayList<String> movs = new ArrayList<>();
-        if (p.isBlancas()) {
-            if (p.getColumna() > 0 && tablero[p.getFila() - 1][p.getColumna() - 1].getPieza() != null &&
-                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
-                            != tablero[p.getFila() - 1][p.getColumna() - 1].getPieza().isBlancas()) {
-                //y no está clavado... (FALTA)
-
-                s = String.valueOf(p.getFila() - 1);
-                s += String.valueOf(p.getColumna() - 1);
-                movs.add(s);
-            }
-            if (p.getColumna() < 7 && tablero[p.getFila() - 1][p.getColumna() + 1].getPieza() != null &&
-                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
-                            != tablero[p.getFila() - 1][p.getColumna() + 1].getPieza().isBlancas()) {
-                s = String.valueOf(p.getFila() - 1);
-                s += String.valueOf(p.getColumna() + 1);
-                movs.add(s);
-            }
-            if (tablero[p.getFila() - 1][p.getColumna()].getPieza() != null) {
-                return movs;
-            }
-            if (p.getFila() == 6) {
-                s = String.valueOf(p.getFila() - 2);
-                s += String.valueOf(p.getColumna());
-                movs.add(s);
-            }
-            s = String.valueOf(p.getFila() - 1);
-            s += String.valueOf(p.getColumna());
-            movs.add(s);
-            return movs;
-        } else {
-            if (p.getColumna() > 0 && tablero[p.getFila() + 1][p.getColumna() - 1].getPieza() != null &&
-                    (tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
-                            != tablero[p.getFila() + 1][p.getColumna() - 1].getPieza().isBlancas())) {
-                //y no está clavado... (FALTA)
-                s = String.valueOf(p.getFila() + 1);
-                s += String.valueOf(p.getColumna() - 1);
-                movs.add(s);
-            }
-            if (p.getColumna() < 7 && tablero[p.getFila() + 1][p.getColumna() + 1].getPieza() != null &&
-                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
-                            != tablero[p.getFila() + 1][p.getColumna() + 1].getPieza().isBlancas()) {
-                s = String.valueOf(p.getFila() + 1);
-                s += String.valueOf(p.getColumna() + 1);
-                movs.add(s);
-            }
-            if (tablero[p.getFila() + 1][p.getColumna()].getPieza() != null) {
-                return movs;
-            }
-            if (p.getFila() == 1) {
-                s = String.valueOf(p.getFila() + 2);
-                s += String.valueOf(p.getColumna());
-                movs.add(s);
-            }
-            s = String.valueOf(p.getFila() + 1);
-            s += String.valueOf(p.getColumna());
-            movs.add(s);
-            return movs;
-        }
-    }
 
     private void addListeners() {
         pintarFondo();
@@ -360,6 +206,76 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+    public void crearCasillas() {
+        boolean cambiar = false;
+        int x = 0;
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+
+                if (x % 8 == 0) {
+                    cambiar = !cambiar;
+                }
+                Casilla b = new Casilla(DosJugadoresActivity.this, i, j);
+                b.setClickable(true);
+                //piezas negras
+                if (x == 0 || x == 7) {
+                    b.setPieza(new Torre(i, j, false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 1 || x == 6) {
+                    b.setPieza(new Caballo(i, j, false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 2 || x == 5) {
+                    b.setPieza(new Alfil(i, j, false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 3) {
+                    b.setPieza(new Dama(i, j, false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 4) {
+                    b.setPieza(new Rey(i, j, false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x > 7 && x < 16) {
+                    b.setPieza(new Peon(i, j, false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+
+                //piezas blancas
+                if (x == 56 || x == 63) {
+                    b.setPieza(new Torre(i, j, true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 57 || x == 62) {
+                    b.setPieza(new Caballo(i, j, true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 58 || x == 61) {
+                    b.setPieza(new Alfil(i, j, true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 59) {
+                    b.setPieza(new Dama(i, j, true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 60) {
+                    b.setPieza(new Rey(i, j, true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x > 47 && x < 56) {
+                    b.setPieza(new Peon(i, j, true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                b.setPadding(0, 0, 0, 0);
+
+                casillas[i][j] = b;
+                x++;
+            }
+        }
+    }
+
     private void mostrarTablero() {
         String t = "";
         for (int i = 0; i < NUM_FILAS; i++) {
@@ -416,4 +332,185 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         tablero[7][3] = 2;
         tablero[7][4] = 1;
     }
+    /*
+    private ArrayList<String> cargarMovimientos(Casilla[][] tablero, Pieza p) {
+        ArrayList<String> movs = new ArrayList<>();
+        if (p.getTag().equalsIgnoreCase("PEON")) {
+            movs = cargarMovsPeon(tablero, p);
+        }
+        if (p.getTag().equalsIgnoreCase("REY")) {
+            movs = cargarMovsRey(tablero, p);
+        }
+
+        for (String s : movs) {
+            Log.i("********************** Movs: ", s);
+        }
+        return movs;
+    }
+
+    private ArrayList<String> cargarMovsRey(Casilla[][] tablero, Pieza p) {
+        Log.i("********************** Cargo movs: ", p.getTag() + " " + p.isBlancas() + " " + p.getFila() + " " + p.getColumna());
+        //código sin optimimizar, se puede mejorar
+        String s = "";
+        ArrayList<String> movs = new ArrayList<>();
+
+        if (p.getFila() == 0){
+            if (tablero[p.getFila() + 1][p.getColumna()].getPieza() == null ||
+                    (tablero[p.getFila() + 1][p.getColumna()].getPieza() != null &&
+                            tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                    tablero[p.getFila() + 1][p.getColumna()].getPieza().isBlancas())) {
+                s = String.valueOf(p.getFila() + 1);
+                s += String.valueOf(p.getColumna());
+                movs.add(s);
+            }
+            s = String.valueOf(p.getFila() + 1);
+            s += String.valueOf(p.getColumna());
+            movs.add(s);
+        }
+
+
+
+        if (p.getFila() > 0 && p.getColumna() > 0 && tablero[p.getFila() - 1][p.getColumna() - 1].getPieza() == null ||
+                (tablero[p.getFila() - 1][p.getColumna() - 1].getPieza() != null &&
+                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                tablero[p.getFila() - 1][p.getColumna() - 1].getPieza().isBlancas())) {
+            s = String.valueOf(p.getFila() - 1);
+            s += String.valueOf(p.getColumna() - 1);
+            movs.add(s);
+        }
+        if (tablero[p.getFila() - 1][p.getColumna()].getPieza() == null ||
+                (tablero[p.getFila() - 1][p.getColumna()].getPieza() != null &&
+                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                tablero[p.getFila() - 1][p.getColumna()].getPieza().isBlancas())) {
+            s = String.valueOf(p.getFila() - 1);
+            s += String.valueOf(p.getColumna());
+            movs.add(s);
+        }
+        if (tablero[p.getFila() - 1][p.getColumna() + 1].getPieza() == null ||
+                (tablero[p.getFila() - 1][p.getColumna() + 1].getPieza() != null &&
+                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                tablero[p.getFila() - 1][p.getColumna() + 1].getPieza().isBlancas())) {
+            s = String.valueOf(p.getFila() - 1);
+            s += String.valueOf(p.getColumna() + 1);
+            movs.add(s);
+        }
+        if (tablero[p.getFila()][p.getColumna() - 1].getPieza() == null ||
+                (tablero[p.getFila()][p.getColumna() - 1].getPieza() != null &&
+                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                tablero[p.getFila()][p.getColumna() - 1].getPieza().isBlancas())) {
+            s = String.valueOf(p.getFila());
+            s += String.valueOf(p.getColumna() - 1);
+            movs.add(s);
+        }
+        if (tablero[p.getFila()][p.getColumna() + 1].getPieza() == null ||
+                (tablero[p.getFila()][p.getColumna() + 1].getPieza() != null &&
+                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                tablero[p.getFila()][p.getColumna() + 1].getPieza().isBlancas())) {
+            s = String.valueOf(p.getFila());
+            s += String.valueOf(p.getColumna() + 1);
+            movs.add(s);
+        }
+        if (tablero[p.getFila() + 1][p.getColumna()-1].getPieza() == null ||
+                (tablero[p.getFila() + 1][p.getColumna()-1].getPieza() != null &&
+                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                tablero[p.getFila() + 1][p.getColumna()-1].getPieza().isBlancas())) {
+            s = String.valueOf(p.getFila() + 1);
+            s += String.valueOf(p.getColumna() - 1);
+            movs.add(s);
+        }
+        if (tablero[p.getFila() + 1][p.getColumna()].getPieza() == null ||
+                (tablero[p.getFila() + 1][p.getColumna()].getPieza() != null &&
+                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                tablero[p.getFila() + 1][p.getColumna()].getPieza().isBlancas())) {
+            s = String.valueOf(p.getFila() + 1);
+            s += String.valueOf(p.getColumna());
+            movs.add(s);
+        }
+        if (tablero[p.getFila() + 1][p.getColumna()+1].getPieza() == null ||
+                (tablero[p.getFila() + 1][p.getColumna()+1].getPieza() != null &&
+                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
+                                tablero[p.getFila() + 1][p.getColumna()+1].getPieza().isBlancas())) {
+            s = String.valueOf(p.getFila() + 1);
+            s += String.valueOf(p.getColumna() + 1);
+            movs.add(s);
+        }
+        for (String st : movs){
+            Log.i("********************** Movs antes son: ", st);
+        }
+        for (String st : movs){
+            if(Integer.parseInt(st.substring(0,1)) < 0 || Integer.parseInt(st.substring(0,1)) > 7 ||
+                    Integer.parseInt(st.substring(1,2)) < 0 || Integer.parseInt(st.substring(1,2)) > 7){
+                movs.remove(st);
+            }
+        }
+
+        for (String st : movs){
+            Log.i("********************** Movs desp son: ", st);
+        }
+        return movs;
+    }
+
+    private ArrayList<String> cargarMovsPeon(Casilla[][] tablero, Pieza p) {
+        //código sin optimimizar, se puede mejorar
+        String s = "";
+        ArrayList<String> movs = new ArrayList<>();
+        if (p.isBlancas()) {
+            if (p.getColumna() > 0 && tablero[p.getFila() - 1][p.getColumna() - 1].getPieza() != null &&
+                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
+                            != tablero[p.getFila() - 1][p.getColumna() - 1].getPieza().isBlancas()) {
+                //y no está clavado... (FALTA)
+
+                s = String.valueOf(p.getFila() - 1);
+                s += String.valueOf(p.getColumna() - 1);
+                movs.add(s);
+            }
+            if (p.getColumna() < 7 && tablero[p.getFila() - 1][p.getColumna() + 1].getPieza() != null &&
+                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
+                            != tablero[p.getFila() - 1][p.getColumna() + 1].getPieza().isBlancas()) {
+                s = String.valueOf(p.getFila() - 1);
+                s += String.valueOf(p.getColumna() + 1);
+                movs.add(s);
+            }
+            if (tablero[p.getFila() - 1][p.getColumna()].getPieza() != null) {
+                return movs;
+            }
+            if (p.getFila() == 6) {
+                s = String.valueOf(p.getFila() - 2);
+                s += String.valueOf(p.getColumna());
+                movs.add(s);
+            }
+            s = String.valueOf(p.getFila() - 1);
+            s += String.valueOf(p.getColumna());
+            movs.add(s);
+            return movs;
+        } else {
+            if (p.getColumna() > 0 && tablero[p.getFila() + 1][p.getColumna() - 1].getPieza() != null &&
+                    (tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
+                            != tablero[p.getFila() + 1][p.getColumna() - 1].getPieza().isBlancas())) {
+                //y no está clavado... (FALTA)
+                s = String.valueOf(p.getFila() + 1);
+                s += String.valueOf(p.getColumna() - 1);
+                movs.add(s);
+            }
+            if (p.getColumna() < 7 && tablero[p.getFila() + 1][p.getColumna() + 1].getPieza() != null &&
+                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
+                            != tablero[p.getFila() + 1][p.getColumna() + 1].getPieza().isBlancas()) {
+                s = String.valueOf(p.getFila() + 1);
+                s += String.valueOf(p.getColumna() + 1);
+                movs.add(s);
+            }
+            if (tablero[p.getFila() + 1][p.getColumna()].getPieza() != null) {
+                return movs;
+            }
+            if (p.getFila() == 1) {
+                s = String.valueOf(p.getFila() + 2);
+                s += String.valueOf(p.getColumna());
+                movs.add(s);
+            }
+            s = String.valueOf(p.getFila() + 1);
+            s += String.valueOf(p.getColumna());
+            movs.add(s);
+            return movs;
+        }
+    }*/
 }
