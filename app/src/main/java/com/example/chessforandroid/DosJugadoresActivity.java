@@ -11,17 +11,13 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.chessforandroid.piezas.Alfil;
 import com.example.chessforandroid.piezas.Caballo;
 import com.example.chessforandroid.piezas.Dama;
 import com.example.chessforandroid.piezas.Peon;
-import com.example.chessforandroid.piezas.Pieza;
 import com.example.chessforandroid.piezas.Rey;
 import com.example.chessforandroid.piezas.Torre;
-
-import java.util.ArrayList;
 
 
 public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener {
@@ -70,38 +66,120 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         } else {
             pintarFondo();
             //intentarMover(casillas, cInicial, c, movimientosPosibles);
-
+            if (esValido(casillas, cInicial, c)) {
+                mover(casillas, cInicial, c);
+            }
         }
 
         haySeleccionada = !haySeleccionada;
     }
 
-    private void intentarMover(Casilla[][] casillas, Casilla cInicial, Casilla cFinal, ArrayList<String> movimientosPosibles) {
-        String coorFin = "" + cFinal.getFila() + cFinal.getColumna();
-        Log.i("**********", "quiero mover a " + coorFin);
-        if (movimientosPosibles.contains(coorFin)) {
-            Log.i("**********************", "entro");
-            cInicial.getPieza().setFila(cFinal.getFila());
-            cInicial.getPieza().setColumna(cFinal.getColumna());
-            //coronación de peones
-            if (cInicial.getFila() == 1 &&
-                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
-                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
-                casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), true));
-                casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
-            } else if (cInicial.getFila() == 6 &&
-                    casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
-                    !casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
-                casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), false));
-                casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
-            } else {
-                //no coronan
-                casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
-                casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
-            }
-            casillas[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
-            casillas[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
+    private boolean esValido(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+        if (cFinal.getPieza() != null && cInicial.getPieza().isBlancas() == cFinal.getPieza().isBlancas()) {
+            return false;
         }
+        String tag = cInicial.getPieza().getTag();
+        switch (tag) {
+            case "PEON":
+                return esValidoPeon(cInicial, cFinal);
+            case "TORRE":
+                return esValidoTorre(casillas, cInicial, cFinal);
+            case "ALFIL":
+                return esValidoAlfil(casillas, cInicial, cFinal);
+            case "CABALLO":
+                return esValidoCaballo(casillas, cInicial, cFinal);
+            case "DAMA":
+                return esValidoDama(casillas, cInicial, cFinal);
+            case "REY":
+                return esValidoRey(casillas, cInicial, cFinal);
+        }
+        return false;
+    }
+
+    private boolean esValidoDama(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+        return false;
+    }
+
+    private boolean esValidoRey(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+        return false;
+    }
+
+    private boolean esValidoCaballo(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+        return false;
+    }
+
+    private boolean esValidoAlfil(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+        return false;
+    }
+
+    private boolean esValidoTorre(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+        return false;
+    }
+
+    private boolean esValidoPeon(Casilla cInicial, Casilla cFinal) {
+
+        //choque de peones
+        if (cInicial.getPieza().isBlancas() && cFinal.getFila() == cInicial.getFila()-1 &&
+            cFinal.getColumna() == cInicial.getColumna() && cFinal.getPieza()!=null){
+            return false;
+        }
+        if (!cInicial.getPieza().isBlancas() && cFinal.getFila() == cInicial.getFila()+1 &&
+            cFinal.getColumna() == cInicial.getColumna() && cFinal.getPieza()!=null){
+            return false;
+        }
+        //movimientos iniciales del peon
+        if (cInicial.getPieza().isBlancas() && cInicial.getFila() == 6 &&
+                ((cFinal.getFila() == 5 && cInicial.getColumna() == cFinal.getColumna()) ||
+                        (cFinal.getFila() == 4 && cInicial.getColumna() == cFinal.getColumna() && cFinal.getPieza() == null) ||
+                        (cFinal.getPieza() != null && cFinal.getFila() == 5 && (cFinal.getColumna() == cInicial.getColumna() - 1 ||
+                                cFinal.getColumna() == cInicial.getColumna() + 1)))) {
+            return true;
+        }
+        if (!cInicial.getPieza().isBlancas() && cInicial.getFila() == 1 &&
+                ((cFinal.getFila() == 2 && cInicial.getColumna() == cFinal.getColumna()) ||
+                        (cFinal.getFila() == 3 && cInicial.getColumna() == cFinal.getColumna() && cFinal.getPieza() == null) ||
+                        (cFinal.getPieza() != null && cFinal.getFila() == 2 && (cFinal.getColumna() == cInicial.getColumna() - 1 ||
+                                cFinal.getColumna() == cInicial.getColumna() + 1)))) {
+            return true;
+        }
+        //movimientos normales y capturas
+        if (cInicial.getPieza().isBlancas() && (cFinal.getFila() == cInicial.getFila() - 1)  &&
+                (( cInicial.getColumna() == cFinal.getColumna()) ||
+                (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
+                (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
+            return true;
+        }
+        if (!cInicial.getPieza().isBlancas() && (cFinal.getFila() == cInicial.getFila() + 1)  &&
+                (( cInicial.getColumna() == cFinal.getColumna()) ||
+                (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
+                (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
+            return true;
+        }
+        return false;
+    }
+
+    private void mover(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+        Log.i("********", "entro");
+        cInicial.getPieza().setFila(cFinal.getFila());
+        cInicial.getPieza().setColumna(cFinal.getColumna());
+        //coronación de peones
+        if (cInicial.getFila() == 1 &&
+                casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
+                casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), true));
+            casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
+        } else if (cInicial.getFila() == 6 &&
+                casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
+                !casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), false));
+            casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
+        } else {
+            //no coronan
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
+            casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
+        }
+        casillas[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
+        casillas[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
     }
 
 
@@ -287,7 +365,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         Log.i("Tablero: ", "\n" + t);
     }
 
-    /***
+    /*
      * Desglose de piezas (positivo - blancas,  negativo - negras):
      * 0: Casilla Vacía
      * 1: Rey
@@ -343,13 +421,13 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         }
 
         for (String s : movs) {
-            Log.i("********************** Movs: ", s);
+            Log.i("******** Movs: ", s);
         }
         return movs;
     }
 
     private ArrayList<String> cargarMovsRey(Casilla[][] tablero, Pieza p) {
-        Log.i("********************** Cargo movs: ", p.getTag() + " " + p.isBlancas() + " " + p.getFila() + " " + p.getColumna());
+        Log.i("******** Cargo movs: ", p.getTag() + " " + p.isBlancas() + " " + p.getFila() + " " + p.getColumna());
         //código sin optimimizar, se puede mejorar
         String s = "";
         ArrayList<String> movs = new ArrayList<>();
@@ -435,7 +513,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             movs.add(s);
         }
         for (String st : movs){
-            Log.i("********************** Movs antes son: ", st);
+            Log.i("******** Movs antes son: ", st);
         }
         for (String st : movs){
             if(Integer.parseInt(st.substring(0,1)) < 0 || Integer.parseInt(st.substring(0,1)) > 7 ||
@@ -445,7 +523,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         }
 
         for (String st : movs){
-            Log.i("********************** Movs desp son: ", st);
+            Log.i("******** Movs desp son: ", st);
         }
         return movs;
     }
