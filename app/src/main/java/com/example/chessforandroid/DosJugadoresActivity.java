@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.chessforandroid.piezas.Alfil;
 import com.example.chessforandroid.piezas.Caballo;
@@ -29,13 +30,17 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     private Casilla[][] casillas;
     private int[][] tablero;
     private boolean haySeleccionada;
+    private boolean turno;
     private Casilla cInicial;
+    private int nMovs;
     //private ArrayList<String> movimientosPosibles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         haySeleccionada = false;
+        turno = true;
+        nMovs = 0;
         setContentView(R.layout.activity_dos_jugadores);
 
         this.casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
@@ -60,6 +65,14 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         if (!haySeleccionada) {
             if (c.getPieza() == null)
                 return;
+            if (c.getPieza().isBlancas() != turno) {
+                if (turno)
+                    Toast.makeText(this, "Juegan las blancas", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Juegan las negras", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             c.setBackgroundColor(Color.parseColor("#36E0FA"));
             cInicial = c;
             //this.movimientosPosibles = cargarMovimientos(casillas, cInicial.getPieza());
@@ -68,6 +81,8 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             //intentarMover(casillas, cInicial, c, movimientosPosibles);
             if (esValido(casillas, cInicial, c)) {
                 mover(casillas, cInicial, c);
+                nMovs ++;
+                turno = !turno;
             }
         }
 
@@ -97,7 +112,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     }
 
     private boolean esValidoRey(Casilla cInicial, Casilla cFinal) {
-        if(Math.abs(cInicial.getFila() - cFinal.getFila()) > 1 ||
+        if (Math.abs(cInicial.getFila() - cFinal.getFila()) > 1 ||
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) > 1) {
             return false;
         }
@@ -105,11 +120,11 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     }
 
     private boolean esValidoCaballo(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
-        if(Math.abs(cInicial.getFila() - cFinal.getFila()) == 2 &&
+        if (Math.abs(cInicial.getFila() - cFinal.getFila()) == 2 &&
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 1) {
             return true;
         }
-        if(Math.abs(cInicial.getFila() - cFinal.getFila()) == 1 &&
+        if (Math.abs(cInicial.getFila() - cFinal.getFila()) == 1 &&
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 2) {
             return true;
         }
