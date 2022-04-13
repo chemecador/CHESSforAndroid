@@ -113,18 +113,58 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     }
 
     private boolean esValidoTorre(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
-        return false;
+        if (cInicial.getFila() != cFinal.getFila() && cInicial.getColumna() != cFinal.getColumna()) {
+            Log.i("*****TORRE NO VALIDA: ", "1");
+            return false;
+        }
+        int disFila = Math.abs(cInicial.getFila() - cFinal.getFila());
+        int disColumna = Math.abs(cInicial.getColumna() - cFinal.getColumna());
+        //movimientos verticales
+        if (disFila > disColumna) {
+            boolean arriba = cInicial.getFila() > cFinal.getFila();
+            for (int i = 1; i < disFila; i++) {
+                //si estás pasando por encima de una pieza...
+                if (arriba && casillas[cInicial.getFila() - i][cInicial.getColumna()].getPieza() != null) {
+                    Log.i("*****TORRE NO VALIDA: ", "2");
+                    return false;
+                }
+                if (!arriba && casillas[cInicial.getFila() + i][cInicial.getColumna()].getPieza() != null) {
+                    Log.i("*****TORRE NO VALIDA: ", "3");
+                    return false;
+                }
+            }
+        }
+        //movimientos horizontales
+        else if (disFila < disColumna) {
+            boolean izquierda = cInicial.getColumna() > cFinal.getColumna();
+            for (int i = 1; i < disColumna; i++) {
+                //si estás pasando por encima de una pieza...
+                if (izquierda && casillas[cInicial.getFila()][cInicial.getColumna() - i].getPieza() != null) {
+                    Log.i("*****TORRE NO VALIDA: ", "4");
+                    return false;
+                }
+                if (!izquierda && casillas[cInicial.getFila()][cInicial.getColumna() + i].getPieza() != null) {
+                    Log.i("*****TORRE NO VALIDA: ", "5");
+                    return false;
+                }
+            }
+        } else {
+            //no hay movimiento
+            return false;
+        }
+        //se cumplen todas las reglas, es válido
+        return true;
     }
 
     private boolean esValidoPeon(Casilla cInicial, Casilla cFinal) {
 
         //choque de peones
-        if (cInicial.getPieza().isBlancas() && cFinal.getFila() == cInicial.getFila()-1 &&
-            cFinal.getColumna() == cInicial.getColumna() && cFinal.getPieza()!=null){
+        if (cInicial.getPieza().isBlancas() && cFinal.getFila() == cInicial.getFila() - 1 &&
+                cFinal.getColumna() == cInicial.getColumna() && cFinal.getPieza() != null) {
             return false;
         }
-        if (!cInicial.getPieza().isBlancas() && cFinal.getFila() == cInicial.getFila()+1 &&
-            cFinal.getColumna() == cInicial.getColumna() && cFinal.getPieza()!=null){
+        if (!cInicial.getPieza().isBlancas() && cFinal.getFila() == cInicial.getFila() + 1 &&
+                cFinal.getColumna() == cInicial.getColumna() && cFinal.getPieza() != null) {
             return false;
         }
         //movimientos iniciales del peon
@@ -143,18 +183,19 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             return true;
         }
         //movimientos normales y capturas
-        if (cInicial.getPieza().isBlancas() && (cFinal.getFila() == cInicial.getFila() - 1)  &&
-                (( cInicial.getColumna() == cFinal.getColumna()) ||
-                (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
-                (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
+        if (cInicial.getPieza().isBlancas() && (cFinal.getFila() == cInicial.getFila() - 1) &&
+                ((cInicial.getColumna() == cFinal.getColumna()) ||
+                        (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
+                        (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
             return true;
         }
-        if (!cInicial.getPieza().isBlancas() && (cFinal.getFila() == cInicial.getFila() + 1)  &&
-                (( cInicial.getColumna() == cFinal.getColumna()) ||
-                (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
-                (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
+        if (!cInicial.getPieza().isBlancas() && (cFinal.getFila() == cInicial.getFila() + 1) &&
+                ((cInicial.getColumna() == cFinal.getColumna()) ||
+                        (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
+                        (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
             return true;
         }
+        //el resto de casillas
         return false;
     }
 
