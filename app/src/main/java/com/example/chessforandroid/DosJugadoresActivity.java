@@ -82,34 +82,77 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         switch (tag) {
             case "PEON":
                 return esValidoPeon(cInicial, cFinal);
+            case "REY":
+                return esValidoRey(cInicial, cFinal);
+            case "CABALLO":
+                return esValidoCaballo(casillas, cInicial, cFinal);
             case "TORRE":
                 return esValidoTorre(casillas, cInicial, cFinal);
             case "ALFIL":
                 return esValidoAlfil(casillas, cInicial, cFinal);
-            case "CABALLO":
-                return esValidoCaballo(casillas, cInicial, cFinal);
             case "DAMA":
-                return esValidoDama(casillas, cInicial, cFinal);
-            case "REY":
-                return esValidoRey(casillas, cInicial, cFinal);
+                return esValidoAlfil(casillas, cInicial, cFinal) || esValidoTorre(casillas, cInicial, cFinal);
         }
         return false;
     }
 
-    private boolean esValidoDama(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
-        return false;
-    }
-
-    private boolean esValidoRey(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
-        return false;
+    private boolean esValidoRey(Casilla cInicial, Casilla cFinal) {
+        if(Math.abs(cInicial.getFila() - cFinal.getFila()) > 1 ||
+                Math.abs(cInicial.getColumna() - cFinal.getColumna()) > 1) {
+            return false;
+        }
+        return true;
     }
 
     private boolean esValidoCaballo(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+        if(Math.abs(cInicial.getFila() - cFinal.getFila()) == 2 &&
+                Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 1) {
+            return true;
+        }
+        if(Math.abs(cInicial.getFila() - cFinal.getFila()) == 1 &&
+                Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 2) {
+            return true;
+        }
         return false;
     }
 
     private boolean esValidoAlfil(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
-        return false;
+        if (cInicial.getFila() == cFinal.getFila() || cInicial.getColumna() == cFinal.getColumna()) {
+            Log.i("*****ALFIL NO VALIDO: ", "1");
+            return false;
+        }
+        if (Math.abs(cInicial.getFila() - cFinal.getFila()) != Math.abs(cInicial.getColumna() - cFinal.getColumna())) {
+            Log.i("*****ALFIL NO VALIDO: ", "2");
+            return false;
+        }
+        int dis = Math.abs(cInicial.getFila() - cFinal.getFila());
+        boolean arriba = cInicial.getFila() > cFinal.getFila();
+        boolean izquierda = cInicial.getColumna() > cFinal.getColumna();
+
+        for (int i = 1; i < dis; i++) {
+            //si estás pasando por encima de una pieza... arriba izquierda
+            if (arriba && izquierda && casillas[cInicial.getFila() - i][cInicial.getColumna() - i].getPieza() != null) {
+                Log.i("*****ALFIL: ", "3");
+                return false;
+            }
+            //si estás pasando por encima de una pieza... arriba derecha
+            if (arriba && !izquierda && casillas[cInicial.getFila() - i][cInicial.getColumna() + i].getPieza() != null) {
+                Log.i("*****ALFIL: ", "6");
+                return false;
+            }
+            //si estás pasando por encima de una pieza... abajo izquierda
+            if (!arriba && izquierda && casillas[cInicial.getFila() + i][cInicial.getColumna() - i].getPieza() != null) {
+                Log.i("*****ALFIL ", "4");
+                return false;
+            }
+            //si estás pasando por encima de una pieza... abajo derecha
+            if (!arriba && !izquierda && casillas[cInicial.getFila() + i][cInicial.getColumna() + i].getPieza() != null) {
+                Log.i("*****ALFIL ", "5");
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean esValidoTorre(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
