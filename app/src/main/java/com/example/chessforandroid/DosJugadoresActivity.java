@@ -28,7 +28,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;
     private Casilla[][] casillas;
-    private int[][] tablero;
     private boolean haySeleccionada;
     private boolean turno;
     private Casilla cInicial;
@@ -47,7 +46,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         //this.movimientosPosibles = new ArrayList<>();
         crearCasillas();
 
-        this.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
         this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoard);
         this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoard);
         Tablero t = new Tablero();
@@ -80,13 +78,48 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             pintarFondo();
             //intentarMover(casillas, cInicial, c, movimientosPosibles);
             if (esValido(casillas, cInicial, c)) {
+
                 mover(casillas, cInicial, c);
+                Log.i("antes de jaque: ", "soy " + c.getPieza().getTag() + c.getPieza().isBlancas() +
+                        "estoy en casilla " + c.getFila() + c.getColumna() +
+                        " pieza : " + c.getPieza().getFila() + c.getPieza().getColumna());
+                comprobarJaque(casillas, buscarRey(casillas, !turno));
                 nMovs ++;
                 turno = !turno;
             }
         }
 
         haySeleccionada = !haySeleccionada;
+    }
+
+
+    private Casilla buscarRey(Casilla[][] casillas, boolean blancas) {
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                if (casillas[i][j].getPieza() != null &&
+                        casillas[i][j].getPieza().getTag().equalsIgnoreCase("REY") &&
+                        casillas[i][j].getPieza().isBlancas() == blancas){
+                    return casillas[i][j];
+
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean comprobarJaque(Casilla[][] casillas, Casilla casRey) {
+        for (Casilla[] casilla : casillas) {
+            for (int j = 0; j < casillas.length; j++) {
+                if (casilla[j].getPieza() != null &&
+                        (casRey.getPieza().isBlancas() != casilla[j].getPieza().isBlancas())) {
+                    if (esValido(casillas, casilla[j], casRey)) {
+                        Toast.makeText(this, "JAQUE " + casRey.getPieza().isBlancas(), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private boolean esValido(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
@@ -100,7 +133,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             case "REY":
                 return esValidoRey(cInicial, cFinal);
             case "CABALLO":
-                return esValidoCaballo(casillas, cInicial, cFinal);
+                return esValidoCaballo(cInicial, cFinal);
             case "TORRE":
                 return esValidoTorre(casillas, cInicial, cFinal);
             case "ALFIL":
@@ -112,23 +145,17 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     }
 
     private boolean esValidoRey(Casilla cInicial, Casilla cFinal) {
-        if (Math.abs(cInicial.getFila() - cFinal.getFila()) > 1 ||
-                Math.abs(cInicial.getColumna() - cFinal.getColumna()) > 1) {
-            return false;
-        }
-        return true;
+        return Math.abs(cInicial.getFila() - cFinal.getFila()) < 2 &&
+                Math.abs(cInicial.getColumna() - cFinal.getColumna()) < 2;
     }
 
-    private boolean esValidoCaballo(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+    private boolean esValidoCaballo(Casilla cInicial, Casilla cFinal) {
         if (Math.abs(cInicial.getFila() - cFinal.getFila()) == 2 &&
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 1) {
             return true;
         }
-        if (Math.abs(cInicial.getFila() - cFinal.getFila()) == 1 &&
-                Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 2) {
-            return true;
-        }
-        return false;
+        return Math.abs(cInicial.getFila() - cFinal.getFila()) == 1 &&
+                Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 2;
     }
 
     private boolean esValidoAlfil(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
@@ -284,11 +311,9 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     private void addListeners() {
         pintarFondo();
-        int p = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 casillas[i][j].setOnClickListener(this);
-                p++;
             }
         }
     }
@@ -312,53 +337,51 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         }
 
         ViewTreeObserver.OnGlobalLayoutListener pintarTablero() {
-            ViewTreeObserver.OnGlobalLayoutListener tablero =
-                    new ViewTreeObserver.OnGlobalLayoutListener() {
 
-                        @Override
-                        public void onGlobalLayout() {
-                            int width = DosJugadoresActivity.this.oGameBoardShell.getMeasuredWidth();
-                            int height = DosJugadoresActivity.this.oGameBoardShell.getMeasuredHeight();
-                            double sizeA = (width / NUM_COLUMNAS);
-                            double sizeB = (height / NUM_FILAS);
+            return new ViewTreeObserver.OnGlobalLayoutListener() {
 
-                            double smallestSize = Math.min(sizeA, sizeB);
-                            int smallestSizeInt = (int) Math.floor(smallestSize);
+                @Override
+                public void onGlobalLayout() {
+                    int width = DosJugadoresActivity.this.oGameBoardShell.getMeasuredWidth();
+                    int height = DosJugadoresActivity.this.oGameBoardShell.getMeasuredHeight();
+                    double sizeA = (width / NUM_COLUMNAS);
+                    double sizeB = (height / NUM_FILAS);
 
-                            for (int i = 0; i < NUM_FILAS; i++) {
-                                for (int j = 0; j < NUM_COLUMNAS; j++) {
-                                    try {
-                                        Casilla b = casillas[i][j];
-                                        b.setPadding(0, 0, 0, 0);
+                    double smallestSize = Math.min(sizeA, sizeB);
+                    int smallestSizeInt = (int) Math.floor(smallestSize);
 
-                                        GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-                                        lp.width = smallestSizeInt;
-                                        lp.height = smallestSizeInt;
-                                        lp.leftMargin = 0;
-                                        lp.rightMargin = 0;
-                                        lp.topMargin = 0;
-                                        lp.bottomMargin = 0;
-                                        b.setLayoutParams(lp);
+                    for (int i = 0; i < NUM_FILAS; i++) {
+                        for (int j = 0; j < NUM_COLUMNAS; j++) {
+                            try {
+                                Casilla b = casillas[i][j];
+                                b.setPadding(0, 0, 0, 0);
 
-                                        oGameBoard.addView(b);
-                                        oGameBoard.getLayoutParams().width = smallestSizeInt * NUM_COLUMNAS;
-                                        oGameBoard.getLayoutParams().height = smallestSizeInt * NUM_FILAS;
+                                GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+                                lp.width = smallestSizeInt;
+                                lp.height = smallestSizeInt;
+                                lp.leftMargin = 0;
+                                lp.rightMargin = 0;
+                                lp.topMargin = 0;
+                                lp.bottomMargin = 0;
+                                b.setLayoutParams(lp);
 
-                                    } catch (Exception ex) {
-                                        ex.printStackTrace();
-                                    }
-                                }
-                            }
+                                oGameBoard.addView(b);
+                                oGameBoard.getLayoutParams().width = smallestSizeInt * NUM_COLUMNAS;
+                                oGameBoard.getLayoutParams().height = smallestSizeInt * NUM_FILAS;
 
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                                DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                            } else {
-                                DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
                         }
-                    };
+                    }
 
-            return tablero;
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                }
+            };
         }
     }
 
@@ -451,63 +474,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 x++;
             }
         }
-    }
-
-    private void mostrarTablero() {
-        String t = "";
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                t += tablero[i][j] + " ";
-            }
-            t += "\n";
-        }
-        Log.i("Tablero: ", "\n" + t);
-    }
-
-    /*
-     * Desglose de piezas (positivo - blancas,  negativo - negras):
-     * 0: Casilla Vacía
-     * 1: Rey
-     * 2: Dama
-     * 3: Torre
-     * 4: Alfil
-     * 5: Caballo
-     * 6: Peón
-     */
-    private void escribirTablero() {
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                //colocar casillas en blanco
-                tablero[i][j] = 0;
-                //colocar peones negros
-                if (i == 1) {
-                    tablero[i][j] = -6;
-                }
-                //colocar peones blancos
-                if (i == 6) {
-                    tablero[i][j] = 6;
-                }
-            }
-        }
-        //colocar piezas negras
-        tablero[0][0] = -3;
-        tablero[0][7] = -3;
-        tablero[0][1] = -5;
-        tablero[0][6] = -5;
-        tablero[0][2] = -4;
-        tablero[0][5] = -4;
-        tablero[0][3] = -2;
-        tablero[0][4] = -1;
-
-        //colocar piezas blancas
-        tablero[7][0] = 3;
-        tablero[7][7] = 3;
-        tablero[7][1] = 5;
-        tablero[7][6] = 5;
-        tablero[7][2] = 4;
-        tablero[7][5] = 4;
-        tablero[7][3] = 2;
-        tablero[7][4] = 1;
     }
     /*
     private ArrayList<String> cargarMovimientos(Casilla[][] tablero, Pieza p) {

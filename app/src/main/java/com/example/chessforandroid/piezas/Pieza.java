@@ -7,12 +7,6 @@ public abstract class Pieza {
     protected int drawable;
     protected String tag = "";
 
-
-    public void mover(int fila, int columna) {
-        this.fila = fila;
-        this.columna = columna;
-    }
-
     public boolean isBlancas() {
         return blancas;
     }
