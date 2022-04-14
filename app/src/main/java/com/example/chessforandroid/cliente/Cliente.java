@@ -2,11 +2,13 @@ package com.example.chessforandroid.cliente;
 
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class Cliente {
     private DataOutputStream out; // flujo de salida
     private final int PUERTO = 5555; // puerto que se utilizará
     private final String HOST = "192.168.1.144"; // dirección IP (local)
+    private boolean conectado;
 
     // constructor
     public Cliente() {
@@ -26,13 +29,17 @@ public class Cliente {
         StrictMode.setThreadPolicy(policy);
         try {
             // inicializamos el socket, dis y dos
-            conn = new Socket(HOST, PUERTO);
+            //conn = new Socket(HOST, PUERTO);
+            conn = new Socket();
+            conn.connect(new InetSocketAddress(HOST, PUERTO), 1500);
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
+            conectado = true;
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            conectado = false;
             e.printStackTrace();
         }
     }
@@ -129,5 +136,13 @@ public class Cliente {
         while (res[4] > 3) {
         }
         return res;
+    }
+
+    public boolean isConectado() {
+        return conectado;
+    }
+
+    public void setConectado(boolean conectado) {
+        this.conectado = conectado;
     }
 }

@@ -54,14 +54,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
 
                 Cliente c = new Cliente();
-                if (c.iniciarSesion(user.getText().toString(), pass.getText().toString())) {
-                    Intent mainIntentLogin = new Intent(this, MainActivity.class);
-                    mainIntentLogin.putExtra("user", user.getText().toString());
-                    c.cerrarConexion();
-                    startActivity(mainIntentLogin);
-                    finish();
+                if (c.isConectado()) {
+                    if (c.iniciarSesion(user.getText().toString(), pass.getText().toString())) {
+                        Intent mainIntentLogin = new Intent(this, MainActivity.class);
+                        mainIntentLogin.putExtra("user", user.getText().toString());
+                        c.cerrarConexion();
+                        startActivity(mainIntentLogin);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Nombre de usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(this, "Nombre de usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.bSignup:
@@ -70,23 +74,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     break;
                 }
                 c = new Cliente();
-                int res = c.registrarse(user.getText().toString(), pass.getText().toString());
-                Log.i("**", "res vale: " + res);
-                switch (res) {
-                    case -2:
-                    case -1:
-                        Log.i("**", "Error de conexión con la base de datos");
-                        break;
-                    case 0:
-                        Toast.makeText(this, "El nombre de usuario ya existe.", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 1:
-                        Intent mainIntentSignup = new Intent(this, MainActivity.class);
-                        mainIntentSignup.putExtra("user", user.getText().toString());
-                        c.cerrarConexion();
-                        startActivity(mainIntentSignup);
-                        finish();
-                        break;
+                if (c.isConectado()) {
+                    int res = c.registrarse(user.getText().toString(), pass.getText().toString());
+                    Log.i("**", "res vale: " + res);
+                    switch (res) {
+                        case -2:
+                        case -1:
+                            Log.i("**", "Error de conexión con la base de datos");
+                            break;
+                        case 0:
+                            Toast.makeText(this, "El nombre de usuario ya existe.", Toast.LENGTH_SHORT).show();
+                            break;
+                        case 1:
+                            Intent mainIntentSignup = new Intent(this, MainActivity.class);
+                            mainIntentSignup.putExtra("user", user.getText().toString());
+                            c.cerrarConexion();
+                            startActivity(mainIntentSignup);
+                            finish();
+                            break;
+                    }
+                } else {
+                    Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.bLoginOffline:
