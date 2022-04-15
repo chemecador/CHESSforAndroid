@@ -30,7 +30,9 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     private Casilla[][] casillas;
     private boolean haySeleccionada;
     private boolean turno;
-    private Casilla cInicial;
+    private boolean jaque;
+    private boolean fin;
+    private Casilla quieroMover;
     private int nMovs;
     //private ArrayList<String> movimientosPosibles;
 
@@ -38,6 +40,8 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         haySeleccionada = false;
+        jaque = false;
+        fin = false;
         turno = true;
         nMovs = 0;
         setContentView(R.layout.activity_dos_jugadores);
@@ -72,24 +76,58 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             }
 
             c.setBackgroundColor(Color.parseColor("#36E0FA"));
-            cInicial = c;
-            //this.movimientosPosibles = cargarMovimientos(casillas, cInicial.getPieza());
+            quieroMover = c;
+            //this.movimientosPosibles = cargarMovimientos(casillas, quieroMover.getPieza());
         } else {
+            Log.i("*******************************************************************", "empiezo MOV");
+            Log.i("*******************************************************************", "empiezo MOV");
             pintarFondo();
-            //intentarMover(casillas, cInicial, c, movimientosPosibles);
-            if (esValido(casillas, cInicial, c)) {
-
-                mover(casillas, cInicial, c);
-                Log.i("antes de jaque: ", "soy " + c.getPieza().getTag() + c.getPieza().isBlancas() +
-                        "estoy en casilla " + c.getFila() + c.getColumna() +
-                        " pieza : " + c.getPieza().getFila() + c.getPieza().getColumna());
-                comprobarJaque(casillas, buscarRey(casillas, !turno));
-                nMovs ++;
+            //intentarMover(casillas, quieroMover, c, movimientosPosibles);
+            if (esLegal(casillas, quieroMover, c)) {
+                mover(casillas, quieroMover, c);
+                nMovs++;
                 turno = !turno;
+                Log.i("antes de comprobar", "hay jaque: " + jaque);
+                if (comprobarJaque(casillas)) {
+                    Toast.makeText(this, "JAQUE " + turno, Toast.LENGTH_SHORT).show();
+
+                }
+                Log.i("despues de comprobar", "hay jaque: " + jaque);
+                if (!puedeMover(casillas, turno)){
+                    fin = true;
+                    Toast.makeText(this, "FINAL", Toast.LENGTH_SHORT).show();
+                   // Log.i ("FINAL: " , ""+quieroMover.getPieza().getTag() + quieroMover.getFila()+quieroMover.getColumna());
+                    //Casilla casRey = buscarRey(casillas, turno);
+                    //casRey.setBackgroundColor(Color.RED);
+                }
+                Log.i("despues de mover", "hay jaque: " + jaque);
             }
+            Log.i("*******************************************************************", "ACABO MOV");
+            Log.i("*******************************************************************", "ACABO MOV");
         }
 
         haySeleccionada = !haySeleccionada;
+    }
+
+    private boolean puedeMover(Casilla[][] casillas, boolean blancas) {
+        Casilla c;
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                if (casillas[i][j].getPieza() != null && casillas[i][j].getPieza().isBlancas() == blancas) {
+                    c = casillas[i][j];
+                    for (int x = 0; x < NUM_FILAS; x++) {
+                        for (int y = 0; y < NUM_COLUMNAS; y++) {
+                            if (esLegal(casillas, c, casillas[x][y])) {
+                                Log.i("puedemover", "la casilla " + c.getFila() + c.getColumna()
+                                        + " puede mover a " + casillas[x][y].getFila() + casillas[x][y].getColumna());
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -98,7 +136,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 if (casillas[i][j].getPieza() != null &&
                         casillas[i][j].getPieza().getTag().equalsIgnoreCase("REY") &&
-                        casillas[i][j].getPieza().isBlancas() == blancas){
+                        casillas[i][j].getPieza().isBlancas() == blancas) {
                     return casillas[i][j];
 
                 }
@@ -107,13 +145,14 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         return null;
     }
 
-    private boolean comprobarJaque(Casilla[][] casillas, Casilla casRey) {
-        for (Casilla[] casilla : casillas) {
+    private boolean comprobarJaque(Casilla[][] casillas) {
+        Casilla casRey = buscarRey(casillas,turno);
+        for (int i = 0; i < casillas.length; i++) {
             for (int j = 0; j < casillas.length; j++) {
-                if (casilla[j].getPieza() != null &&
-                        (casRey.getPieza().isBlancas() != casilla[j].getPieza().isBlancas())) {
-                    if (esValido(casillas, casilla[j], casRey)) {
-                        Toast.makeText(this, "JAQUE " + casRey.getPieza().isBlancas(), Toast.LENGTH_SHORT).show();
+                if (casillas[i][j].getPieza() != null && casRey.getPieza() != null &&
+                        (casRey.getPieza().isBlancas() != casillas[i][j].getPieza().isBlancas())) {
+                    if (esValido(casillas, casillas[i][j], casRey)) {
+                        jaque = true;
                         return true;
                     }
                 }
@@ -121,9 +160,86 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         }
         return false;
     }
+    private boolean esLegal(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+
+        //Log.i("esLegal comienza:", "recibo que jaque es: " + jaque);
+        this.jaque = comprobarJaque(casillas);
+        //Log.i("esLegal comienza:", "lo compruebo, jaque es: " + jaque);
+        if (jaque) {
+            jaque = !salvaJaque(casillas, cInicial, cFinal);
+//            if (jaque)
+          //      Log.i("esLegal despues del mov", "" + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
+            //            " a " + cFinal.getFila() + cFinal.getColumna() + "salva el jaque");
+            return !jaque;
+        }
+  //      Log.i("esLegal va a terminar:", " compruebo si el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
+    //            " a " + cFinal.getFila() + cFinal.getColumna() + " es legal");
+        boolean ret = esValido(casillas, cInicial, cFinal);
+        if (ret) {
+            Log.i("esLegal termina", "jaque: " + jaque + " - devuelvo:" + ret);
+            Log.i("esLegal termina:", "el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
+                    " a " + cFinal.getFila() + cFinal.getColumna() + "es legal");
+        } else {
+      //      Log.i("esLegal termina", "no lo es ---- jaque: " + jaque + " - devuelvo:" + ret);
+        }
+        return ret;
+    }
+
+    private boolean salvaJaque(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
+
+        Casilla casRey = buscarRey(casillas, turno);
+        Casilla[][] copia = casillas.clone();
+        Casilla copiaInicial = cInicial;
+        Casilla copiaFinal = cFinal;
+
+        //      Log.i("salvajaque", "hay jaque: " + jaque);
+        //     Log.i("salvajaque", "rey es " + casRey.getPieza().isBlancas());
+        if (esValido(copia, copiaInicial, copiaFinal)) {
+            //       Log.i("salvajaque: comiendo dama", "pieza inicial es : " + cInicial.getPieza().getTag() +
+            //             cInicial.getFila() + cInicial.getColumna());
+            moverFalso(copia, copiaInicial, copiaFinal);
+            boolean ret = comprobarJaque(copia);
+            moverFalso(copia, copiaFinal, copiaInicial);
+            //copia[quieroMover.getFila()][quieroMover.getColumna()].setPieza(quieroMover.getPieza());
+            //copia[quieroMover.getFila()][quieroMover.getColumna()].setImageResource(quieroMover.getPieza().getDrawable());
+               Log.i("salvajaque: comiendo dama", "pieza inicial es : " + cInicial.getPieza().getTag() +
+                    cInicial.getFila() + cInicial.getColumna());
+            if (ret) {
+                //  Log.i("salvaJaque termina:", "el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
+                //        " a " + cFinal.getFila() + cFinal.getColumna() + "salva el jaque");
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void moverFalso(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
+        cInicial.getPieza().setFila(cFinal.getFila());
+        cInicial.getPieza().setColumna(cFinal.getColumna());
+        //coronación de peones
+        if (cInicial.getFila() == 1 &&
+                copia[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
+                copia[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
+            copia[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), true));
+            copia[cFinal.getFila()][cFinal.getColumna()].setImageResource(copia[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
+        } else if (cInicial.getFila() == 6 &&
+                copia[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
+                !copia[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
+            copia[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), false));
+            copia[cFinal.getFila()][cFinal.getColumna()].setImageResource(copia[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
+        } else {
+            //no coronan
+            copia[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
+            copia[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
+        }
+        copia[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
+        copia[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
+    }
 
     private boolean esValido(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
-        if (cFinal.getPieza() != null && cInicial.getPieza().isBlancas() == cFinal.getPieza().isBlancas()) {
+        if (cInicial.getPieza() == null || (cFinal.getPieza() != null &&
+                cInicial.getPieza().isBlancas() == cFinal.getPieza().isBlancas())) {
             return false;
         }
         String tag = cInicial.getPieza().getTag();
@@ -160,11 +276,9 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     private boolean esValidoAlfil(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
         if (cInicial.getFila() == cFinal.getFila() || cInicial.getColumna() == cFinal.getColumna()) {
-            Log.i("*****ALFIL NO VALIDO: ", "1");
             return false;
         }
         if (Math.abs(cInicial.getFila() - cFinal.getFila()) != Math.abs(cInicial.getColumna() - cFinal.getColumna())) {
-            Log.i("*****ALFIL NO VALIDO: ", "2");
             return false;
         }
         int dis = Math.abs(cInicial.getFila() - cFinal.getFila());
@@ -174,22 +288,18 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         for (int i = 1; i < dis; i++) {
             //si estás pasando por encima de una pieza... arriba izquierda
             if (arriba && izquierda && casillas[cInicial.getFila() - i][cInicial.getColumna() - i].getPieza() != null) {
-                Log.i("*****ALFIL: ", "3");
                 return false;
             }
             //si estás pasando por encima de una pieza... arriba derecha
             if (arriba && !izquierda && casillas[cInicial.getFila() - i][cInicial.getColumna() + i].getPieza() != null) {
-                Log.i("*****ALFIL: ", "6");
                 return false;
             }
             //si estás pasando por encima de una pieza... abajo izquierda
             if (!arriba && izquierda && casillas[cInicial.getFila() + i][cInicial.getColumna() - i].getPieza() != null) {
-                Log.i("*****ALFIL ", "4");
                 return false;
             }
             //si estás pasando por encima de una pieza... abajo derecha
             if (!arriba && !izquierda && casillas[cInicial.getFila() + i][cInicial.getColumna() + i].getPieza() != null) {
-                Log.i("*****ALFIL ", "5");
                 return false;
             }
         }
@@ -199,7 +309,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     private boolean esValidoTorre(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
         if (cInicial.getFila() != cFinal.getFila() && cInicial.getColumna() != cFinal.getColumna()) {
-            Log.i("*****TORRE NO VALIDA: ", "1");
             return false;
         }
         int disFila = Math.abs(cInicial.getFila() - cFinal.getFila());
@@ -210,11 +319,9 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             for (int i = 1; i < disFila; i++) {
                 //si estás pasando por encima de una pieza...
                 if (arriba && casillas[cInicial.getFila() - i][cInicial.getColumna()].getPieza() != null) {
-                    Log.i("*****TORRE NO VALIDA: ", "2");
                     return false;
                 }
                 if (!arriba && casillas[cInicial.getFila() + i][cInicial.getColumna()].getPieza() != null) {
-                    Log.i("*****TORRE NO VALIDA: ", "3");
                     return false;
                 }
             }
@@ -225,11 +332,9 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             for (int i = 1; i < disColumna; i++) {
                 //si estás pasando por encima de una pieza...
                 if (izquierda && casillas[cInicial.getFila()][cInicial.getColumna() - i].getPieza() != null) {
-                    Log.i("*****TORRE NO VALIDA: ", "4");
                     return false;
                 }
                 if (!izquierda && casillas[cInicial.getFila()][cInicial.getColumna() + i].getPieza() != null) {
-                    Log.i("*****TORRE NO VALIDA: ", "5");
                     return false;
                 }
             }
@@ -285,7 +390,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void mover(Casilla[][] casillas, Casilla cInicial, Casilla cFinal) {
-        Log.i("********", "entro");
         cInicial.getPieza().setFila(cFinal.getFila());
         cInicial.getPieza().setColumna(cFinal.getColumna());
         //coronación de peones
