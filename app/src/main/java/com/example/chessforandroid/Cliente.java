@@ -1,4 +1,4 @@
-package com.example.chessforandroid.cliente;
+package com.example.chessforandroid;
 
 import android.os.StrictMode;
 import android.util.Log;
