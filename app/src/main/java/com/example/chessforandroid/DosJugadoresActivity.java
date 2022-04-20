@@ -4,6 +4,7 @@ import static com.example.chessforandroid.Juez.NUM_COLUMNAS;
 import static com.example.chessforandroid.Juez.NUM_FILAS;
 import static com.example.chessforandroid.Juez.casillas;
 import static com.example.chessforandroid.Juez.esLegal;
+import static com.example.chessforandroid.Juez.jaque;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -43,6 +44,9 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         nMovs = 0;
         Juez.turno = true;
         Juez.casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
+        Juez.jaqueMate = false;
+        Juez.jaque = false;
+        Juez.puedeMover = false;
         setContentView(R.layout.activity_dos_jugadores);
 
         //this.movimientosPosibles = new ArrayList<>();
@@ -85,18 +89,20 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 Juez.mover(quieroMover, c);
                 nMovs++;
                 Juez.turno = !Juez.turno;
-                if (!Juez.puedeMover(casillas, Juez.turno) && !Juez.jaque) {
-                    Toast.makeText(this, "REY AHOGADO " + Juez.turno, Toast.LENGTH_SHORT).show();
-                }
-                if (Juez.comprobarJaque(casillas)) {
+                Juez.puedeMover = !Juez.puedeMover(casillas, Juez.turno);
+                Juez.jaque = Juez.comprobarJaque(casillas);
+                if (jaque) {
                     Toast.makeText(this, "JAQUE " + Juez.turno, Toast.LENGTH_SHORT).show();
 
+                } else {
+                    if (!Juez.puedeMover) {
+                        Toast.makeText(this, "REY AHOGADO " + Juez.turno, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             Log.i("*******************************************************************", "ACABO MOV");
             Log.i("*******************************************************************", "ACABO MOV");
         }
-
         haySeleccionada = !haySeleccionada;
     }
 

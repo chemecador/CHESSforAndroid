@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="15dp"
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
@@ -11,7 +12,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:orientation="vertical"/>
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:text="@string/chess"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="15dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -44,7 +58,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="15dp">
 
             <TextView
                 android:id="@+id/textView4"
@@ -71,7 +86,10 @@
                 android:id="@+id/bLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                 android:layout_weight="1"
+                android:backgroundTint="#0D8AC3"
                 android:text="@string/login" />
 
             <Button
@@ -79,6 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="#1A6121"
                 android:text="@string/signup" />
         </LinearLayout>
 
@@ -94,6 +113,7 @@
             android:id="@+id/bLoginOffline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#646464"
             android:text="@string/play_offline" />
 
     </LinearLayout>

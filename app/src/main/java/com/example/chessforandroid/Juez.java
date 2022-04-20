@@ -12,6 +12,8 @@ public class Juez {
     public static final int NUM_COLUMNAS = 8;
     public static boolean turno;
     public static boolean jaque;
+    public static boolean jaqueMate;
+    public static boolean puedeMover;
 
 
     public static Casilla[][] crearCopia() {

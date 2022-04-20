@@ -28,4 +28,12 @@
     <string name="signup">Registrarse</string>
     <string name="logout">Cerrar sesión</string>
     <string name="total">Jugadas:</string>
+    <string name="chess">CHESSforAndroid</string>
+    <string name="settings">Ajustes</string>
+    <string name="contact">Contacto:</string>
+    <string name="title_activity_advanced">AdvancedActivity</string>
+    <string name="port">Puerto:</string>
+    <string name="cancel">Cancelar</string>
+    <string name="accept">Aceptar</string>
+    <string name="confirm">Confirmar</string>
 </resources>

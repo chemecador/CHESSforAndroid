@@ -3,10 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_preferencias"
+        android:id="@+id/menu_perfil"
         android:icon="@drawable/brey"
         android:title="@string/preferences"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_ajustes"
+        android:title="@string/settings" />
     <item
         android:id="@+id/menu_acercade"
         android:title="@string/about_us" />

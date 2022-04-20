@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /*Método que se ejecuta cuando el usuario selecciona un elemento
          * de la barra de menú de la aplicación*/
         switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
-            case R.id.menu_preferencias:
+            case R.id.menu_perfil:
                 if (user.length() > 0) {
                     int[] datos = c.pedirDatos(user);
                     Intent i = new Intent(this, PerfilActivity.class);
@@ -80,11 +80,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 startActivity(new Intent(this, LoginActivity.class));
                 return true;
+            case R.id.menu_ajustes:
+                startActivity(new Intent(this, PreferencesActivity.class));
+                break;
 
             case R.id.menu_acercade:
-                Toast.makeText(this, "Aplicación desarrollada por Alejandro Gata"
-                        , Toast.LENGTH_LONG).show();//Creo un 'Toast', un texto que aparecerá en pantalla durante un instante y lo muestro
-                break;
+                startActivity(new Intent(this, AboutUsActivity.class));
+                 break;
 
         }
         return super.onOptionsItemSelected(item);

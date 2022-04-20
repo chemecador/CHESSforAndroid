@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/chess">
+
+        <CheckBoxPreference
+            android:id="@+id/prefCantidad"
+            android:defaultValue="false"
+            android:key="preferencias_cantidad"
+            android:summary="resumen1"
+            android:title="preferencia1" />
+        <CheckBoxPreference
+            android:id="@+id/prefDescendente"
+            android:defaultValue="false"
+            android:key="preferencias_descendente"
+            android:summary="resumen2"
+            android:title="preferencia2" />
+    </PreferenceCategory>
+</PreferenceScreen>

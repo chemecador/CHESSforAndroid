@@ -4,13 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="15dp"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:layout_weight="1"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
@@ -26,6 +29,7 @@
             android:id="@+id/bMain2P"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#646464"
             android:gravity="center"
             android:text="@string/two_players" />
     </LinearLayout>
@@ -34,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
@@ -49,6 +54,7 @@
             android:id="@+id/bMainOnline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:backgroundTint="#646464"
+            android:text="Jugar online" />
     </LinearLayout>
 </LinearLayout>

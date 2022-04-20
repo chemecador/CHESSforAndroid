@@ -4,6 +4,8 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.chessforandroid.util.Constantes;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,8 +20,8 @@ public class Cliente {
     private Socket conn; // socket con la conexión
     private DataInputStream in; // flujo de entrada
     private DataOutputStream out; // flujo de salida
-    private final int PUERTO = 5555; // puerto que se utilizará
-    private final String HOST = "192.168.1.144"; // dirección IP (local)
+    private String HOST = Constantes.ip; // dirección IP (local)
+    private int PUERTO = Constantes.puerto; // puerto que se utilizará
     private boolean conectado;
 
     // constructor
