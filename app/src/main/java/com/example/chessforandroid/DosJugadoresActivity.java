@@ -5,6 +5,7 @@ import static com.example.chessforandroid.Juez.NUM_FILAS;
 import static com.example.chessforandroid.Juez.casillas;
 import static com.example.chessforandroid.Juez.esLegal;
 import static com.example.chessforandroid.Juez.jaque;
+import static com.example.chessforandroid.Juez.turno;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,8 +16,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chessforandroid.piezas.Alfil;
@@ -32,24 +35,30 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;
     private boolean haySeleccionada;
+    private boolean captura;
     private boolean fin;
     private Casilla quieroMover;
     private int nMovs;
-    //private ArrayList<String> movimientosPosibles;
+    private Button tablas;
+    private Button rendirse;
+    private TextView tvMovs;
+    private StringBuilder movs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         haySeleccionada = false;
+        captura = false;
         nMovs = 0;
+
+
+
         Juez.turno = true;
         Juez.casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
         Juez.jaqueMate = false;
         Juez.jaque = false;
         Juez.puedeMover = false;
         setContentView(R.layout.activity_dos_jugadores);
-
-        //this.movimientosPosibles = new ArrayList<>();
         crearCasillas();
 
         this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoard);
@@ -63,6 +72,16 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
+
+        if (view.getId() == R.id.bTablas){
+
+            return;
+        }
+        if (view.getId() == R.id.bRendirse){
+
+            return;
+        }
+
 
         Casilla c = (Casilla) view;
 
@@ -79,15 +98,17 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
             c.setBackgroundColor(Color.parseColor("#36E0FA"));
             quieroMover = c;
-            //this.movimientosPosibles = cargarMovimientos(casillas, quieroMover.getPieza());
+            quieroMover.setPieza(c.getPieza());
         } else {
             Log.i("*******************************************************************", "empiezo MOV");
-            Log.i("*******************************************************************", "empiezo MOV");
             pintarFondo();
-            //intentarMover(casillas, quieroMover, c, movimientosPosibles);
             if (esLegal(quieroMover, c)) {
+                if (turno)
+                    nMovs++;
+                captura = c.getPieza() != null;
+                actualizarTxt(quieroMover.getPieza().getTag(),coorToChar(c.getFila(),c.getColumna())[0],
+                        coorToChar(c.getFila(),c.getColumna())[1], captura);
                 Juez.mover(quieroMover, c);
-                nMovs++;
                 Juez.turno = !Juez.turno;
                 Juez.puedeMover = Juez.puedeMover(casillas, Juez.turno);
                 Juez.jaque = Juez.comprobarJaque(casillas);
@@ -101,14 +122,83 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 }
             }
             Log.i("*******************************************************************", "ACABO MOV");
-            Log.i("*******************************************************************", "ACABO MOV");
         }
         haySeleccionada = !haySeleccionada;
+    }
+
+    private char[] coorToChar(int fila, int col) {
+        char[] ch = new char[2];
+
+        ch[0] = (char) ('a' + col);
+
+        switch (fila){
+            case 0:
+                ch[1] = '8';
+                break;
+            case 1:
+                ch[1] = '7';
+                break;
+            case 2:
+                ch[1] = '6';
+                break;
+            case 3:
+                ch[1] = '5';
+                break;
+            case 4:
+                ch[1] = '4';
+                break;
+            case 5:
+                ch[1] = '3';
+                break;
+            case 6:
+                ch[1] = '2';
+                break;
+            case 7:
+                ch[1] = '1';
+                break;
+        }
+        return ch;
+    }
+
+    private void actualizarTxt(String tag, char c1, char c2, boolean captura) {
+        movs.append("   "+ nMovs + ". ");
+        switch (tag){
+            case "REY":
+                movs.append("R");
+                break;
+            case "DAMA":
+                movs.append("D");
+                break;
+            case "ALFIL":
+                movs.append("A");
+                break;
+            case "CABALLO":
+                movs.append("C");
+                break;
+            case "TORRE":
+                movs.append("T");
+                break;
+        }
+        if (captura)
+            movs.append("x");
+
+        movs.append(""+c1+c2);
+        Log.i("***",""+movs);
+        if (jaque)
+            movs.append("+");
+        tvMovs.setText(movs + "  ");
+
     }
 
 
     private void addListeners() {
         pintarFondo();
+        movs = new StringBuilder();
+        tvMovs = (TextView) findViewById(R.id.txtMovs);
+        tablas = findViewById(R.id.bTablas);
+        rendirse = findViewById(R.id.bRendirse);
+        tablas.setOnClickListener(this);
+        rendirse.setOnClickListener(this);
         for (int i = 0; i < Juez.NUM_FILAS; i++) {
             for (int j = 0; j < Juez.NUM_COLUMNAS; j++) {
                 casillas[i][j].setOnClickListener(this);
@@ -273,185 +363,4 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
             }
         }
     }
-    /*
-    private ArrayList<String> cargarMovimientos(Casilla[][] tablero, Pieza p) {
-        ArrayList<String> movs = new ArrayList<>();
-        if (p.getTag().equalsIgnoreCase("PEON")) {
-            movs = cargarMovsPeon(tablero, p);
-        }
-        if (p.getTag().equalsIgnoreCase("REY")) {
-            movs = cargarMovsRey(tablero, p);
-        }
-
-        for (String s : movs) {
-            Log.i("******** Movs: ", s);
-        }
-        return movs;
-    }
-
-    private ArrayList<String> cargarMovsRey(Casilla[][] tablero, Pieza p) {
-        Log.i("******** Cargo movs: ", p.getTag() + " " + p.isBlancas() + " " + p.getFila() + " " + p.getColumna());
-        //código sin optimimizar, se puede mejorar
-        String s = "";
-        ArrayList<String> movs = new ArrayList<>();
-
-        if (p.getFila() == 0){
-            if (tablero[p.getFila() + 1][p.getColumna()].getPieza() == null ||
-                    (tablero[p.getFila() + 1][p.getColumna()].getPieza() != null &&
-                            tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                    tablero[p.getFila() + 1][p.getColumna()].getPieza().isBlancas())) {
-                s = String.valueOf(p.getFila() + 1);
-                s += String.valueOf(p.getColumna());
-                movs.add(s);
-            }
-            s = String.valueOf(p.getFila() + 1);
-            s += String.valueOf(p.getColumna());
-            movs.add(s);
-        }
-
-
-
-        if (p.getFila() > 0 && p.getColumna() > 0 && tablero[p.getFila() - 1][p.getColumna() - 1].getPieza() == null ||
-                (tablero[p.getFila() - 1][p.getColumna() - 1].getPieza() != null &&
-                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                tablero[p.getFila() - 1][p.getColumna() - 1].getPieza().isBlancas())) {
-            s = String.valueOf(p.getFila() - 1);
-            s += String.valueOf(p.getColumna() - 1);
-            movs.add(s);
-        }
-        if (tablero[p.getFila() - 1][p.getColumna()].getPieza() == null ||
-                (tablero[p.getFila() - 1][p.getColumna()].getPieza() != null &&
-                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                tablero[p.getFila() - 1][p.getColumna()].getPieza().isBlancas())) {
-            s = String.valueOf(p.getFila() - 1);
-            s += String.valueOf(p.getColumna());
-            movs.add(s);
-        }
-        if (tablero[p.getFila() - 1][p.getColumna() + 1].getPieza() == null ||
-                (tablero[p.getFila() - 1][p.getColumna() + 1].getPieza() != null &&
-                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                tablero[p.getFila() - 1][p.getColumna() + 1].getPieza().isBlancas())) {
-            s = String.valueOf(p.getFila() - 1);
-            s += String.valueOf(p.getColumna() + 1);
-            movs.add(s);
-        }
-        if (tablero[p.getFila()][p.getColumna() - 1].getPieza() == null ||
-                (tablero[p.getFila()][p.getColumna() - 1].getPieza() != null &&
-                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                tablero[p.getFila()][p.getColumna() - 1].getPieza().isBlancas())) {
-            s = String.valueOf(p.getFila());
-            s += String.valueOf(p.getColumna() - 1);
-            movs.add(s);
-        }
-        if (tablero[p.getFila()][p.getColumna() + 1].getPieza() == null ||
-                (tablero[p.getFila()][p.getColumna() + 1].getPieza() != null &&
-                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                tablero[p.getFila()][p.getColumna() + 1].getPieza().isBlancas())) {
-            s = String.valueOf(p.getFila());
-            s += String.valueOf(p.getColumna() + 1);
-            movs.add(s);
-        }
-        if (tablero[p.getFila() + 1][p.getColumna()-1].getPieza() == null ||
-                (tablero[p.getFila() + 1][p.getColumna()-1].getPieza() != null &&
-                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                tablero[p.getFila() + 1][p.getColumna()-1].getPieza().isBlancas())) {
-            s = String.valueOf(p.getFila() + 1);
-            s += String.valueOf(p.getColumna() - 1);
-            movs.add(s);
-        }
-        if (tablero[p.getFila() + 1][p.getColumna()].getPieza() == null ||
-                (tablero[p.getFila() + 1][p.getColumna()].getPieza() != null &&
-                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                tablero[p.getFila() + 1][p.getColumna()].getPieza().isBlancas())) {
-            s = String.valueOf(p.getFila() + 1);
-            s += String.valueOf(p.getColumna());
-            movs.add(s);
-        }
-        if (tablero[p.getFila() + 1][p.getColumna()+1].getPieza() == null ||
-                (tablero[p.getFila() + 1][p.getColumna()+1].getPieza() != null &&
-                        tablero[p.getFila()][p.getColumna()].getPieza().isBlancas() !=
-                                tablero[p.getFila() + 1][p.getColumna()+1].getPieza().isBlancas())) {
-            s = String.valueOf(p.getFila() + 1);
-            s += String.valueOf(p.getColumna() + 1);
-            movs.add(s);
-        }
-        for (String st : movs){
-            Log.i("******** Movs antes son: ", st);
-        }
-        for (String st : movs){
-            if(Integer.parseInt(st.substring(0,1)) < 0 || Integer.parseInt(st.substring(0,1)) > 7 ||
-                    Integer.parseInt(st.substring(1,2)) < 0 || Integer.parseInt(st.substring(1,2)) > 7){
-                movs.remove(st);
-            }
-        }
-
-        for (String st : movs){
-            Log.i("******** Movs desp son: ", st);
-        }
-        return movs;
-    }
-
-    private ArrayList<String> cargarMovsPeon(Casilla[][] tablero, Pieza p) {
-        //código sin optimimizar, se puede mejorar
-        String s = "";
-        ArrayList<String> movs = new ArrayList<>();
-        if (p.isBlancas()) {
-            if (p.getColumna() > 0 && tablero[p.getFila() - 1][p.getColumna() - 1].getPieza() != null &&
-                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
-                            != tablero[p.getFila() - 1][p.getColumna() - 1].getPieza().isBlancas()) {
-                //y no está clavado... (FALTA)
-
-                s = String.valueOf(p.getFila() - 1);
-                s += String.valueOf(p.getColumna() - 1);
-                movs.add(s);
-            }
-            if (p.getColumna() < 7 && tablero[p.getFila() - 1][p.getColumna() + 1].getPieza() != null &&
-                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
-                            != tablero[p.getFila() - 1][p.getColumna() + 1].getPieza().isBlancas()) {
-                s = String.valueOf(p.getFila() - 1);
-                s += String.valueOf(p.getColumna() + 1);
-                movs.add(s);
-            }
-            if (tablero[p.getFila() - 1][p.getColumna()].getPieza() != null) {
-                return movs;
-            }
-            if (p.getFila() == 6) {
-                s = String.valueOf(p.getFila() - 2);
-                s += String.valueOf(p.getColumna());
-                movs.add(s);
-            }
-            s = String.valueOf(p.getFila() - 1);
-            s += String.valueOf(p.getColumna());
-            movs.add(s);
-            return movs;
-        } else {
-            if (p.getColumna() > 0 && tablero[p.getFila() + 1][p.getColumna() - 1].getPieza() != null &&
-                    (tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
-                            != tablero[p.getFila() + 1][p.getColumna() - 1].getPieza().isBlancas())) {
-                //y no está clavado... (FALTA)
-                s = String.valueOf(p.getFila() + 1);
-                s += String.valueOf(p.getColumna() - 1);
-                movs.add(s);
-            }
-            if (p.getColumna() < 7 && tablero[p.getFila() + 1][p.getColumna() + 1].getPieza() != null &&
-                    tablero[p.getFila()][p.getColumna()].getPieza().isBlancas()
-                            != tablero[p.getFila() + 1][p.getColumna() + 1].getPieza().isBlancas()) {
-                s = String.valueOf(p.getFila() + 1);
-                s += String.valueOf(p.getColumna() + 1);
-                movs.add(s);
-            }
-            if (tablero[p.getFila() + 1][p.getColumna()].getPieza() != null) {
-                return movs;
-            }
-            if (p.getFila() == 1) {
-                s = String.valueOf(p.getFila() + 2);
-                s += String.valueOf(p.getColumna());
-                movs.add(s);
-            }
-            s = String.valueOf(p.getFila() + 1);
-            s += String.valueOf(p.getColumna());
-            movs.add(s);
-            return movs;
-        }
-    }*/
 }

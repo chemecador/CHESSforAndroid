@@ -36,4 +36,6 @@
     <string name="cancel">Cancelar</string>
     <string name="accept">Aceptar</string>
     <string name="confirm">Confirmar</string>
+    <string name="draw">Tablas</string>
+    <string name="resign">Rendirse</string>
 </resources>
