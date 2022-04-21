@@ -29,7 +29,7 @@
             android:id="@+id/bMain2P"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#646464"
+            android:backgroundTint="#A4552A"
             android:gravity="center"
             android:text="@string/two_players" />
     </LinearLayout>
@@ -54,7 +54,7 @@
             android:id="@+id/bMainOnline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#646464"
+            android:backgroundTint="#A4552A"
             android:text="Jugar online" />
     </LinearLayout>
 </LinearLayout>

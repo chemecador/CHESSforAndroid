@@ -89,7 +89,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 Juez.mover(quieroMover, c);
                 nMovs++;
                 Juez.turno = !Juez.turno;
-                Juez.puedeMover = !Juez.puedeMover(casillas, Juez.turno);
+                Juez.puedeMover = Juez.puedeMover(casillas, Juez.turno);
                 Juez.jaque = Juez.comprobarJaque(casillas);
                 if (jaque) {
                     Toast.makeText(this, "JAQUE " + Juez.turno, Toast.LENGTH_SHORT).show();
