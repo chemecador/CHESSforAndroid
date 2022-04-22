@@ -42,10 +42,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
-        if (user.length() > 0) {
-            c = new Cliente();
-        }
-
 
         dosJugadores = findViewById(R.id.bMain2P);
         online = findViewById(R.id.bMainOnline);
@@ -71,11 +67,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
             case R.id.menu_perfil:
                 if (user.length() > 0) {
-                    int[] datos = c.pedirDatos(user);
-                    Intent i = new Intent(this, PerfilActivity.class);
-                    i.putExtra("user", user);
-                    i.putExtra("datos",datos);
-                    startActivity(i); //lanzo la Activity de preferencias
+
+                    c = new Cliente();
+                    if (c.isConectado()){
+                        c.pedirDatos(this, user);
+                    }
                     return true;
                 }
                 startActivity(new Intent(this, LoginActivity.class));

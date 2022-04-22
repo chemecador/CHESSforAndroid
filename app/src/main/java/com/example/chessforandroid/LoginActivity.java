@@ -17,6 +17,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button loginOffline;
     private EditText user;
     private EditText pass;
+    private Cliente c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +51,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     break;
                 }
 
-                Cliente c = new Cliente();
+                c = new Cliente();
                 if (c.isConectado()) {
-                    if (c.iniciarSesion(user.getText().toString(), pass.getText().toString())) {
-                        Intent mainIntentLogin = new Intent(this, MainActivity.class);
-                        mainIntentLogin.putExtra("user", user.getText().toString());
-                        c.cerrarConexion();
-                        startActivity(mainIntentLogin);
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Nombre de usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
-                    }
+                    c.iniciarSesion(this, user.getText().toString(), pass.getText().toString());
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }
@@ -72,24 +65,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 c = new Cliente();
                 if (c.isConectado()) {
-                    int res = c.registrarse(user.getText().toString(), pass.getText().toString());
-                    Log.i("**", "res vale: " + res);
-                    switch (res) {
-                        case -2:
-                        case -1:
-                            Log.i("**", "Error de conexión con la base de datos");
-                            break;
-                        case 0:
-                            Toast.makeText(this, "El nombre de usuario ya existe.", Toast.LENGTH_SHORT).show();
-                            break;
-                        case 1:
-                            Intent mainIntentSignup = new Intent(this, MainActivity.class);
-                            mainIntentSignup.putExtra("user", user.getText().toString());
-                            c.cerrarConexion();
-                            startActivity(mainIntentSignup);
-                            finish();
-                            break;
-                    }
+                    c.registrarse(this, user.getText().toString(), pass.getText().toString());
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }

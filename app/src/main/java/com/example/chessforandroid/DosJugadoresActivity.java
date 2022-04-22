@@ -38,6 +38,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     private boolean captura;
     private boolean fin;
     private Casilla quieroMover;
+    private String tag;
     private int nMovs;
     private Button tablas;
     private Button rendirse;
@@ -50,7 +51,6 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         haySeleccionada = false;
         captura = false;
         nMovs = 0;
-
 
 
         Juez.turno = true;
@@ -73,11 +73,11 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View view) {
 
-        if (view.getId() == R.id.bTablas){
+        if (view.getId() == R.id.bTablas) {
 
             return;
         }
-        if (view.getId() == R.id.bRendirse){
+        if (view.getId() == R.id.bRendirse) {
 
             return;
         }
@@ -106,12 +106,13 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 if (turno)
                     nMovs++;
                 captura = c.getPieza() != null;
-                actualizarTxt(quieroMover.getPieza().getTag(),coorToChar(c.getFila(),c.getColumna())[0],
-                        coorToChar(c.getFila(),c.getColumna())[1], captura);
+                tag = quieroMover.getPieza().getTag();
                 Juez.mover(quieroMover, c);
                 Juez.turno = !Juez.turno;
                 Juez.puedeMover = Juez.puedeMover(casillas, Juez.turno);
                 Juez.jaque = Juez.comprobarJaque(casillas);
+                actualizarTxt(tag, coorToChar(c.getFila(), c.getColumna())[0],
+                        coorToChar(c.getFila(), c.getColumna())[1], captura);
                 if (jaque) {
                     Toast.makeText(this, "JAQUE " + Juez.turno, Toast.LENGTH_SHORT).show();
 
@@ -131,7 +132,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
         ch[0] = (char) ('a' + col);
 
-        switch (fila){
+        switch (fila) {
             case 0:
                 ch[1] = '8';
                 break;
@@ -161,8 +162,8 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void actualizarTxt(String tag, char c1, char c2, boolean captura) {
-        movs.append("   "+ nMovs + ". ");
-        switch (tag){
+        movs.append("   " + nMovs + ". ");
+        switch (tag) {
             case "REY":
                 movs.append("R");
                 break;
@@ -182,8 +183,8 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         if (captura)
             movs.append("x");
 
-        movs.append(""+c1+c2);
-        Log.i("***",""+movs);
+        movs.append("" + c1 + c2);
+        Log.i("***", "" + movs);
         if (jaque)
             movs.append("+");
         tvMovs.setText(movs + "  ");
