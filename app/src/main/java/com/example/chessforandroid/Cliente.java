@@ -62,14 +62,6 @@ public class Cliente {
     }
 
 
-    private void lanzarActivity() {
-        Intent mainIntentSignup = new Intent(context, MainActivity.class);
-        mainIntentSignup.putExtra("user", Cliente.user);
-        cerrarConexion();
-        context.startActivity(mainIntentSignup);
-    }
-
-
     public void registrarse(Context context, String user, String pass) {
         this.context = context;
         new Registro().execute(user, pass);
@@ -107,31 +99,42 @@ public class Cliente {
 
             Log.i("**", "res vale: " + res);
             switch (res) {
-                case -2:
-                case -1:
-                    Log.i("**", "Error de conexión con la base de datos");
-                    break;
+
                 case 0:
                     Toast.makeText(context, "El nombre de usuario ya existe.", Toast.LENGTH_SHORT).show();
                     break;
                 case 1:
-                    lanzarActivity();
+                    try {
+                        Intent mainIntentSignup = new Intent(context, MainActivity.class);
+                        mainIntentSignup.putExtra("user", Cliente.user);
+                        mainIntentSignup.putExtra("token", in.readUTF());
+                        context.startActivity(mainIntentSignup);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    cerrarConexion();
+                    break;
+                default:
+                    Log.i("**", "Error de conexión con la base de datos");
                     break;
             }
             cerrarConexion();
         }
     }
 
-    public class InicioSesion extends AsyncTask<String, Void, Boolean> {
+    public class InicioSesion extends AsyncTask<String, Void, String> {
 
         @Override
-        protected Boolean doInBackground(String... strings) {
+        protected String doInBackground(String... strings) {
             try {
                 Cliente.user = strings[0];
                 out.writeUTF("login");
                 out.writeUTF(strings[0]);
                 out.writeUTF(strings[1]);
-                return in.readBoolean();
+                if (in.readBoolean()) {
+                    return in.readUTF();
+                }
+                return null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -139,10 +142,14 @@ public class Cliente {
         }
 
         @Override
-        protected void onPostExecute(Boolean b) {
-            super.onPostExecute(b);
-            if (b) {
-                lanzarActivity();
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s != null) {
+                Intent mainIntentSignup = new Intent(context, MainActivity.class);
+                mainIntentSignup.putExtra("user", Cliente.user);
+                mainIntentSignup.putExtra("token", s);
+                cerrarConexion();
+                context.startActivity(mainIntentSignup);
             } else {
                 Toast.makeText(context, "Nombre de usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
             }
@@ -181,7 +188,7 @@ public class Cliente {
         protected void onPostExecute(Integer[] res) {
             super.onPostExecute(res);
             int[] datos = new int[res.length];
-            for (int i = 0; i < res.length; i++){
+            for (int i = 0; i < res.length; i++) {
                 datos[i] = res[i];
             }
             Intent i = new Intent(context, PerfilActivity.class);

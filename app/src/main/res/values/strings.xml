@@ -38,4 +38,9 @@
     <string name="confirm">Confirmar</string>
     <string name="draw">Tablas</string>
     <string name="resign">Rendirse</string>
+    <string name="create_room">Crear una nueva sala</string>
+    <string name="create">Crear partida</string>
+    <string name="join_room">Unirse a una sala</string>
+    <string name="join">Unirse</string>
+    <string name="write_code">Escribe aquí el código...</string>
 </resources>

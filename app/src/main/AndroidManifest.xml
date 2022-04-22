@@ -12,8 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CHESSForAndroid">
         <activity
+            android:name=".OnlineActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdvancedActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".AboutUsActivity"
             android:exported="false" />

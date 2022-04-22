@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 /***
  *
@@ -34,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button dosJugadores;
     private Button online;
     private String user;
+    private String token;
     private Cliente c;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +42,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
+        token = intent.getStringExtra("token");
 
-        dosJugadores = findViewById(R.id.bMain2P);
-        online = findViewById(R.id.bMainOnline);
+        dosJugadores = findViewById(R.id.bDosJugadores);
+        online = findViewById(R.id.bJugarOnline);
 
         dosJugadores.setOnClickListener(this);
         online.setOnClickListener(this);
@@ -67,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
             case R.id.menu_perfil:
                 if (user.length() > 0) {
-
                     c = new Cliente();
                     if (c.isConectado()){
                         c.pedirDatos(this, user);
@@ -91,19 +91,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.bMain2P:
+            case R.id.bDosJugadores:
                 Intent dosJugadoresIntent = new Intent(this, DosJugadoresActivity.class);
                 startActivity(dosJugadoresIntent);
                 break;
-            case R.id.bMainOnline:
+            case R.id.bJugarOnline:
                 if (user.length() > 0) {
-                    Toast.makeText(getApplicationContext(),
-                            "Función no disponible :(",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    startActivity(new Intent(this, LoginActivity.class));
+                    Intent onlineIntent = new Intent(this, OnlineActivity.class);
+                    onlineIntent.putExtra("token", token);
+                    startActivity(onlineIntent);
+                    break;
                 }
-                break;
+                startActivity(new Intent(this, LoginActivity.class));
         }
     }
 }

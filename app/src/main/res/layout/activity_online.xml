@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="15dp"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".OnlineActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,16 +22,16 @@
             android:layout_height="wrap_content"
             android:fontFamily="casual"
             android:gravity="center"
-            android:text="@string/offline"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+            android:text="@string/create_room"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <Button
-            android:id="@+id/bDosJugadores"
+            android:id="@+id/bCrearPartida"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#A4552A"
             android:gravity="center"
-            android:text="@string/two_players" />
+            android:text="@string/create" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,14 +47,22 @@
             android:layout_height="wrap_content"
             android:fontFamily="casual"
             android:gravity="center"
-            android:text="@string/online"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+            android:text="@string/join_room"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <EditText
+            android:id="@+id/txtCodigo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/write_code"
+            android:inputType="number" />
 
         <Button
-            android:id="@+id/bJugarOnline"
+            android:id="@+id/bUnirse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#A4552A"
-            android:text="Jugar online" />
+            android:text="@string/join" />
     </LinearLayout>
 </LinearLayout>
