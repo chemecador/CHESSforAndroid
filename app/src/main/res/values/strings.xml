@@ -43,4 +43,5 @@
     <string name="join_room">Unirse a una sala</string>
     <string name="join">Unirse</string>
     <string name="write_code">Escribe aquí el código...</string>
+    <string name="waiting">Esperando jugadores...</string>
 </resources>

@@ -28,6 +28,7 @@ public class Cliente {
     private int PUERTO = Constantes.puerto; // puerto que se utilizará
     private boolean conectado;
     private static String user;
+    private static String token;
     private Context context;
 
     // constructor
@@ -77,6 +78,74 @@ public class Cliente {
         new PedirDatos().execute(user);
     }
 
+    public void crearSala(Context context, String token) {
+        this.context = context;
+        new CrearSala().execute(token);
+    }
+
+    public void unirse(Context context, String token, String codigo) {
+        this.context = context;
+        new Unirse().execute(token, codigo);
+    }
+
+    public class Unirse extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... strings) {
+            try {
+                Cliente.token = strings[0];
+                out.writeUTF("unirse");
+                out.writeUTF(Cliente.token);
+                out.writeInt(Integer.parseInt(strings[1]));
+                return in.readInt();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return -3;
+        }
+
+        @Override
+        protected void onPostExecute(Integer res) {
+            super.onPostExecute(res);
+
+            Log.i("**", "res vale: " + res);
+
+
+            cerrarConexion();
+        }
+    }
+
+
+    public class CrearSala extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... strings) {
+            try {
+                Cliente.token = strings[0];
+                out.writeUTF("crearsala");
+                out.writeUTF(Cliente.token);
+                return in.readInt();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return -3;
+        }
+
+        @Override
+        protected void onPostExecute(Integer res) {
+            super.onPostExecute(res);
+
+            Log.i("**", "res vale: " + res);
+
+            Intent lobbyIntent = new Intent(context, LobbyActivity.class);
+            lobbyIntent.putExtra("id", res);
+            lobbyIntent.putExtra("token", Cliente.token);
+            context.startActivity(lobbyIntent);
+            cerrarConexion();
+        }
+    }
+
+
     public class Registro extends AsyncTask<String, Void, Integer> {
 
         @Override
@@ -112,7 +181,6 @@ public class Cliente {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    cerrarConexion();
                     break;
                 default:
                     Log.i("**", "Error de conexión con la base de datos");

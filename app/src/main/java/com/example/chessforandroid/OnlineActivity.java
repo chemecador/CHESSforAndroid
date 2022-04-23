@@ -38,12 +38,19 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.bCrearPartida:
                 c = new Cliente();
                 if (c.isConectado()) {
+                    c.crearSala(this, token);
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.bUnirse:
+                c = new Cliente();
+                if (c.isConectado()) {
+                    c.unirse(this, token, codigo.getText().toString());
+                } else {
+                    Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
