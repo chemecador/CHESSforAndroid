@@ -14,6 +14,7 @@ public class LobbyActivity extends AppCompatActivity {
     private int idPartida;
     private TextView txt;
     private ProgressBar pb;
+    private Cliente c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,11 @@ public class LobbyActivity extends AppCompatActivity {
             Toast.makeText(this, "Ha habido un error en la creación de la sala", Toast.LENGTH_SHORT).show();
             finish();
         }
-
+        c = new Cliente();
+        if (c.isConectado()) {
+            c.lobby(this, tokenAnf, idPartida);
+        } else {
+            Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+        }
     }
 }

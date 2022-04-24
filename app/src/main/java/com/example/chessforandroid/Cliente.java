@@ -88,11 +88,43 @@ public class Cliente {
         new Unirse().execute(token, codigo);
     }
 
+    public void lobby(Context context, String tokenAnf, int idPartida) {
+        this.context = context;
+        new Lobby().execute(tokenAnf, String.valueOf(idPartida));
+    }
+
+
+    public class Lobby extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... strings) {
+            try {
+                Cliente.token = strings[0];
+                //in.readInt();
+                Log.i("********************", "estoy en el lobby y recibo:" +in.readInt());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return strings;
+        }
+
+        @Override
+        protected void onPostExecute(String[] s) {
+            super.onPostExecute(s);
+
+            for (String st: s) {
+                Log.i("**", "lobby post: " + st);
+            }
+            cerrarConexion();
+        }
+    }
     public class Unirse extends AsyncTask<String, Void, Integer> {
 
         @Override
         protected Integer doInBackground(String... strings) {
             try {
+                Log.i("**", "entro en unirse. El token vale " + strings[0] +
+                        " y el id " + Integer.parseInt(strings[1]));
                 Cliente.token = strings[0];
                 out.writeUTF("unirse");
                 out.writeUTF(Cliente.token);
@@ -109,12 +141,10 @@ public class Cliente {
             super.onPostExecute(res);
 
             Log.i("**", "res vale: " + res);
-
-
+            Toast.makeText(context, "Listo para jugar", Toast.LENGTH_SHORT).show();
             cerrarConexion();
         }
     }
-
 
     public class CrearSala extends AsyncTask<String, Void, Integer> {
 
@@ -134,8 +164,6 @@ public class Cliente {
         @Override
         protected void onPostExecute(Integer res) {
             super.onPostExecute(res);
-
-            Log.i("**", "res vale: " + res);
 
             Intent lobbyIntent = new Intent(context, LobbyActivity.class);
             lobbyIntent.putExtra("id", res);
@@ -165,8 +193,6 @@ public class Cliente {
         @Override
         protected void onPostExecute(Integer res) {
             super.onPostExecute(res);
-
-            Log.i("**", "res vale: " + res);
             switch (res) {
 
                 case 0:
