@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 public class LocalLobbyActivity extends AppCompatActivity {
 
@@ -20,6 +21,8 @@ public class LocalLobbyActivity extends AppCompatActivity {
         c = new Cliente();
         if (c.isConectado()){
             c.local(this, token);
+        } else {
+            Log.i ("************************", "error");
         }
     }
 }

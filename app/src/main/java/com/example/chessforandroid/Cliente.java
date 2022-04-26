@@ -24,22 +24,24 @@ public class Cliente {
     private Socket conn; // socket con la conexión
     private DataInputStream in; // flujo de entrada
     private DataOutputStream out; // flujo de salida
-    private String HOST = Constantes.ip; // dirección IP (local)
-    private int PUERTO = Constantes.puerto; // puerto que se utilizará
+    private static String host = Constantes.ip; // dirección IP (local)
+    private static int puerto = Constantes.puerto; // puerto que se utilizará
     private boolean conectado;
     private static String user;
     private static String token;
     private Context context;
 
+
     // constructor
     public Cliente() {
+
         StrictMode.ThreadPolicy policy = new
                 StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         try {
             // inicializamos el socket, dis y dos
             conn = new Socket();
-            conn.connect(new InetSocketAddress(HOST, PUERTO), 1500);
+            conn.connect(new InetSocketAddress(host, puerto), 1500);
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
             conectado = true;
@@ -98,17 +100,18 @@ public class Cliente {
         new Local().execute(token);
     }
 
-    public class Local extends AsyncTask<String, Void, String> {
+    public class Local extends AsyncTask<String, Void, String[]> {
 
         @Override
-        protected String doInBackground(String... strings) {
-            String s = "error";
+        protected String[] doInBackground(String... strings) {
+            String s[] = new String[2];
             try {
                 Cliente.token = strings[0];
                 //in.readInt();
                 out.writeUTF("local");
-                out.writeUTF("soy el " + token);
-                s = in.readUTF();
+                out.writeUTF(token);
+                s[0] = in.readUTF();
+                s[1] = in.readUTF();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -117,11 +120,14 @@ public class Cliente {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String[] s) {
             super.onPostExecute(s);
 
-            Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
-            Log.i("***", s);
+            for (String st : s){
+                Log.i("***", st);
+            }
+
+            //LANZAR GAMEACTIVITY
             cerrarConexion();
         }
     }
