@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +13,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Button login;
     private Button signUp;
-    private Button loginOffline;
+    private Button invitado;
     private EditText user;
     private EditText pass;
     private Cliente c;
@@ -38,8 +37,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signUp = findViewById(R.id.bSignup);
         signUp.setOnClickListener(this);
 
-        loginOffline = findViewById(R.id.bLoginOffline);
-        loginOffline.setOnClickListener(this);
+        invitado = findViewById(R.id.bInvitado);
+        invitado.setOnClickListener(this);
     }
 
     @Override
@@ -70,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.bLoginOffline:
+            case R.id.bInvitado:
                 Intent mainIntentOffline = new Intent(this, MainActivity.class);
                 mainIntentOffline.putExtra("user", "");
                 startActivity(mainIntentOffline);

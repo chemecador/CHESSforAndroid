@@ -24,7 +24,7 @@ public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
         this.columna= y;
         this.pieza = null;
     }
-    
+
     public Casilla clonarCasilla(){
         Casilla clon = new Casilla(getContext(),fila,columna);
         if (this.getPieza() != null) {
@@ -59,7 +59,7 @@ public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
     public void setX(int x) {
         this.fila = x;
     }
-    
+
     public int getColumna() {
         return this.columna;
     }

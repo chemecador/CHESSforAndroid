@@ -110,11 +110,11 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/bLoginOffline"
+            android:id="@+id/bInvitado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#646464"
-            android:text="@string/play_offline" />
+            android:text="@string/guest" />
 
     </LinearLayout>
 

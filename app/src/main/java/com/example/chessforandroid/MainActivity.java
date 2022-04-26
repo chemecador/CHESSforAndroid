@@ -13,25 +13,15 @@ import android.widget.Button;
 /***
  *
  *
- * DUDAS:
- * excesivo uso del return (DosJugadoresActivity)
-
- *
- * BUGS CONOCIDOS:
-
-
- * imposibilidad de iniciar sesión en el segundo intento (si fallas el primero o entras sin iniciar
-   sesión, se congela la pantalla)
-
-
  * TAREAS EXTRA:
  * ver tabla con usuarios con más ELO / más nivel
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button dosJugadores;
+    private Button offline;
     private Button online;
+    private Button redLocal;
     private String user;
     private String token;
     private Cliente c;
@@ -44,11 +34,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         user = intent.getStringExtra("user");
         token = intent.getStringExtra("token");
 
-        dosJugadores = findViewById(R.id.bDosJugadores);
+        offline = findViewById(R.id.bOffline);
         online = findViewById(R.id.bJugarOnline);
+        redLocal = findViewById(R.id.bRedLocal);
 
-        dosJugadores.setOnClickListener(this);
+        offline.setOnClickListener(this);
         online.setOnClickListener(this);
+        redLocal.setOnClickListener(this);
     }
 
 
@@ -91,10 +83,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.bDosJugadores:
-                Intent dosJugadoresIntent = new Intent(this, DosJugadoresActivity.class);
-                startActivity(dosJugadoresIntent);
+            case R.id.bOffline:
+                Intent offlineIntent = new Intent(this, OfflineActivity.class);
+                startActivity(offlineIntent);
                 break;
+            case R.id.bRedLocal:
+                if (user.length() > 0) {
+                    Intent redLocalIntent = new Intent(this, LocalLobbyActivity.class);
+                    redLocalIntent.putExtra("token", token);
+                    startActivity(redLocalIntent);
+                    break;
+                }
+                startActivity(new Intent(this, LoginActivity.class));
+
             case R.id.bJugarOnline:
                 if (user.length() > 0) {
                     Intent onlineIntent = new Intent(this, OnlineActivity.class);

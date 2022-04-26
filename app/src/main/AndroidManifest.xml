@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CHESSForAndroid">
         <activity
+            android:name=".LocalLobbyActivity"
+            android:exported="false" />
+        <activity
             android:name=".LobbyActivity"
             android:exported="false" />
         <activity
@@ -33,7 +36,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".DosJugadoresActivity"
+            android:name=".OfflineActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"

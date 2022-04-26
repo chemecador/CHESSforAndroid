@@ -93,6 +93,38 @@ public class Cliente {
         new Lobby().execute(tokenAnf, String.valueOf(idPartida));
     }
 
+    public void local(Context context, String token) {
+        this.context = context;
+        new Local().execute(token);
+    }
+
+    public class Local extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String s = "error";
+            try {
+                Cliente.token = strings[0];
+                //in.readInt();
+                out.writeUTF("local");
+                out.writeUTF("soy el " + token);
+                s = in.readUTF();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return s;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+            Log.i("***", s);
+            cerrarConexion();
+        }
+    }
 
     public class Lobby extends AsyncTask<String, Void, String[]> {
 

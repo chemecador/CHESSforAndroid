@@ -26,12 +26,12 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
         <Button
-            android:id="@+id/bDosJugadores"
+            android:id="@+id/bOffline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#A4552A"
             android:gravity="center"
-            android:text="@string/two_players" />
+            android:text="@string/play_offline" />
     </LinearLayout>
 
     <LinearLayout
@@ -51,10 +51,18 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
         <Button
+            android:id="@+id/bRedLocal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A4552A"
+            android:text="@string/local_net" />
+
+        <Button
             android:id="@+id/bJugarOnline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#A4552A"
             android:text="Jugar online" />
+
     </LinearLayout>
 </LinearLayout>

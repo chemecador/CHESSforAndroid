@@ -30,7 +30,7 @@ import com.example.chessforandroid.piezas.Rey;
 import com.example.chessforandroid.piezas.Torre;
 
 
-public class DosJugadoresActivity extends AppCompatActivity implements View.OnClickListener {
+public class OfflineActivity extends AppCompatActivity implements View.OnClickListener {
 
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;
@@ -58,7 +58,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
         Juez.jaqueMate = false;
         Juez.jaque = false;
         Juez.puedeMover = false;
-        setContentView(R.layout.activity_dos_jugadores);
+        setContentView(R.layout.activity_offline);
         crearCasillas();
 
         this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoard);
@@ -231,8 +231,8 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
 
                 @Override
                 public void onGlobalLayout() {
-                    int width = DosJugadoresActivity.this.oGameBoardShell.getMeasuredWidth();
-                    int height = DosJugadoresActivity.this.oGameBoardShell.getMeasuredHeight();
+                    int width = OfflineActivity.this.oGameBoardShell.getMeasuredWidth();
+                    int height = OfflineActivity.this.oGameBoardShell.getMeasuredHeight();
                     double sizeA = (width / Juez.NUM_COLUMNAS);
                     double sizeB = (height / Juez.NUM_FILAS);
 
@@ -265,9 +265,9 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                     }
 
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                        DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        OfflineActivity.this.oGameBoard.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     } else {
-                        DosJugadoresActivity.this.oGameBoard.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        OfflineActivity.this.oGameBoard.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 }
             };
@@ -304,7 +304,7 @@ public class DosJugadoresActivity extends AppCompatActivity implements View.OnCl
                 if (x % 8 == 0) {
                     cambiar = !cambiar;
                 }
-                Casilla b = new Casilla(DosJugadoresActivity.this, i, j);
+                Casilla b = new Casilla(OfflineActivity.this, i, j);
                 b.setClickable(true);
                 //piezas negras
                 if (x == 0 || x == 7) {
