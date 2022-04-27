@@ -3,6 +3,7 @@ package com.example.chessforandroid;
 import android.util.Log;
 
 import com.example.chessforandroid.piezas.Dama;
+import com.example.chessforandroid.piezas.Peon;
 import com.example.chessforandroid.piezas.Rey;
 import com.example.chessforandroid.piezas.Torre;
 
@@ -34,6 +35,21 @@ public class Juez {
 
     public static void mover(Casilla cInicial, Casilla cFinal) {
 
+        if (!cInicial.getPieza().getTag().equalsIgnoreCase("PEON")) {
+            for (int i = 0; i < NUM_FILAS; i++) {
+                if (casillas[3][i].getPieza() != null &&
+                        casillas[3][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    Peon p = (Peon) casillas[3][i].getPieza();
+                    p.pasable = false;
+                }
+                if (casillas[4][i].getPieza() != null &&
+                        casillas[4][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    Peon p = (Peon) casillas[4][i].getPieza();
+                    p.pasable = false;
+                }
+            }
+        }
+
         //si ha movido la torre o el rey, no puede enrocar
         if (cInicial.getPieza().getTag().equalsIgnoreCase("TORRE")) {
             Torre t = (Torre) cInicial.getPieza();
@@ -44,10 +60,11 @@ public class Juez {
             Rey r = (Rey) cInicial.getPieza();
             r.haMovido = true;
         }
+
         //enroque corto negras
         if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
-            cInicial.getFila() == 0 && cInicial.getColumna() == 4 &&
-            cFinal.getFila() == 0 && cFinal.getColumna() == 6){
+                cInicial.getFila() == 0 && cInicial.getColumna() == 4 &&
+                cFinal.getFila() == 0 && cFinal.getColumna() == 6) {
             casillas[0][6].setPieza(casillas[0][4].getPieza());
             casillas[0][6].setImageResource(casillas[0][4].getPieza().getDrawable());
 
@@ -64,7 +81,7 @@ public class Juez {
         //enroque largo negras
         if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
                 cInicial.getFila() == 0 && cInicial.getColumna() == 4 &&
-                cFinal.getFila() == 0 && cFinal.getColumna() == 2){
+                cFinal.getFila() == 0 && cFinal.getColumna() == 2) {
             casillas[0][2].setPieza(casillas[0][4].getPieza());
             casillas[0][2].setImageResource(casillas[0][4].getPieza().getDrawable());
 
@@ -82,7 +99,7 @@ public class Juez {
         //enroque corto blancas
         if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
                 cInicial.getFila() == 7 && cInicial.getColumna() == 4 &&
-                cFinal.getFila() == 7 && cFinal.getColumna() == 6){
+                cFinal.getFila() == 7 && cFinal.getColumna() == 6) {
             casillas[7][6].setPieza(casillas[7][4].getPieza());
             casillas[7][6].setImageResource(casillas[7][4].getPieza().getDrawable());
 
@@ -100,7 +117,7 @@ public class Juez {
         //enroque largo blancas
         if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
                 cInicial.getFila() == 7 && cInicial.getColumna() == 4 &&
-                cFinal.getFila() == 7 && cFinal.getColumna() == 2){
+                cFinal.getFila() == 7 && cFinal.getColumna() == 2) {
             casillas[7][2].setPieza(casillas[7][4].getPieza());
             casillas[7][2].setImageResource(casillas[7][4].getPieza().getDrawable());
 
@@ -114,6 +131,45 @@ public class Juez {
             casillas[7][4].setImageResource(0);
             return;
         }
+
+        //captura al paso blancas
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("PEON") &&
+                cInicial.getPieza().isBlancas() && cInicial.getFila() == 3) {
+            if (casillas[3][cFinal.getColumna()].getPieza() != null &&
+                    !casillas[3][cFinal.getColumna()].getPieza().isBlancas() &&
+                    casillas[3][cFinal.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON")) {
+
+                casillas[2][cFinal.getColumna()].setPieza(casillas[3][cInicial.getColumna()].getPieza());
+                casillas[2][cFinal.getColumna()].setImageResource(casillas[3][cInicial.getColumna()].getPieza().getDrawable());
+
+                casillas[3][cInicial.getColumna()].setPieza(null);
+                casillas[3][cInicial.getColumna()].setImageResource(0);
+
+                casillas[3][cFinal.getColumna()].setPieza(null);
+                casillas[3][cFinal.getColumna()].setImageResource(0);
+                return;
+            }
+        }
+
+        //captura al paso negras
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("PEON") &&
+                !cInicial.getPieza().isBlancas() && cInicial.getFila() == 4) {
+            if (casillas[4][cFinal.getColumna()].getPieza() != null &&
+                    casillas[4][cFinal.getColumna()].getPieza().isBlancas() &&
+                    casillas[4][cFinal.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON")) {
+
+                casillas[5][cFinal.getColumna()].setPieza(casillas[4][cInicial.getColumna()].getPieza());
+                casillas[5][cFinal.getColumna()].setImageResource(casillas[4][cInicial.getColumna()].getPieza().getDrawable());
+
+                casillas[4][cInicial.getColumna()].setPieza(null);
+                casillas[4][cInicial.getColumna()].setImageResource(0);
+
+                casillas[4][cFinal.getColumna()].setPieza(null);
+                casillas[4][cFinal.getColumna()].setImageResource(0);
+                return;
+            }
+        }
+
 
         //coronación de peones
         if (cInicial.getFila() == 1 &&
@@ -204,7 +260,7 @@ public class Juez {
                         cFinal.getFila() == 0 && cFinal.getColumna() == 2 &&
                         casillas[0][1].getPieza() == null && casillas[0][2].getPieza() == null &&
                         casillas[0][3].getPieza() == null) {
-                        return true;
+                    return true;
                 }
                 //enroque corto negras
                 if (casillas[0][7].getPieza() != null &&
@@ -214,7 +270,7 @@ public class Juez {
                     return true;
                 }
             }
-            if (turno){
+            if (turno) {
                 //enroque largo blancas
                 if (casillas[7][0].getPieza() != null &&
                         casillas[7][0].getPieza().getTag().equalsIgnoreCase("TORRE") &&
@@ -335,6 +391,10 @@ public class Juez {
                         (cFinal.getFila() == 4 && cInicial.getColumna() == cFinal.getColumna() && cFinal.getPieza() == null) ||
                         (cFinal.getPieza() != null && cFinal.getFila() == 5 && (cFinal.getColumna() == cInicial.getColumna() - 1 ||
                                 cFinal.getColumna() == cInicial.getColumna() + 1)))) {
+            if (cFinal.getFila() == 4) {
+                Peon p = (Peon) cInicial.getPieza();
+                p.pasable = true;
+            }
             return true;
         }
         if (!cInicial.getPieza().isBlancas() && cInicial.getFila() == 1 &&
@@ -342,6 +402,10 @@ public class Juez {
                         (cFinal.getFila() == 3 && cInicial.getColumna() == cFinal.getColumna() && cFinal.getPieza() == null) ||
                         (cFinal.getPieza() != null && cFinal.getFila() == 2 && (cFinal.getColumna() == cInicial.getColumna() - 1 ||
                                 cFinal.getColumna() == cInicial.getColumna() + 1)))) {
+            if (cFinal.getFila() == 3) {
+                Peon p = (Peon) cInicial.getPieza();
+                p.pasable = true;
+            }
             return true;
         }
         //movimientos normales y capturas
@@ -349,14 +413,70 @@ public class Juez {
                 ((cInicial.getColumna() == cFinal.getColumna()) ||
                         (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
                         (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
+
+            //han movido las blancas así que ningún peón negro es capturable al paso
+            for (int i = 0; i < NUM_FILAS; i++) {
+                if (casillas[3][i].getPieza() != null &&
+                        casillas[3][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    Peon p = (Peon) casillas[3][i].getPieza();
+                    p.pasable = false;
+                }
+                if (casillas[4][i].getPieza() != null &&
+                        casillas[4][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    Peon p = (Peon) casillas[4][i].getPieza();
+                    p.pasable = false;
+                }
+            }
             return true;
         }
         if (!cInicial.getPieza().isBlancas() && (cFinal.getFila() == cInicial.getFila() + 1) &&
                 ((cInicial.getColumna() == cFinal.getColumna()) ||
                         (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
                         (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
+            //han movido las negras así que ningún peón blanco es capturable al paso
+            for (int i = 0; i < NUM_FILAS; i++) {
+                if (casillas[3][i].getPieza() != null &&
+                        casillas[3][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    Peon p = (Peon) casillas[3][i].getPieza();
+                    p.pasable = false;
+                }
+                if (casillas[4][i].getPieza() != null &&
+                        casillas[4][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    Peon p = (Peon) casillas[4][i].getPieza();
+                    p.pasable = false;
+                }
+            }
             return true;
         }
+        //captura al paso
+
+        if (cInicial.getPieza().isBlancas() && cInicial.getFila() == 3 &&
+                (cFinal.getColumna() == cInicial.getColumna() + 1 ||
+                        (cFinal.getColumna() == cInicial.getColumna() - 1))) {
+            if (casillas[3][cFinal.getColumna()].getPieza() != null &&
+                    !casillas[3][cFinal.getColumna()].getPieza().isBlancas() &&
+                    casillas[3][cFinal.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                Peon p = (Peon) casillas[3][cFinal.getColumna()].getPieza();
+                if (p.pasable)
+                    Log.i("**", "es pasable");
+                return p.pasable;
+            }
+        }
+
+        if (!cInicial.getPieza().isBlancas() && cInicial.getFila() == 4 &&
+                (cFinal.getColumna() == cInicial.getColumna() + 1 ||
+                        (cFinal.getColumna() == cInicial.getColumna() - 1))) {
+            if (casillas[4][cFinal.getColumna()].getPieza() != null &&
+                    casillas[4][cFinal.getColumna()].getPieza().isBlancas() &&
+                    casillas[4][cFinal.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                Peon p = (Peon) casillas[4][cFinal.getColumna()].getPieza();
+                if (p.pasable)
+                    Log.i("**", "es pasable");
+                return p.pasable;
+            }
+        }
+
+
         //el resto de casillas
         return false;
     }
