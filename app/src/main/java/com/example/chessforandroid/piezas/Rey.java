@@ -4,15 +4,13 @@ import com.example.chessforandroid.R;
 
 public class Rey extends Pieza {
 
-    public boolean posInicial;
+    public boolean haMovido;
     public boolean enJaque;
 
-    public Rey(int x, int y, boolean blancas) {
+    public Rey(boolean blancas) {
         this.blancas = blancas;
-        this.fila = x;
-        this.columna = y;
         this.tag = "REY";
-        this.posInicial = true;
+        this.haMovido = false;
         this.enJaque = false;
         if (blancas) {
             this.drawable = R.drawable.brey;

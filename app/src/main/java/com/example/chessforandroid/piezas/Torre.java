@@ -4,14 +4,12 @@ import com.example.chessforandroid.R;
 
 public class Torre extends Pieza {
 
-    private boolean posInicial;
+    public boolean haMovido;
 
-    public Torre(int x, int y, boolean blancas) {
+    public Torre(boolean blancas) {
         this.blancas = blancas;
-        this.fila = x;
-        this.columna = y;
         this.tag = "TORRE";
-        this.posInicial = true;
+        this.haMovido = false;
         if (blancas) {
             this.drawable = R.drawable.btorre;
         } else {

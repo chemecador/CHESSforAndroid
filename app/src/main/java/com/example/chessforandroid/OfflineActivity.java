@@ -4,7 +4,6 @@ import static com.example.chessforandroid.Juez.NUM_COLUMNAS;
 import static com.example.chessforandroid.Juez.NUM_FILAS;
 import static com.example.chessforandroid.Juez.buscarRey;
 import static com.example.chessforandroid.Juez.casillas;
-import static com.example.chessforandroid.Juez.esLegal;
 import static com.example.chessforandroid.Juez.jaque;
 import static com.example.chessforandroid.Juez.turno;
 
@@ -115,7 +114,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             Log.i("*******************************************************************", "empiezo MOV");
             pintarFondo();
-            if (esLegal(quieroMover, c)) {
+            if (Juez.esValido(casillas, quieroMover, c)) {
                 if (turno) {
                     if(nMovs % 3 == 0){
                         movs.append("\n");
@@ -191,6 +190,16 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         movs.append("   " + nMovs + ". ");
         switch (tag) {
             case "REY":
+                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8'){
+                    movs.append("O-O-O");
+                    tvMovs.setText(movs + "  ");
+                    return;
+                }
+                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8'){
+                    movs.append("O-O");
+                    tvMovs.setText(movs + "  ");
+                    return;
+                }
                 movs.append("R");
                 break;
             case "DAMA":
@@ -210,7 +219,6 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
             movs.append("x");
 
         movs.append("" + c1 + c2);
-        Log.i("***", "" + movs);
         if (jaque)
             movs.append("+");
 
@@ -325,7 +333,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 } else {
 
                     //casillas blancas
-                    casillas[i][j].setBackgroundColor(Color.parseColor("#F7FCFB"));
+                    casillas[i][j].setBackgroundColor(Color.parseColor("#DDDDDD"));
                 }
                 x++;
             }
@@ -345,53 +353,53 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 b.setClickable(true);
                 //piezas negras
                 if (x == 0 || x == 7) {
-                    b.setPieza(new Torre(i, j, false));
+                    b.setPieza(new Torre(false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 1 || x == 6) {
-                    b.setPieza(new Caballo(i, j, false));
+                    b.setPieza(new Caballo(false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 2 || x == 5) {
-                    b.setPieza(new Alfil(i, j, false));
+                    b.setPieza(new Alfil(false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 3) {
-                    b.setPieza(new Dama(i, j, false));
+                    b.setPieza(new Dama(false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 4) {
-                    b.setPieza(new Rey(i, j, false));
+                    b.setPieza(new Rey(false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x > 7 && x < 16) {
-                    b.setPieza(new Peon(i, j, false));
+                    b.setPieza(new Peon(false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
 
                 //piezas blancas
                 if (x == 56 || x == 63) {
-                    b.setPieza(new Torre(i, j, true));
+                    b.setPieza(new Torre(true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 57 || x == 62) {
-                    b.setPieza(new Caballo(i, j, true));
+                    b.setPieza(new Caballo(true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 58 || x == 61) {
-                    b.setPieza(new Alfil(i, j, true));
+                    b.setPieza(new Alfil(true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 59) {
-                    b.setPieza(new Dama(i, j, true));
+                    b.setPieza(new Dama(true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 60) {
-                    b.setPieza(new Rey(i, j, true));
+                    b.setPieza(new Rey(true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x > 47 && x < 56) {
-                    b.setPieza(new Peon(i, j, true));
+                    b.setPieza(new Peon(true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 b.setPadding(0, 0, 0, 0);

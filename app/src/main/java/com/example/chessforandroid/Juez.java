@@ -2,8 +2,9 @@ package com.example.chessforandroid;
 
 import android.util.Log;
 
-import com.example.chessforandroid.Casilla;
 import com.example.chessforandroid.piezas.Dama;
+import com.example.chessforandroid.piezas.Rey;
+import com.example.chessforandroid.piezas.Torre;
 
 public class Juez {
 
@@ -14,18 +15,6 @@ public class Juez {
     public static boolean jaque;
     public static boolean jaqueMate;
     public static boolean puedeMover;
-
-
-    public static Casilla[][] crearCopia() {
-        Casilla[][] copia = new Casilla[NUM_FILAS][NUM_COLUMNAS];
-        for (int i = 0; i < copia.length; i++) {
-            for (int j = 0; j < copia.length; j++) {
-                copia[i][j] = casillas[i][j].clonarCasilla();
-            }
-        }
-        return copia;
-    }
-
 
     public static boolean comprobarJaque(Casilla[][] copia) {
         Casilla casRey = buscarRey(copia, turno);
@@ -43,127 +32,99 @@ public class Juez {
         return false;
     }
 
-    public static boolean esLegal(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
-
-        //Log.i("esLegal comienza:", "recibo que jaque es: " + jaque);
-        jaque = comprobarJaque(copia);
-        //Log.i("esLegal comienza:", "lo compruebo, jaque es: " + jaque);
-        if (jaque) {
-            jaque = !salvaJaque(copia, cInicial, cFinal);
-//            if (jaque)
-            //      Log.i("esLegal despues del mov", "" + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
-            //            " a " + cFinal.getFila() + cFinal.getColumna() + "salva el jaque");
-            return !jaque;
-        }
-        //      Log.i("esLegal va a terminar:", " compruebo si el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
-        //            " a " + cFinal.getFila() + cFinal.getColumna() + " es legal");
-        boolean ret = esValido(copia, cInicial, cFinal);
-        if (ret) {
-            Log.i("esLegal termina", "jaque: " + jaque + " - devuelvo:" + ret);
-            Log.i("esLegal termina:", "el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
-                    " a " + cFinal.getFila() + cFinal.getColumna() + "es legal");
-        } else {
-            //      Log.i("esLegal termina", "no lo es ---- jaque: " + jaque + " - devuelvo:" + ret);
-        }
-        return ret;
-    }
-
-    public static boolean esLegal(Casilla cInicial, Casilla cFinal) {
-
-/*        this.jaque = comprobarJaque(casillas);
-        if (jaque) {
-            Log.i("esLegal termina", "estoy en jaque, a ver si lo apaño...");
-            jaque = !salvaJaque(casillas, cInicial, cFinal);
-            return !jaque;
-        }*/
-        //      Log.i("esLegal va a terminar:", " compruebo si el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
-        //            " a " + cFinal.getFila() + cFinal.getColumna() + " es legal");
-        boolean ret = esValido(casillas, cInicial, cFinal);
-        if (ret) {
-            Log.i("esLegal termina", "jaque: " + jaque + " - devuelvo:" + ret);
-            Log.i("esLegal termina:", "el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
-                    " a " + cFinal.getFila() + cFinal.getColumna() + "es legal");
-        } else {
-            //      Log.i("esLegal termina", "no lo es ---- jaque: " + jaque + " - devuelvo:" + ret);
-        }
-        return ret;
-    }
-
-    public static boolean salvaJaque(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
-
-        Casilla casRey = buscarRey(casillas, turno);
-
-        //     Log.i("salvajaque", "rey es " + casRey.getPieza().isBlancas());
-        if (esValido(copia, cInicial, cFinal)) {
-
-            boolean ret = moverFalso(copia, cInicial, cFinal);
-
-            //Log.i("salvajaque: comiendo dama", "pieza inicial es : " + cInicial.getPieza().getTag() +
-            //      cInicial.getFila() + cInicial.getColumna());
-            if (ret) {
-//                  Log.i("salvaJaque termina:", "el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
-                //                      " a " + cFinal.getFila() + cFinal.getColumna() + "salva el jaque");
-                return false;
-            }
-            return true;
-        }
-        // Log.i("salvaJaque termina:", "el mov " + cInicial.getPieza().getTag() + cInicial.getFila() + cInicial.getColumna() +
-        //     " a " + cFinal.getFila() + cFinal.getColumna() + " no es valido");
-        return false;
-    }
-
-    public static boolean moverFalso(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
-
-        Casilla copiaInicial = cInicial.clonarCasilla();
-        Casilla copiaFinal = cFinal.clonarCasilla();
-        Log.i("moverFalso", "cInicial es: " + cInicial.getPieza());//.getTag()+cInicial.getFila()+cInicial.getColumna());
-        Log.i("moverFalso", "copiaInicial es: " + copiaInicial.getPieza());//.getTag()+cInicial.getFila()+cInicial.getColumna());
-        Log.i("moverFalso", "muevo a: " + cFinal.getFila() + cFinal.getColumna());
-
-        //cInicial.getPieza().setFila(cFinal.getFila());
-        //cInicial.getPieza().setColumna(cFinal.getColumna());
-
-        //coronación de peones
-        if (cInicial.getFila() == 1 &&
-                copia[cInicial.getFila()][cInicial.getColumna()].getPieza() != null &&
-                copia[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
-                copia[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
-            copia[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), true));
-            copia[cFinal.getFila()][cFinal.getColumna()].setImageResource(copia[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
-        } else if (cInicial.getFila() == 6 &&
-                copia[cInicial.getFila()][cInicial.getColumna()].getPieza() != null &&
-                copia[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
-                !copia[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
-            copia[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), false));
-            copia[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
-        } else {
-            //no coronan
-            copia[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
-            copia[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
-        }
-        copia[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
-        copia[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
-        boolean ret = comprobarJaque(copia);
-        copia[cFinal.getFila()][cFinal.getColumna()] = copiaInicial;
-        copia[cInicial.getFila()][cInicial.getColumna()] = copiaFinal;
-        Log.i("moverFalso acabo en : ", copia[cFinal.getFila()][cFinal.getColumna()].getPieza().getTag() + " en " +
-                copia[cFinal.getFila()][cFinal.getColumna()].getFila() + copia[cFinal.getFila()][cFinal.getColumna()].getColumna());
-        return ret;
-    }
-
     public static void mover(Casilla cInicial, Casilla cFinal) {
-        cInicial.getPieza().setFila(cFinal.getFila());
-        cInicial.getPieza().setColumna(cFinal.getColumna());
+
+        //si ha movido la torre o el rey, no puede enrocar
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("TORRE")) {
+            Torre t = (Torre) cInicial.getPieza();
+            t.haMovido = true;
+        }
+
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY")) {
+            Rey r = (Rey) cInicial.getPieza();
+            r.haMovido = true;
+        }
+        //enroque corto negras
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
+            cInicial.getFila() == 0 && cInicial.getColumna() == 4 &&
+            cFinal.getFila() == 0 && cFinal.getColumna() == 6){
+            casillas[0][6].setPieza(casillas[0][4].getPieza());
+            casillas[0][6].setImageResource(casillas[0][4].getPieza().getDrawable());
+
+            casillas[0][5].setPieza(casillas[0][7].getPieza());
+            casillas[0][5].setImageResource(casillas[0][7].getPieza().getDrawable());
+
+            casillas[0][7].setPieza(null);
+            casillas[0][7].setImageResource(0);
+
+            casillas[0][4].setPieza(null);
+            casillas[0][4].setImageResource(0);
+            return;
+        }
+        //enroque largo negras
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
+                cInicial.getFila() == 0 && cInicial.getColumna() == 4 &&
+                cFinal.getFila() == 0 && cFinal.getColumna() == 2){
+            casillas[0][2].setPieza(casillas[0][4].getPieza());
+            casillas[0][2].setImageResource(casillas[0][4].getPieza().getDrawable());
+
+            casillas[0][3].setPieza(casillas[0][7].getPieza());
+            casillas[0][3].setImageResource(casillas[0][7].getPieza().getDrawable());
+
+            casillas[0][0].setPieza(null);
+            casillas[0][0].setImageResource(0);
+
+            casillas[0][4].setPieza(null);
+            casillas[0][4].setImageResource(0);
+            return;
+        }
+
+        //enroque corto blancas
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
+                cInicial.getFila() == 7 && cInicial.getColumna() == 4 &&
+                cFinal.getFila() == 7 && cFinal.getColumna() == 6){
+            casillas[7][6].setPieza(casillas[7][4].getPieza());
+            casillas[7][6].setImageResource(casillas[7][4].getPieza().getDrawable());
+
+            casillas[7][5].setPieza(casillas[7][7].getPieza());
+            casillas[7][5].setImageResource(casillas[7][7].getPieza().getDrawable());
+
+            casillas[7][7].setPieza(null);
+            casillas[7][7].setImageResource(0);
+
+            casillas[7][4].setPieza(null);
+            casillas[7][4].setImageResource(0);
+            return;
+        }
+
+        //enroque largo blancas
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
+                cInicial.getFila() == 7 && cInicial.getColumna() == 4 &&
+                cFinal.getFila() == 7 && cFinal.getColumna() == 2){
+            casillas[7][2].setPieza(casillas[7][4].getPieza());
+            casillas[7][2].setImageResource(casillas[7][4].getPieza().getDrawable());
+
+            casillas[7][3].setPieza(casillas[7][7].getPieza());
+            casillas[7][3].setImageResource(casillas[7][7].getPieza().getDrawable());
+
+            casillas[7][0].setPieza(null);
+            casillas[7][0].setImageResource(0);
+
+            casillas[7][4].setPieza(null);
+            casillas[7][4].setImageResource(0);
+            return;
+        }
+
         //coronación de peones
         if (cInicial.getFila() == 1 &&
                 casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
                 casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
-            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), true));
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(true));
             casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
         } else if (cInicial.getFila() == 6 &&
                 casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
                 !casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
-            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(cFinal.getFila(), cFinal.getColumna(), false));
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(false));
             casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
         } else {
             //no coronan
@@ -173,7 +134,6 @@ public class Juez {
         casillas[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
         casillas[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
     }
-
 
     public static boolean esValido(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
         if (cInicial.getPieza() == null || (cFinal.getPieza() != null &&
@@ -223,8 +183,6 @@ public class Juez {
                     for (int x = 0; x < NUM_FILAS; x++) {
                         for (int y = 0; y < NUM_COLUMNAS; y++) {
                             if (esValido(copia, copy, copia[x][y])) {
-                                Log.i("puedemover", "la casilla " + c.getFila() + c.getColumna()
-                                        + " puede mover a " + copia[x][y].getFila() + copia[x][y].getColumna());
                                 return true;
                             }
                         }
@@ -236,6 +194,45 @@ public class Juez {
     }
 
     public static boolean esValidoRey(Casilla cInicial, Casilla cFinal) {
+
+        Rey rey = (Rey) cInicial.getPieza();
+        if (!rey.haMovido && !jaque) {
+            if (!turno) {
+                //enroque largo negras
+                if (casillas[0][0].getPieza() != null &&
+                        casillas[0][0].getPieza().getTag().equalsIgnoreCase("TORRE") &&
+                        cFinal.getFila() == 0 && cFinal.getColumna() == 2 &&
+                        casillas[0][1].getPieza() == null && casillas[0][2].getPieza() == null &&
+                        casillas[0][3].getPieza() == null) {
+                        return true;
+                }
+                //enroque corto negras
+                if (casillas[0][7].getPieza() != null &&
+                        casillas[0][7].getPieza().getTag().equalsIgnoreCase("TORRE") &&
+                        cFinal.getFila() == 0 && cFinal.getColumna() == 6 &&
+                        casillas[0][6].getPieza() == null && casillas[0][5].getPieza() == null) {
+                    return true;
+                }
+            }
+            if (turno){
+                //enroque largo blancas
+                if (casillas[7][0].getPieza() != null &&
+                        casillas[7][0].getPieza().getTag().equalsIgnoreCase("TORRE") &&
+                        cFinal.getFila() == 7 && cFinal.getColumna() == 2 &&
+                        casillas[7][1].getPieza() == null && casillas[7][2].getPieza() == null &&
+                        casillas[7][3].getPieza() == null) {
+                    return true;
+                }
+                //enroque corto blancas
+                if (casillas[7][7].getPieza() != null &&
+                        casillas[7][7].getPieza().getTag().equalsIgnoreCase("TORRE") &&
+                        cFinal.getFila() == 7 && cFinal.getColumna() == 6 &&
+                        casillas[7][6].getPieza() == null && casillas[7][5].getPieza() == null) {
+                    return true;
+                }
+            }
+        }
+
         return Math.abs(cInicial.getFila() - cFinal.getFila()) < 2 &&
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) < 2;
     }
