@@ -2,6 +2,7 @@ package com.example.chessforandroid;
 
 import static com.example.chessforandroid.Juez.NUM_COLUMNAS;
 import static com.example.chessforandroid.Juez.NUM_FILAS;
+import static com.example.chessforandroid.Juez.buscarRey;
 import static com.example.chessforandroid.Juez.casillas;
 import static com.example.chessforandroid.Juez.esLegal;
 import static com.example.chessforandroid.Juez.jaque;
@@ -13,6 +14,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -73,12 +75,23 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
 
+        if (fin)
+            return;
+
         if (view.getId() == R.id.bTablas) {
 
+            Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
+            fin = true;
             return;
         }
         if (view.getId() == R.id.bRendirse) {
 
+            if (turno){
+                Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Ganan las blancas", Toast.LENGTH_SHORT).show();
+            }
+            fin = true;
             return;
         }
 
@@ -103,19 +116,32 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
             Log.i("*******************************************************************", "empiezo MOV");
             pintarFondo();
             if (esLegal(quieroMover, c)) {
-                if (turno)
+                if (turno) {
+                    if(nMovs % 3 == 0){
+                        movs.append("\n");
+                    }
                     nMovs++;
+                }
                 captura = c.getPieza() != null;
                 tag = quieroMover.getPieza().getTag();
                 Juez.mover(quieroMover, c);
                 Juez.turno = !Juez.turno;
+                if (buscarRey(casillas,turno) == null){
+                    if (turno)
+                        Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(this, "Ganan las blancas", Toast.LENGTH_SHORT).show();
+
+                    fin = true;
+                    return;
+                }
                 Juez.puedeMover = Juez.puedeMover(casillas, Juez.turno);
                 Juez.jaque = Juez.comprobarJaque(casillas);
                 actualizarTxt(tag, coorToChar(c.getFila(), c.getColumna())[0],
                         coorToChar(c.getFila(), c.getColumna())[1], captura);
                 if (jaque) {
-                    Toast.makeText(this, "JAQUE " + Juez.turno, Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
+                    buscarRey(casillas,turno).setBackgroundColor(Color.RED);
                 } else {
                     if (!Juez.puedeMover) {
                         Toast.makeText(this, "REY AHOGADO " + Juez.turno, Toast.LENGTH_SHORT).show();
@@ -187,6 +213,15 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         Log.i("***", "" + movs);
         if (jaque)
             movs.append("+");
+
+
+        //autoscroll hacia abajo cuando sea necesario
+        final int scrollAmount = tvMovs.getLayout().getLineTop
+                (tvMovs.getLineCount()) - tvMovs.getHeight();
+        if (scrollAmount > 0)
+            tvMovs.scrollTo(0, scrollAmount);
+        else
+            tvMovs.scrollTo(0, 0);
         tvMovs.setText(movs + "  ");
 
     }
@@ -196,6 +231,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         pintarFondo();
         movs = new StringBuilder();
         tvMovs = (TextView) findViewById(R.id.txtMovs);
+        tvMovs.setMovementMethod(new ScrollingMovementMethod());
+
         tablas = findViewById(R.id.bTablas);
         rendirse = findViewById(R.id.bRendirse);
         tablas.setOnClickListener(this);

@@ -13,6 +13,9 @@ import android.widget.Button;
 /***
  *
  *
+ * IDEAS:
+ * pausar partida guardando la posición de las fichas
+ *
  * TAREAS EXTRA:
  * ver tabla con usuarios con más ELO / más nivel
  *
