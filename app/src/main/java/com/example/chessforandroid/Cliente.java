@@ -7,9 +7,6 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import com.example.chessforandroid.util.Constantes;
 
 import java.io.DataInputStream;
@@ -100,34 +97,31 @@ public class Cliente {
         new Local().execute(token);
     }
 
-    public class Local extends AsyncTask<String, Void, String[]> {
+    public class Local extends AsyncTask<String, Void, String> {
 
         @Override
-        protected String[] doInBackground(String... strings) {
-            String s[] = new String[2];
+        protected String doInBackground(String... strings) {
             try {
                 Cliente.token = strings[0];
                 //in.readInt();
                 out.writeUTF("local");
                 out.writeUTF(token);
-                s[0] = in.readUTF();
-                s[1] = in.readUTF();
-
+                return in.readUTF();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return s;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String[] s) {
+        protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            for (String st : s){
-                Log.i("***", st);
+            if (s != null) {
+                Intent localIntent = new Intent(context, GameActivity.class);
+                localIntent.putExtra("token", Cliente.token);
+                context.startActivity(localIntent);
             }
-
-            //LANZAR GAMEACTIVITY
             cerrarConexion();
         }
     }
@@ -139,7 +133,7 @@ public class Cliente {
             try {
                 Cliente.token = strings[0];
                 //in.readInt();
-                Log.i("********************", "estoy en el lobby y recibo:" +in.readInt());
+                Log.i("********************", "estoy en el lobby y recibo:" + in.readInt());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -150,12 +144,13 @@ public class Cliente {
         protected void onPostExecute(String[] s) {
             super.onPostExecute(s);
 
-            for (String st: s) {
+            for (String st : s) {
                 Log.i("**", "lobby post: " + st);
             }
             cerrarConexion();
         }
     }
+
     public class Unirse extends AsyncTask<String, Void, Integer> {
 
         @Override

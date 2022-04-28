@@ -18,6 +18,7 @@ import android.widget.Button;
  *
  * TAREAS EXTRA:
  * ver tabla con usuarios con más ELO / más nivel
+ * cambiar contraseña
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

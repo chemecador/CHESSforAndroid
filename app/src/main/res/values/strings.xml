@@ -45,4 +45,5 @@
     <string name="write_code">Escribe aquí el código...</string>
     <string name="waiting">Esperando jugadores...</string>
     <string name="local_net">Jugar en una red local</string>
+    <string name="turn">Comienzan las blancas</string>
 </resources>

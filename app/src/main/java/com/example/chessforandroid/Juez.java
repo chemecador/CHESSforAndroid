@@ -1,6 +1,8 @@
 package com.example.chessforandroid;
 
-import android.util.Log;
+import static com.example.chessforandroid.OfflineActivity.movs;
+
+import android.annotation.SuppressLint;
 
 import com.example.chessforandroid.piezas.Dama;
 import com.example.chessforandroid.piezas.Peon;
@@ -9,23 +11,36 @@ import com.example.chessforandroid.piezas.Torre;
 
 public class Juez {
 
-    public static Casilla[][] casillas;
-    public static final int NUM_FILAS = 8;
-    public static final int NUM_COLUMNAS = 8;
-    public static boolean turno;
-    public static boolean jaque;
-    public static boolean jaqueMate;
-    public static boolean puedeMover;
+    public Casilla[][] casillas;
+    public final int NUM_FILAS = 8;
+    public final int NUM_COLUMNAS = 8;
+    public boolean captura;
+    public boolean turno;
+    public boolean jaque;
+    public boolean jaqueMate;
+    public boolean puedeMover;
+    public int nMovs;
 
-    public static boolean comprobarJaque(Casilla[][] copia) {
+    public Juez(){
+        turno = true;
+        casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
+        jaqueMate = false;
+        jaque = false;
+        puedeMover = false;
+        captura = false;
+    }
+
+    public boolean comprobarJaque(Casilla[][] copia) {
         Casilla casRey = buscarRey(copia, turno);
-        for (int i = 0; i < copia.length; i++) {
+        for (Casilla[] fila : copia) {
             for (int j = 0; j < copia.length; j++) {
-                if (copia[i][j].getPieza() != null &&
-                        (casRey.getPieza().isBlancas() != copia[i][j].getPieza().isBlancas())) {
-                    if (esValido(copia, copia[i][j], casRey)) {
-                        jaque = true;
-                        return true;
+                if (fila[j].getPieza() != null) {
+                    assert casRey != null;
+                    if (casRey.getPieza().isBlancas() != fila[j].getPieza().isBlancas()) {
+                        if (esValido(copia, fila[j], casRey)) {
+                            jaque = true;
+                            return true;
+                        }
                     }
                 }
             }
@@ -33,7 +48,10 @@ public class Juez {
         return false;
     }
 
-    public static void mover(Casilla cInicial, Casilla cFinal) {
+    public void mover(Casilla cInicial, Casilla cFinal) {
+
+        if (turno)
+            nMovs++;
 
         if (!cInicial.getPieza().getTag().equalsIgnoreCase("PEON")) {
             for (int i = 0; i < NUM_FILAS; i++) {
@@ -191,7 +209,7 @@ public class Juez {
         casillas[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
     }
 
-    public static boolean esValido(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
+    public boolean esValido(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
         if (cInicial.getPieza() == null || (cFinal.getPieza() != null &&
                 cInicial.getPieza().isBlancas() == cFinal.getPieza().isBlancas())) {
             return false;
@@ -215,7 +233,7 @@ public class Juez {
     }
 
 
-    public static Casilla buscarRey(Casilla[][] casillas, boolean blancas) {
+    public Casilla buscarRey(Casilla[][] casillas, boolean blancas) {
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 if (casillas[i][j].getPieza() != null &&
@@ -229,7 +247,7 @@ public class Juez {
         return null;
     }
 
-    public static boolean puedeMover(Casilla[][] copia, boolean blancas) {
+    public boolean puedeMover(Casilla[][] copia, boolean blancas) {
         Casilla c, copy;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
@@ -249,7 +267,7 @@ public class Juez {
         return false;
     }
 
-    public static boolean esValidoRey(Casilla cInicial, Casilla cFinal) {
+    public boolean esValidoRey(Casilla cInicial, Casilla cFinal) {
 
         Rey rey = (Rey) cInicial.getPieza();
         if (!rey.haMovido && !jaque) {
@@ -293,7 +311,7 @@ public class Juez {
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) < 2;
     }
 
-    public static boolean esValidoCaballo(Casilla cInicial, Casilla cFinal) {
+    public boolean esValidoCaballo(Casilla cInicial, Casilla cFinal) {
         if (Math.abs(cInicial.getFila() - cFinal.getFila()) == 2 &&
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 1) {
             return true;
@@ -302,7 +320,7 @@ public class Juez {
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) == 2;
     }
 
-    public static boolean esValidoAlfil(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
+    public boolean esValidoAlfil(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
         if (cInicial.getFila() == cFinal.getFila() || cInicial.getColumna() == cFinal.getColumna()) {
             return false;
         }
@@ -335,7 +353,7 @@ public class Juez {
         return true;
     }
 
-    public static boolean esValidoTorre(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
+    public boolean esValidoTorre(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
         if (cInicial.getFila() != cFinal.getFila() && cInicial.getColumna() != cFinal.getColumna()) {
             return false;
         }
@@ -374,7 +392,7 @@ public class Juez {
         return true;
     }
 
-    public static boolean esValidoPeon(Casilla cInicial, Casilla cFinal) {
+    public boolean esValidoPeon(Casilla cInicial, Casilla cFinal) {
 
         //choque de peones
         if (cInicial.getPieza().isBlancas() && cFinal.getFila() == cInicial.getFila() - 1 &&
@@ -457,8 +475,6 @@ public class Juez {
                     !casillas[3][cFinal.getColumna()].getPieza().isBlancas() &&
                     casillas[3][cFinal.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON")) {
                 Peon p = (Peon) casillas[3][cFinal.getColumna()].getPieza();
-                if (p.pasable)
-                    Log.i("**", "es pasable");
                 return p.pasable;
             }
         }
@@ -470,8 +486,6 @@ public class Juez {
                     casillas[4][cFinal.getColumna()].getPieza().isBlancas() &&
                     casillas[4][cFinal.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON")) {
                 Peon p = (Peon) casillas[4][cFinal.getColumna()].getPieza();
-                if (p.pasable)
-                    Log.i("**", "es pasable");
                 return p.pasable;
             }
         }
@@ -481,5 +495,76 @@ public class Juez {
         return false;
     }
 
+    public char[] coorToChar(int fila, int col) {
+        char[] ch = new char[2];
 
+        ch[0] = (char) ('a' + col);
+
+        switch (fila) {
+            case 0:
+                ch[1] = '8';
+                break;
+            case 1:
+                ch[1] = '7';
+                break;
+            case 2:
+                ch[1] = '6';
+                break;
+            case 3:
+                ch[1] = '5';
+                break;
+            case 4:
+                ch[1] = '4';
+                break;
+            case 5:
+                ch[1] = '3';
+                break;
+            case 6:
+                ch[1] = '2';
+                break;
+            case 7:
+                ch[1] = '1';
+                break;
+        }
+        return ch;
+    }
+
+    @SuppressLint("SetTextI18n")
+    public StringBuilder actualizarTxt(char c1, char c2) {
+
+        movs.append("   ").append(nMovs).append(". ");
+        switch (OfflineActivity.tag) {
+            case "REY":
+                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8'){
+                    movs.append("O-O-O");
+                    return movs;
+                }
+                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8'){
+                    movs.append("O-O");
+                    return movs;
+                }
+                movs.append("R");
+                break;
+            case "DAMA":
+                movs.append("D");
+                break;
+            case "ALFIL":
+                movs.append("A");
+                break;
+            case "CABALLO":
+                movs.append("C");
+                break;
+            case "TORRE":
+                movs.append("T");
+                break;
+        }
+        if (captura)
+            movs.append("x");
+
+        movs.append(c1).append(c2);
+        if (jaque)
+            movs.append("+");
+
+        return movs;
+    }
 }

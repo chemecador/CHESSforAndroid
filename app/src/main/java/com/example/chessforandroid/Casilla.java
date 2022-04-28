@@ -56,7 +56,7 @@ public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
         return this.fila;
     }
 
-    public void setX(int x) {
+    public void setFila(int x) {
         this.fila = x;
     }
 
@@ -64,7 +64,7 @@ public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
         return this.columna;
     }
 
-    public void setY(int y) {
+    public void setColumna(int y) {
         this.columna= y;
     }
 
