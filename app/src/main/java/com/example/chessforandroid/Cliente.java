@@ -1,5 +1,7 @@
 package com.example.chessforandroid;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutionException;
 
 public class Cliente {
 
@@ -24,8 +27,8 @@ public class Cliente {
     private static String host = Constantes.ip; // dirección IP (local)
     private static int puerto = Constantes.puerto; // puerto que se utilizará
     private boolean conectado;
-    private static String user;
-    private static String token;
+    private String user;
+    private String token;
     private Context context;
 
 
@@ -38,7 +41,7 @@ public class Cliente {
         try {
             // inicializamos el socket, dis y dos
             conn = new Socket();
-            conn.connect(new InetSocketAddress(host, puerto), 1500);
+            conn.connect(new InetSocketAddress(host, puerto), 1200);
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
             conectado = true;
@@ -87,23 +90,53 @@ public class Cliente {
         new Unirse().execute(token, codigo);
     }
 
-    public void lobby(Context context, String tokenAnf, int idPartida) {
-        this.context = context;
-        new Lobby().execute(tokenAnf, String.valueOf(idPartida));
-    }
 
     public void local(Context context, String token) {
         this.context = context;
         new Local().execute(token);
     }
 
+    public Object[] getDatosIniciales(Context context, String token) {
+        this.context = context;
+        this.token = token;
+        Object[] o = null;
+        try {
+            o = new DatosIniciales().execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return o;
+    }
+
+    public class DatosIniciales extends AsyncTask<Object, Void, Object[]>{
+
+
+        protected Object[] doInBackground(Object... params) {
+
+            Object[] o = new Object[3];
+            String s = "ok";
+            try {
+                out.writeUTF(token);
+
+                o[0] = in.readUTF();
+                o[1] = in.readUTF();
+                o[2] = in.readBoolean();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return o;
+        }
+    }
+
+
     public class Local extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
             try {
-                Cliente.token = strings[0];
-                //in.readInt();
+                token = strings[0];
                 out.writeUTF("local");
                 out.writeUTF(token);
                 return in.readUTF();
@@ -119,33 +152,8 @@ public class Cliente {
 
             if (s != null) {
                 Intent localIntent = new Intent(context, GameActivity.class);
-                localIntent.putExtra("token", Cliente.token);
+                localIntent.putExtra("token", token);
                 context.startActivity(localIntent);
-            }
-            cerrarConexion();
-        }
-    }
-
-    public class Lobby extends AsyncTask<String, Void, String[]> {
-
-        @Override
-        protected String[] doInBackground(String... strings) {
-            try {
-                Cliente.token = strings[0];
-                //in.readInt();
-                Log.i("********************", "estoy en el lobby y recibo:" + in.readInt());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return strings;
-        }
-
-        @Override
-        protected void onPostExecute(String[] s) {
-            super.onPostExecute(s);
-
-            for (String st : s) {
-                Log.i("**", "lobby post: " + st);
             }
             cerrarConexion();
         }
@@ -158,9 +166,9 @@ public class Cliente {
             try {
                 Log.i("**", "entro en unirse. El token vale " + strings[0] +
                         " y el id " + Integer.parseInt(strings[1]));
-                Cliente.token = strings[0];
+                token = strings[0];
                 out.writeUTF("unirse");
-                out.writeUTF(Cliente.token);
+                out.writeUTF(token);
                 out.writeInt(Integer.parseInt(strings[1]));
                 return in.readInt();
             } catch (IOException e) {
@@ -173,7 +181,6 @@ public class Cliente {
         protected void onPostExecute(Integer res) {
             super.onPostExecute(res);
 
-            Log.i("**", "res vale: " + res);
             Toast.makeText(context, "Listo para jugar", Toast.LENGTH_SHORT).show();
             cerrarConexion();
         }
@@ -184,9 +191,9 @@ public class Cliente {
         @Override
         protected Integer doInBackground(String... strings) {
             try {
-                Cliente.token = strings[0];
+                token = strings[0];
                 out.writeUTF("crearsala");
-                out.writeUTF(Cliente.token);
+                out.writeUTF(token);
                 return in.readInt();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -200,7 +207,7 @@ public class Cliente {
 
             Intent lobbyIntent = new Intent(context, LobbyActivity.class);
             lobbyIntent.putExtra("id", res);
-            lobbyIntent.putExtra("token", Cliente.token);
+            lobbyIntent.putExtra("token", token);
             context.startActivity(lobbyIntent);
             cerrarConexion();
         }
@@ -212,7 +219,7 @@ public class Cliente {
         @Override
         protected Integer doInBackground(String... strings) {
             try {
-                Cliente.user = strings[0];
+                user = strings[0];
                 out.writeUTF("signup");
                 out.writeUTF(strings[0]);
                 out.writeUTF(strings[1]);
@@ -234,7 +241,7 @@ public class Cliente {
                 case 1:
                     try {
                         Intent mainIntentSignup = new Intent(context, MainActivity.class);
-                        mainIntentSignup.putExtra("user", Cliente.user);
+                        mainIntentSignup.putExtra("user", user);
                         mainIntentSignup.putExtra("token", in.readUTF());
                         context.startActivity(mainIntentSignup);
                     } catch (IOException e) {
@@ -242,7 +249,7 @@ public class Cliente {
                     }
                     break;
                 default:
-                    Log.i("**", "Error de conexión con la base de datos");
+                    Log.e("**", "Error de conexión con la base de datos");
                     break;
             }
             cerrarConexion();
@@ -254,7 +261,7 @@ public class Cliente {
         @Override
         protected String doInBackground(String... strings) {
             try {
-                Cliente.user = strings[0];
+                user = strings[0];
                 out.writeUTF("login");
                 out.writeUTF(strings[0]);
                 out.writeUTF(strings[1]);
@@ -273,7 +280,7 @@ public class Cliente {
             super.onPostExecute(s);
             if (s != null) {
                 Intent mainIntentSignup = new Intent(context, MainActivity.class);
-                mainIntentSignup.putExtra("user", Cliente.user);
+                mainIntentSignup.putExtra("user", user);
                 mainIntentSignup.putExtra("token", s);
                 cerrarConexion();
                 context.startActivity(mainIntentSignup);
@@ -294,7 +301,7 @@ public class Cliente {
                 res[i] = 0;
             }
             try {
-                Cliente.user = strings[0];
+                user = strings[0];
                 out.writeUTF("pedirdatos");
                 out.writeUTF(user);
 

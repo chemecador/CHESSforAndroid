@@ -36,7 +36,7 @@ public class LobbyActivity extends AppCompatActivity {
         }
         c = new Cliente();
         if (c.isConectado()) {
-            c.lobby(this, tokenAnf, idPartida);
+            //c.lobby(this, tokenAnf, idPartida);
         } else {
             Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
         }

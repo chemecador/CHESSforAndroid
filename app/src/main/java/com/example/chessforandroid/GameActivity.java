@@ -2,6 +2,7 @@ package com.example.chessforandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -27,8 +28,16 @@ import com.example.chessforandroid.piezas.Torre;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //layout
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;
+    private Button tablas;
+    private Button rendirse;
+    public TextView tvMovs;
+    private TextView mueven;
+    public StringBuilder movs;
+
+    //tablero
     public Casilla[][] casillas;
     public final int NUM_FILAS = 8;
     public final int NUM_COLUMNAS = 8;
@@ -36,13 +45,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private boolean fin;
     private Casilla quieroMover;
     public static String tag;
+
+    //elementos de juego
     private int nMovs;
-    private Button tablas;
-    private Button rendirse;
-    public TextView tvMovs;
-    private TextView mueven;
-    public StringBuilder movs;
     private String token;
+    public String j1;
+    public String j2;
+    public boolean blancas;
+    private Cliente c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +72,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.i("***", "comencemos, " + token);
 
-
-
+        c = new Cliente();
+        Object[] o = null;
+        if (c.isConectado()){
+            o = c.getDatosIniciales(this, token);
+        } else {
+            Log.e ("************************", "error");
+        }
+        Log.i ("***", "soy el jugador " + o[0] + " - juego contra " + o[1] +
+                " - ¿soy blancas?" + o[2]);
     }
+
 
 
     @Override
