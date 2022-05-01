@@ -30,6 +30,50 @@ public class Juez {
         captura = false;
     }
 
+    public String casillasToString() {
+        StringBuilder sbResult = new StringBuilder();
+
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                if (casillas[i][j].getPieza() == null) {
+                    sbResult.append(0);
+                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("REY")) {
+                    if (casillas[i][j].getPieza().isBlancas())
+                        sbResult.append(1);
+                    else
+                        sbResult.append(-1);
+                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("DAMA")) {
+                    if (casillas[i][j].getPieza().isBlancas())
+                        sbResult.append(2);
+                    else
+                        sbResult.append(-2);
+                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("TORRE")) {
+                    if (casillas[i][j].getPieza().isBlancas())
+                        sbResult.append(3);
+                    else
+                        sbResult.append(-3);
+                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("ALFIL")) {
+                    if (casillas[i][j].getPieza().isBlancas())
+                        sbResult.append(4);
+                    else
+                        sbResult.append(-4);
+                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("CABALLO")) {
+                    if (casillas[i][j].getPieza().isBlancas())
+                        sbResult.append(5);
+                    else
+                        sbResult.append(-5);
+                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    if (casillas[i][j].getPieza().isBlancas())
+                        sbResult.append(6);
+                    else
+                        sbResult.append(-6);
+                }
+            }
+        }
+        return sbResult.toString();
+    }
+    
+
     public boolean comprobarJaque(Casilla[][] copia) {
         Casilla casRey = buscarRey(copia, turno);
         for (Casilla[] fila : copia) {

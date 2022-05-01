@@ -110,6 +110,34 @@ public class Cliente {
         return o;
     }
 
+    public Object[] enviarMov(Context context, String casillas) {
+        this.context = context;
+        Object[] o = null;
+        try {
+            o = new EnviarMov().execute(casillas).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return o;
+    }
+
+
+    public class EnviarMov extends AsyncTask<String, Void, Object[]>{
+
+
+        @Override
+        protected Object[] doInBackground(String... strings) {
+            try {
+                out.writeUTF(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return new Object[0];
+        }
+    }
+
     public class DatosIniciales extends AsyncTask<Object, Void, Object[]>{
 
 

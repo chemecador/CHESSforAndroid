@@ -2,7 +2,6 @@ package com.example.chessforandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -35,30 +34,32 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button rendirse;
     public TextView tvMovs;
     private TextView mueven;
+    private TextView vs;
     public StringBuilder movs;
 
     //tablero
-    public Casilla[][] casillas;
     public final int NUM_FILAS = 8;
     public final int NUM_COLUMNAS = 8;
     private boolean haySeleccionada;
     private boolean fin;
     private Casilla quieroMover;
-    public static String tag;
+    private int[][] tablero;
 
     //elementos de juego
     private int nMovs;
     private String token;
-    public String j1;
-    public String j2;
-    public boolean blancas;
-    private Cliente c;
+    private boolean soyBlancas;
+    private boolean miTurno;
+    private Cliente cliente;
+    private Juez juez;
+    private Object[] o = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         haySeleccionada = false;
         nMovs = 0;
+        juez = new Juez();
 
         setContentView(R.layout.activity_game);
         crearCasillas();
@@ -72,17 +73,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.i("***", "comencemos, " + token);
 
-        c = new Cliente();
-        Object[] o = null;
-        if (c.isConectado()){
-            o = c.getDatosIniciales(this, token);
-        } else {
-            Log.e ("************************", "error");
-        }
-        Log.i ("***", "soy el jugador " + o[0] + " - juego contra " + o[1] +
-                " - ¿soy blancas?" + o[2]);
-    }
+        cliente = new Cliente();
 
+    }
 
 
     @Override
@@ -105,14 +98,39 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
+        Casilla cas = (Casilla) view;
 
-        Casilla c = (Casilla) view;
+        if (!miTurno)
+            Toast.makeText(this, tvMovs.getText().toString(), Toast.LENGTH_SHORT).show();
 
         if (!haySeleccionada) {
+            if (cas.getPieza() == null)
+                return;
+            if (cas.getPieza().isBlancas() != soyBlancas)
+                return;
 
+            cas.setBackgroundColor(Color.parseColor("#36E0FA"));
+            quieroMover = cas;
+            quieroMover.setPieza(cas.getPieza());
         } else {
 
+            pintarFondo();
+            if (juez.esValido(juez.casillas, quieroMover, cas)) {
 
+                juez.captura = cas.getPieza() != null;
+                juez.mover(quieroMover, cas);
+
+                if (cliente.isConectado()) {
+                    o = cliente.enviarMov(this,
+                            juez.casillasToString());
+                } else {
+                    Log.e("************************", "error");
+                }
+
+                //actualizarTxt(cas.getFila(), cas.getColumna());
+                miTurno = false;
+                //ESPERAR A MI TURNO
+            }
         }
         haySeleccionada = !haySeleccionada;
     }
@@ -132,8 +150,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         pintarFondo();
         movs = new StringBuilder();
         mueven = findViewById(R.id.txtMuevenLocal);
+        vs = findViewById(R.id.txtVs);
         tvMovs = (TextView) findViewById(R.id.txtMovsLocal);
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
+
+        Object[] o = null;
+        if (cliente.isConectado()) {
+            o = cliente.getDatosIniciales(this, token);
+        } else {
+            Log.e("************************", "error");
+        }
 
         tablas = findViewById(R.id.bTablasLocal);
         rendirse = findViewById(R.id.bRendirseLocal);
@@ -141,9 +167,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         rendirse.setOnClickListener(this);
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-                casillas[i][j].setOnClickListener(this);
+                juez.casillas[i][j].setOnClickListener(this);
             }
         }
+        soyBlancas = (boolean) o[2];
+        miTurno = soyBlancas;
+        if (soyBlancas)
+            vs.setText("(BLANCAS) " + o[0] + " vs " + o[1] + " (NEGRAS)");
+        else
+
+            vs.setText("(BLANCAS) " + o[1] + " vs " + o[0] + " (NEGRAS)");
+
     }
 
     public class Tablero extends AsyncTask<Void, Void, Void> {
@@ -181,7 +215,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     for (int i = 0; i < NUM_FILAS; i++) {
                         for (int j = 0; j < NUM_COLUMNAS; j++) {
                             try {
-                                Casilla b = casillas[i][j];
+                                Casilla b = juez.casillas[i][j];
                                 b.setPadding(0, 0, 0, 0);
 
                                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
@@ -222,12 +256,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     cambiar = !cambiar;
                 }
                 if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
-                    //casillas negras
-                    casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
+                    //juez.casillas negras
+                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
                 } else {
 
-                    //casillas blancas
-                    casillas[i][j].setBackgroundColor(Color.parseColor("#DDDDDD"));
+                    //juez.casillas blancas
+                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#DDDDDD"));
                 }
                 x++;
             }
@@ -235,16 +269,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void crearCasillas() {
-        casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
         boolean cambiar = false;
         int x = 0;
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
+        for (int i = 0; i < juez.NUM_FILAS; i++) {
+            for (int j = 0; j < juez.NUM_COLUMNAS; j++) {
 
                 if (x % 8 == 0) {
                     cambiar = !cambiar;
                 }
-                Casilla b = new Casilla(GameActivity.this, i, j);
+                Casilla b = new Casilla(this, i, j);
                 b.setClickable(true);
                 //piezas negras
                 if (x == 0 || x == 7) {
@@ -299,9 +332,70 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 b.setPadding(0, 0, 0, 0);
 
-                casillas[i][j] = b;
+                juez.casillas[i][j] = b;
                 x++;
             }
         }
     }
+
+
+    /***
+     * Desglose de piezas (positivo - blancas,  negativo - negras):
+     * 0: Casilla Vacía
+     * 1: Rey
+     * 2: Dama
+     * 3: Torre
+     * 4: Alfil
+     * 5: Caballo
+     * 6: Peón
+     */
+    private void crearTablero() {
+
+        tablero = new int[NUM_FILAS][NUM_COLUMNAS];
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                //colocar juez.casillas en blanco
+                tablero[i][j] = 0;
+                //colocar peones negros
+                if (i == 1) {
+                    tablero[i][j] = -6;
+                }
+                //colocar peones blancos
+                if (i == 6) {
+                    tablero[i][j] = 6;
+                }
+            }
+        }
+        //colocar piezas negras
+        tablero[0][0] = -3;
+        tablero[0][7] = -3;
+        tablero[0][1] = -5;
+        tablero[0][6] = -5;
+        tablero[0][2] = -4;
+        tablero[0][5] = -4;
+        tablero[0][3] = -2;
+        tablero[0][4] = -1;
+
+        //colocar piezas blancas
+        tablero[7][0] = 3;
+        tablero[7][7] = 3;
+        tablero[7][1] = 5;
+        tablero[7][6] = 5;
+        tablero[7][2] = 4;
+        tablero[7][5] = 4;
+        tablero[7][3] = 2;
+        tablero[7][4] = 1;
+    }
+
+    public static void mostrarTablero(int[][] tablero) {
+        StringBuilder t = new StringBuilder();
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero[0].length; j++) {
+                t.append(tablero[i][j]).append(" ");
+            }
+            t.append("\n");
+        }
+        Log.i("Tablero: ", "\n" + t);
+    }
+
 }
