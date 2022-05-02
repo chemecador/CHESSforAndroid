@@ -1,19 +1,19 @@
 package com.example.chessforandroid;
 
 import static com.example.chessforandroid.OfflineActivity.movs;
+import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
+import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
 
-import android.annotation.SuppressLint;
 
-import com.example.chessforandroid.piezas.Dama;
-import com.example.chessforandroid.piezas.Peon;
-import com.example.chessforandroid.piezas.Rey;
-import com.example.chessforandroid.piezas.Torre;
+import android.util.Log;
+
+import com.example.chessforandroid.piezas.*;
 
 public class Juez {
 
     public Casilla[][] casillas;
-    public final int NUM_FILAS = 8;
-    public final int NUM_COLUMNAS = 8;
+    public int[][] inTablero;
+    public String sTablero;
     public boolean captura;
     public boolean turno;
     public boolean jaque;
@@ -22,12 +22,94 @@ public class Juez {
     public int nMovs;
 
     public Juez(){
+        inTablero = new int[NUM_FILAS][NUM_COLUMNAS];
         turno = true;
         casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
         jaqueMate = false;
         jaque = false;
         puedeMover = false;
         captura = false;
+    }
+
+    public void actualizarCasillas(int[][] t){
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                switch (t[i][j]){
+                    case 0:
+                        casillas[i][j].setPieza(null);
+                        casillas[i][j].setImageResource(0);
+                        break;
+                    case 1:
+                        casillas[i][j].setPieza(new Rey(true));
+                        casillas[i][j].setImageResource(R.drawable.brey);
+                        break;
+                    case -1:
+                        casillas[i][j].setPieza(new Rey(false));
+                        casillas[i][j].setImageResource(R.drawable.nrey);
+                        break;
+                    case 2:
+                        casillas[i][j].setPieza(new Dama(true));
+                        casillas[i][j].setImageResource(R.drawable.bdama);
+                        break;
+                    case -2:
+                        casillas[i][j].setPieza(new Dama(false));
+                        casillas[i][j].setImageResource(R.drawable.ndama);
+                        break;
+                    case 3:
+                        casillas[i][j].setPieza(new Torre(true));
+                        casillas[i][j].setImageResource(R.drawable.btorre);
+                        break;
+                    case -3:
+                        casillas[i][j].setPieza(new Torre(false));
+                        casillas[i][j].setImageResource(R.drawable.ntorre);
+                        break;
+                    case 4:
+                        casillas[i][j].setPieza(new Alfil(true));
+                        casillas[i][j].setImageResource(R.drawable.balfil);
+                        break;
+                    case -4:
+                        casillas[i][j].setPieza(new Alfil(false));
+                        casillas[i][j].setImageResource(R.drawable.nalfil);
+                        break;
+                    case 5:
+                        casillas[i][j].setPieza(new Caballo(true));
+                        casillas[i][j].setImageResource(R.drawable.bcaballo);
+                        break;
+                    case -5:
+                        casillas[i][j].setPieza(new Caballo(false));
+                        casillas[i][j].setImageResource(R.drawable.ncaballo);
+                        break;
+                    case 6:
+                        casillas[i][j].setPieza(new Peon(true));
+                        casillas[i][j].setImageResource(R.drawable.bpeon);
+                        break;
+                    case -6:
+                        casillas[i][j].setPieza(new Peon(false));
+                        casillas[i][j].setImageResource(R.drawable.npeon);
+                        break;
+
+                    default:
+                        System.err.println("ERROR." + t[i][j]);
+                }
+            }
+        }
+    }
+
+    public int[][] stringToInt(String s){
+        int[][] t = new int[NUM_FILAS][NUM_COLUMNAS];
+        int x = 0;
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                if (s.substring(x, x + 1).equals("-")) {
+                    t[i][j] = Integer.parseInt(s.substring(x, x + 2));
+                    x = x+2;
+                } else {
+                    t[i][j] = Integer.parseInt(s.substring(x, x + 1));
+                    x++;
+                }
+            }
+        }
+        return t;
     }
 
     public String casillasToString() {
@@ -72,7 +154,68 @@ public class Juez {
         }
         return sbResult.toString();
     }
-    
+
+
+
+    /***
+     * Desglose de piezas (positivo - blancas,  negativo - negras):
+     * 0: Casilla Vacía
+     * 1: Rey
+     * 2: Dama
+     * 3: Torre
+     * 4: Alfil
+     * 5: Caballo
+     * 6: Peón
+     */
+    private void crearTablero() {
+
+        inTablero = new int[NUM_FILAS][NUM_COLUMNAS];
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                //colocar juez.casillas en blanco
+                inTablero[i][j] = 0;
+                //colocar peones negros
+                if (i == 1) {
+                    inTablero[i][j] = -6;
+                }
+                //colocar peones blancos
+                if (i == 6) {
+                    inTablero[i][j] = 6;
+                }
+            }
+        }
+        //colocar piezas negras
+        inTablero[0][0] = -3;
+        inTablero[0][7] = -3;
+        inTablero[0][1] = -5;
+        inTablero[0][6] = -5;
+        inTablero[0][2] = -4;
+        inTablero[0][5] = -4;
+        inTablero[0][3] = -2;
+        inTablero[0][4] = -1;
+
+        //colocar piezas blancas
+        inTablero[7][0] = 3;
+        inTablero[7][7] = 3;
+        inTablero[7][1] = 5;
+        inTablero[7][6] = 5;
+        inTablero[7][2] = 4;
+        inTablero[7][5] = 4;
+        inTablero[7][3] = 2;
+        inTablero[7][4] = 1;
+    }
+
+    public static void mostrarTablero(int[][] tablero) {
+        StringBuilder t = new StringBuilder();
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero[0].length; j++) {
+                t.append(tablero[i][j]).append(" ");
+            }
+            t.append("\n");
+        }
+        Log.i("Tablero: ", "\n" + t);
+    }
+
 
     public boolean comprobarJaque(Casilla[][] copia) {
         Casilla casRey = buscarRey(copia, turno);
@@ -92,7 +235,7 @@ public class Juez {
         return false;
     }
 
-    public void mover(Casilla cInicial, Casilla cFinal) {
+    public boolean mover(Casilla cInicial, Casilla cFinal) {
 
         if (turno)
             nMovs++;
@@ -138,7 +281,7 @@ public class Juez {
 
             casillas[0][4].setPieza(null);
             casillas[0][4].setImageResource(0);
-            return;
+            return true;
         }
         //enroque largo negras
         if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
@@ -155,7 +298,7 @@ public class Juez {
 
             casillas[0][4].setPieza(null);
             casillas[0][4].setImageResource(0);
-            return;
+            return true;
         }
 
         //enroque corto blancas
@@ -173,7 +316,7 @@ public class Juez {
 
             casillas[7][4].setPieza(null);
             casillas[7][4].setImageResource(0);
-            return;
+            return true;
         }
 
         //enroque largo blancas
@@ -191,7 +334,7 @@ public class Juez {
 
             casillas[7][4].setPieza(null);
             casillas[7][4].setImageResource(0);
-            return;
+            return true;
         }
 
         //captura al paso blancas
@@ -209,7 +352,7 @@ public class Juez {
 
                 casillas[3][cFinal.getColumna()].setPieza(null);
                 casillas[3][cFinal.getColumna()].setImageResource(0);
-                return;
+                return true;
             }
         }
 
@@ -228,7 +371,7 @@ public class Juez {
 
                 casillas[4][cFinal.getColumna()].setPieza(null);
                 casillas[4][cFinal.getColumna()].setImageResource(0);
-                return;
+                return true;
             }
         }
 
@@ -251,6 +394,7 @@ public class Juez {
         }
         casillas[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
         casillas[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
+        return true;
     }
 
     public boolean esValido(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
@@ -573,7 +717,7 @@ public class Juez {
         return ch;
     }
 
-    @SuppressLint("SetTextI18n")
+
     public StringBuilder actualizarTxt(char c1, char c2) {
 
         movs.append("   ").append(nMovs).append(". ");

@@ -1,5 +1,8 @@
 package com.example.chessforandroid;
 
+import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
+import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -165,8 +168,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         rendirse = findViewById(R.id.bRendirse);
         tablas.setOnClickListener(this);
         rendirse.setOnClickListener(this);
-        for (int i = 0; i < juez.NUM_FILAS; i++) {
-            for (int j = 0; j < juez.NUM_COLUMNAS; j++) {
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
                 juez.casillas[i][j].setOnClickListener(this);
             }
         }
@@ -198,14 +201,14 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 public void onGlobalLayout() {
                     int width = OfflineActivity.this.oGameBoardShell.getMeasuredWidth();
                     int height = OfflineActivity.this.oGameBoardShell.getMeasuredHeight();
-                    double sizeA = (width / juez.NUM_COLUMNAS);
-                    double sizeB = (height / juez.NUM_FILAS);
+                    double sizeA = (width / NUM_COLUMNAS);
+                    double sizeB = (height / NUM_FILAS);
 
                     double smallestSize = Math.min(sizeA, sizeB);
                     int smallestSizeInt = (int) Math.floor(smallestSize);
 
-                    for (int i = 0; i < juez.NUM_FILAS; i++) {
-                        for (int j = 0; j < juez.NUM_COLUMNAS; j++) {
+                    for (int i = 0; i < NUM_FILAS; i++) {
+                        for (int j = 0; j < NUM_COLUMNAS; j++) {
                             try {
                                 Casilla b = juez.casillas[i][j];
                                 b.setPadding(0, 0, 0, 0);
@@ -220,8 +223,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                                 b.setLayoutParams(lp);
 
                                 oGameBoard.addView(b);
-                                oGameBoard.getLayoutParams().width = smallestSizeInt * juez.NUM_COLUMNAS;
-                                oGameBoard.getLayoutParams().height = smallestSizeInt * juez.NUM_FILAS;
+                                oGameBoard.getLayoutParams().width = smallestSizeInt * NUM_COLUMNAS;
+                                oGameBoard.getLayoutParams().height = smallestSizeInt * NUM_FILAS;
 
                             } catch (Exception ex) {
                                 ex.printStackTrace();
@@ -242,8 +245,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     private void pintarFondo() {
         boolean cambiar = false;
         int x = 0;
-        for (int i = 0; i < juez.NUM_FILAS; i++) {
-            for (int j = 0; j < juez.NUM_COLUMNAS; j++) {
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
                 if (x % 8 == 0) {
                     cambiar = !cambiar;
                 }
@@ -263,8 +266,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     public void crearCasillas() {
         boolean cambiar = false;
         int x = 0;
-        for (int i = 0; i < juez.NUM_FILAS; i++) {
-            for (int j = 0; j < juez.NUM_COLUMNAS; j++) {
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
 
                 if (x % 8 == 0) {
                     cambiar = !cambiar;

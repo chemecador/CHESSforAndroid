@@ -1,5 +1,8 @@
 package com.example.chessforandroid;
 
+import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
+import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -38,12 +41,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public StringBuilder movs;
 
     //tablero
-    public final int NUM_FILAS = 8;
-    public final int NUM_COLUMNAS = 8;
     private boolean haySeleccionada;
     private boolean fin;
     private Casilla quieroMover;
-    private int[][] tablero;
 
     //elementos de juego
     private int nMovs;
@@ -100,9 +100,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Casilla cas = (Casilla) view;
 
-        if (!miTurno)
-            Toast.makeText(this, tvMovs.getText().toString(), Toast.LENGTH_SHORT).show();
-
+        if (!miTurno) {
+            Toast.makeText(this, "Turno del rival", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!haySeleccionada) {
             if (cas.getPieza() == null)
                 return;
@@ -117,19 +118,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             pintarFondo();
             if (juez.esValido(juez.casillas, quieroMover, cas)) {
 
-                juez.captura = cas.getPieza() != null;
                 juez.mover(quieroMover, cas);
-
+                //juez.captura = cas.getPieza() != null;
                 if (cliente.isConectado()) {
-                    o = cliente.enviarMov(this,
-                            juez.casillasToString());
+                    if (cliente.enviarMov(this,
+                            juez.casillasToString())) {
+                        //actualizarTxt(cas.getFila(), cas.getColumna());
+                        miTurno = false;
+                        /*juez.sTablero = cliente.esperarMov(this);
+                        Log.i("***", "recibo el tablero: " + juez.sTablero);
+                        juez.inTablero = juez.stringToInt(juez.sTablero);
+                        juez.actualizarCasillas(juez.inTablero);
+                        miTurno = true;*/
+                    } else {
+                        Toast.makeText(this, "Movimiento no válido", Toast.LENGTH_SHORT).show();
+                        Log.e("mov no válido:", "asdasdas");
+                    }
+
                 } else {
                     Log.e("************************", "error");
                 }
-
-                //actualizarTxt(cas.getFila(), cas.getColumna());
-                miTurno = false;
-                //ESPERAR A MI TURNO
             }
         }
         haySeleccionada = !haySeleccionada;
@@ -145,6 +153,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         tvMovs.setText(movs + "  ");
     }
 
+    private void esperarMov(){
+        if (cliente.isConectado()) {
+            Log.i("***", "soy negras");
+            juez.sTablero = cliente.esperarMov(this);
+            Log.i("***", "recibo el tablero: " + juez.sTablero);
+            juez.inTablero = juez.stringToInt(juez.sTablero);
+            juez.actualizarCasillas(juez.inTablero);
+            miTurno = true;
+        } else {
+            Log.e("************************", "error");
+        }
+    }
 
     private void addListeners() {
         pintarFondo();
@@ -172,12 +192,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         soyBlancas = (boolean) o[2];
         miTurno = soyBlancas;
-        if (soyBlancas)
+        if (soyBlancas) {
             vs.setText("(BLANCAS) " + o[0] + " vs " + o[1] + " (NEGRAS)");
-        else
-
+            Toast.makeText(this, "Juegas con blancas", Toast.LENGTH_SHORT).show();
+        } else {
             vs.setText("(BLANCAS) " + o[1] + " vs " + o[0] + " (NEGRAS)");
-
+            Toast.makeText(this, "Juegas con negras", Toast.LENGTH_SHORT).show();
+            esperarMov();
+        }
     }
 
     public class Tablero extends AsyncTask<Void, Void, Void> {
@@ -271,8 +293,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void crearCasillas() {
         boolean cambiar = false;
         int x = 0;
-        for (int i = 0; i < juez.NUM_FILAS; i++) {
-            for (int j = 0; j < juez.NUM_COLUMNAS; j++) {
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
 
                 if (x % 8 == 0) {
                     cambiar = !cambiar;
@@ -337,65 +359,4 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
-
-    /***
-     * Desglose de piezas (positivo - blancas,  negativo - negras):
-     * 0: Casilla Vacía
-     * 1: Rey
-     * 2: Dama
-     * 3: Torre
-     * 4: Alfil
-     * 5: Caballo
-     * 6: Peón
-     */
-    private void crearTablero() {
-
-        tablero = new int[NUM_FILAS][NUM_COLUMNAS];
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                //colocar juez.casillas en blanco
-                tablero[i][j] = 0;
-                //colocar peones negros
-                if (i == 1) {
-                    tablero[i][j] = -6;
-                }
-                //colocar peones blancos
-                if (i == 6) {
-                    tablero[i][j] = 6;
-                }
-            }
-        }
-        //colocar piezas negras
-        tablero[0][0] = -3;
-        tablero[0][7] = -3;
-        tablero[0][1] = -5;
-        tablero[0][6] = -5;
-        tablero[0][2] = -4;
-        tablero[0][5] = -4;
-        tablero[0][3] = -2;
-        tablero[0][4] = -1;
-
-        //colocar piezas blancas
-        tablero[7][0] = 3;
-        tablero[7][7] = 3;
-        tablero[7][1] = 5;
-        tablero[7][6] = 5;
-        tablero[7][2] = 4;
-        tablero[7][5] = 4;
-        tablero[7][3] = 2;
-        tablero[7][4] = 1;
-    }
-
-    public static void mostrarTablero(int[][] tablero) {
-        StringBuilder t = new StringBuilder();
-        for (int i = 0; i < tablero.length; i++) {
-            for (int j = 0; j < tablero[0].length; j++) {
-                t.append(tablero[i][j]).append(" ");
-            }
-            t.append("\n");
-        }
-        Log.i("Tablero: ", "\n" + t);
-    }
-
 }

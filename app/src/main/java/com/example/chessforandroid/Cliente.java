@@ -1,7 +1,5 @@
 package com.example.chessforandroid;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -110,31 +108,74 @@ public class Cliente {
         return o;
     }
 
-    public Object[] enviarMov(Context context, String casillas) {
+    public Boolean enviarMov(Context context, String casillas) {
         this.context = context;
-        Object[] o = null;
+        Boolean o = null;
         try {
+            Log.i("***", "casillas vale:" + casillas);
             o = new EnviarMov().execute(casillas).get();
+
+            Log.i("****","voy a enviar bool:" + o);
+            if (o != null){
+                return o;
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        Log.e("***", "voy a devolver null bool");
         return o;
     }
 
+    public String esperarMov(Context context) {
+        this.context = context;
+        String s = null;
+        try {
+            s = new EsperarMov().execute().get();
+            if (s != null){
+                Log.i("****","devuelvo s:" + s);
+                return s;
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.e("***", "voy a devolver null str");
+        return null;
+    }
 
-    public class EnviarMov extends AsyncTask<String, Void, Object[]>{
 
 
+    public class EsperarMov extends AsyncTask<Void, Void, String>{
         @Override
-        protected Object[] doInBackground(String... strings) {
+        protected String doInBackground(Void... voids) {
             try {
-                out.writeUTF(strings[0]);
+                System.out.println("espero...");
+                return in.readUTF();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return new Object[0];
+            return null;
+        }
+    }
+
+
+    public class EnviarMov extends AsyncTask<String, Void, Boolean>{
+
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            try {
+                Log.i("****","voy a enviar tab:" + strings[0]);
+                out.writeUTF(strings[0]);
+                Log.i("****","espero bool");
+                return in.readBoolean();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 
