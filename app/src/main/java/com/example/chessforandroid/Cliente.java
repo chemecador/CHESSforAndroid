@@ -93,6 +93,11 @@ public class Cliente {
         this.context = context;
         new Local().execute(token);
     }
+    public void esperarMov(Context context, GameActivity ga) {
+        this.context = context;
+        new EsperarMov(ga).execute();
+    }
+
 
     public Object[] getDatosIniciales(Context context, String token) {
         this.context = context;
@@ -108,14 +113,11 @@ public class Cliente {
         return o;
     }
 
-    public Boolean enviarMov(Context context, String casillas) {
+    public Boolean enviarMov(Context context, GameActivity ga, String casillas) {
         this.context = context;
         Boolean o = null;
         try {
-            Log.i("***", "casillas vale:" + casillas);
-            o = new EnviarMov().execute(casillas).get();
-
-            Log.i("****","voy a enviar bool:" + o);
+            o = new EnviarMov(ga).execute(casillas).get();
             if (o != null){
                 return o;
             }
@@ -124,58 +126,60 @@ public class Cliente {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.e("***", "voy a devolver null bool");
         return o;
     }
 
-    public String esperarMov(Context context) {
-        this.context = context;
-        String s = null;
-        try {
-            s = new EsperarMov().execute().get();
-            if (s != null){
-                Log.i("****","devuelvo s:" + s);
-                return s;
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.e("***", "voy a devolver null str");
-        return null;
-    }
-
-
-
     public class EsperarMov extends AsyncTask<Void, Void, String>{
+
+        GameActivity caller;
+
+        EsperarMov(GameActivity caller) {
+            this.caller = caller;
+        }
+
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                System.out.println("espero...");
                 return in.readUTF();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
         }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            caller.onBackgroundTaskCompleted(s);
+        }
+
     }
+
+
 
 
     public class EnviarMov extends AsyncTask<String, Void, Boolean>{
 
+        GameActivity caller;
+
+        EnviarMov(GameActivity caller) {
+            this.caller = caller;
+        }
 
         @Override
         protected Boolean doInBackground(String... strings) {
             try {
-                Log.i("****","voy a enviar tab:" + strings[0]);
                 out.writeUTF(strings[0]);
-                Log.i("****","espero bool");
                 return in.readBoolean();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
+        }
+        @Override
+        protected void onPostExecute(Boolean b) {
+            super.onPostExecute(b);
+            caller.onBackgroundTaskCompleted(b);
         }
     }
 

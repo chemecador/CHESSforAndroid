@@ -121,15 +121,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 juez.mover(quieroMover, cas);
                 //juez.captura = cas.getPieza() != null;
                 if (cliente.isConectado()) {
-                    if (cliente.enviarMov(this,
+                    if (cliente.enviarMov(this, this,
                             juez.casillasToString())) {
                         //actualizarTxt(cas.getFila(), cas.getColumna());
                         miTurno = false;
-                        /*juez.sTablero = cliente.esperarMov(this);
-                        Log.i("***", "recibo el tablero: " + juez.sTablero);
-                        juez.inTablero = juez.stringToInt(juez.sTablero);
-                        juez.actualizarCasillas(juez.inTablero);
-                        miTurno = true;*/
+                        esperarMov();
                     } else {
                         Toast.makeText(this, "Movimiento no válido", Toast.LENGTH_SHORT).show();
                         Log.e("mov no válido:", "asdasdas");
@@ -153,14 +149,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         tvMovs.setText(movs + "  ");
     }
 
+    public void onBackgroundTaskCompleted(String s) {
+        juez.sTablero = s;
+        juez.inTablero = juez.stringToInt(juez.sTablero);
+        juez.actualizarCasillas(juez.inTablero);
+        miTurno = true;
+    }
+
+    public void onBackgroundTaskCompleted(Boolean b) {
+
+    }
+
     private void esperarMov(){
         if (cliente.isConectado()) {
-            Log.i("***", "soy negras");
-            juez.sTablero = cliente.esperarMov(this);
-            Log.i("***", "recibo el tablero: " + juez.sTablero);
-            juez.inTablero = juez.stringToInt(juez.sTablero);
-            juez.actualizarCasillas(juez.inTablero);
-            miTurno = true;
+            cliente.esperarMov(this, this);
         } else {
             Log.e("************************", "error");
         }
