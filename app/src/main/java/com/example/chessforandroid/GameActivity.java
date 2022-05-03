@@ -39,6 +39,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mueven;
     private TextView vs;
     public StringBuilder movs;
+    public String tag;
 
     //tablero
     private boolean haySeleccionada;
@@ -112,57 +113,121 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             cas.setBackgroundColor(Color.parseColor("#36E0FA"));
             quieroMover = cas;
+            tag = quieroMover.getPieza().getTag();
             quieroMover.setPieza(cas.getPieza());
         } else {
 
             pintarFondo();
             if (juez.esValido(juez.casillas, quieroMover, cas)) {
-
+                juez.captura = cas.getPieza() != null;
                 juez.mover(quieroMover, cas);
-                //juez.captura = cas.getPieza() != null;
-                if (cliente.isConectado()) {
-                    if (cliente.enviarMov(this, this,
-                            juez.casillasToString())) {
-                        //actualizarTxt(cas.getFila(), cas.getColumna());
-                        miTurno = false;
-                        esperarMov();
-                    } else {
-                        Toast.makeText(this, "Movimiento no válido", Toast.LENGTH_SHORT).show();
-                        Log.e("mov no válido:", "asdasdas");
-                    }
-
-                } else {
-                    Log.e("************************", "error");
+                nMovs++;
+                if (nMovs % 3 == 0) {
+                    movs.append("\n");
                 }
+
+                actualizarTxt(cas.getFila(), cas.getColumna());
+                juez.sTablero = juez.casillasToString();
+                if (cliente.isConectado()) {
+                    cliente.enviarMov(this, this, juez.casillasToString(), movs.toString());
+                    miTurno = false;
+                    esperarMov();
+                }
+            } else {
+                Log.e("************************", "error");
             }
+
         }
         haySeleccionada = !haySeleccionada;
     }
 
-    private void actualizarTxt(int fila, int col) {
-        //movs = juez.actualizarTxt(juez.coorToChar(fila, col)[0], juez.coorToChar(fila, col)[1]);
 
-        //autoscroll hacia abajo cuando sea necesario
-        final int scrollAmount = tvMovs.getLayout().getLineTop
-                (tvMovs.getLineCount()) - tvMovs.getHeight();
-        tvMovs.scrollTo(0, Math.max(scrollAmount, 0));
-        tvMovs.setText(movs + "  ");
-    }
+    public void trasRecibirMov(Object[] objects) {
 
-    public void onBackgroundTaskCompleted(String s) {
-        juez.sTablero = s;
+        //tablero
+        juez.sTablero = (String) objects[0];
+        //movs actualizados
+        String s = (String) objects[1];
+        Log.i("***", "s vale: " + s);
+        tvMovs.setText(s);
+        Log.i("***", juez.sTablero);
+        //es jaque mate?
+        fin = (boolean) objects[2];
+        //es jaque?
+        juez.jaque = (boolean) objects[3];
+        //puede mover?
+        juez.puedeMover = (boolean) objects[4];
+
+
         juez.inTablero = juez.stringToInt(juez.sTablero);
         juez.actualizarCasillas(juez.inTablero);
         miTurno = true;
     }
 
-    public void onBackgroundTaskCompleted(Boolean b) {
+    public void trasMoverPieza(Object[] objects) {
 
+        //es jaque mate?
+        fin = (boolean) objects[0];
+        //es jaque?
+        juez.jaque = (boolean) objects[1];
+        //puede mover?
+        juez.puedeMover = (boolean) objects[2];
+
+        juez.inTablero = juez.stringToInt(juez.sTablero);
+        juez.actualizarCasillas(juez.inTablero);
     }
 
-    private void esperarMov(){
+
+    private void actualizarTxt(int fila, int col) {
+
+        char[] cs = juez.coorToChar(fila, col);
+        char c1 = cs[0];
+        char c2 = cs[1];
+        movs = new StringBuilder(tvMovs.getText().toString());
+        movs.append("   ").append(nMovs).append(". ");
+        switch (tag) {
+            case "REY":
+                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8'){
+                    movs.append("O-O-O");
+                    return;
+                }
+                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8'){
+                    movs.append("O-O");
+                    return;
+                }
+                movs.append("R");
+                break;
+            case "DAMA":
+                movs.append("D");
+                break;
+            case "ALFIL":
+                movs.append("A");
+                break;
+            case "CABALLO":
+                movs.append("C");
+                break;
+            case "TORRE":
+                movs.append("T");
+                break;
+        }
+        if (juez.captura)
+            movs.append("x");
+
+        movs.append(c1).append(c2);
+        if (juez.jaque)
+            movs.append("+");
+
+        //autoscroll hacia abajo cuando sea necesario
+        final int scrollAmount = tvMovs.getLayout().getLineTop
+                (tvMovs.getLineCount()) - tvMovs.getHeight();
+        tvMovs.scrollTo(0, Math.max(scrollAmount, 0));
+        tvMovs.setText(movs);
+    }
+
+    private void esperarMov() {
         if (cliente.isConectado()) {
             cliente.esperarMov(this, this);
+            nMovs++;
         } else {
             Log.e("************************", "error");
         }
@@ -203,6 +268,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             esperarMov();
         }
     }
+
 
     public class Tablero extends AsyncTask<Void, Void, Void> {
 

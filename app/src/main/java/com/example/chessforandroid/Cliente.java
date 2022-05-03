@@ -93,11 +93,18 @@ public class Cliente {
         this.context = context;
         new Local().execute(token);
     }
+
     public void esperarMov(Context context, GameActivity ga) {
         this.context = context;
         new EsperarMov(ga).execute();
+
+        Log.i("***", "ejecuto esperarmov");
     }
 
+    public void enviarMov(Context context, GameActivity ga, String casillas, String movs) {
+        this.context = context;
+        new EnviarMov(ga).execute(casillas, movs);
+    }
 
     public Object[] getDatosIniciales(Context context, String token) {
         this.context = context;
@@ -113,23 +120,7 @@ public class Cliente {
         return o;
     }
 
-    public Boolean enviarMov(Context context, GameActivity ga, String casillas) {
-        this.context = context;
-        Boolean o = null;
-        try {
-            o = new EnviarMov(ga).execute(casillas).get();
-            if (o != null){
-                return o;
-            }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return o;
-    }
-
-    public class EsperarMov extends AsyncTask<Void, Void, String>{
+    public class EsperarMov extends AsyncTask<Void, Void, Object[]> {
 
         GameActivity caller;
 
@@ -138,27 +129,35 @@ public class Cliente {
         }
 
         @Override
-        protected String doInBackground(Void... voids) {
+        protected Object[] doInBackground(Void... voids) {
+            Object[] objects = new Object[5];
             try {
-                return in.readUTF();
+                //tablero
+                objects[0] = in.readUTF();
+                //movs
+                objects[1] = in.readUTF();
+                //es jaque mate?
+                objects[2] = in.readBoolean();
+                //es jaque?
+                objects[3] = in.readBoolean();
+                //puede mover?
+                objects[4] = in.readBoolean();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return objects;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            caller.onBackgroundTaskCompleted(s);
+        protected void onPostExecute(Object[] objects) {
+            super.onPostExecute(objects);
+            caller.trasRecibirMov(objects);
         }
 
     }
 
 
-
-
-    public class EnviarMov extends AsyncTask<String, Void, Boolean>{
+    public class EnviarMov extends AsyncTask<String, Void, Object[]> {
 
         GameActivity caller;
 
@@ -167,23 +166,33 @@ public class Cliente {
         }
 
         @Override
-        protected Boolean doInBackground(String... strings) {
+        protected Object[] doInBackground(String... strings) {
+            Object[] objects = new Object[3];
             try {
+                //envío las casillas
                 out.writeUTF(strings[0]);
-                return in.readBoolean();
+                //envío movs
+                out.writeUTF(strings[1]);
+                //es jaque mate?
+                objects[0] = in.readBoolean();
+                //es jaque?
+                objects[1] = in.readBoolean();
+                //puede mover?
+                objects[2] = in.readBoolean();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return objects;
         }
+
         @Override
-        protected void onPostExecute(Boolean b) {
-            super.onPostExecute(b);
-            caller.onBackgroundTaskCompleted(b);
+        protected void onPostExecute(Object[] objects) {
+            super.onPostExecute(objects);
+            caller.trasMoverPieza(objects);
         }
     }
 
-    public class DatosIniciales extends AsyncTask<Object, Void, Object[]>{
+    public class DatosIniciales extends AsyncTask<Object, Void, Object[]> {
 
 
         protected Object[] doInBackground(Object... params) {

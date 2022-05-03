@@ -13,12 +13,22 @@ import android.widget.Button;
 /***
  *
  *
+ * TAREA ACTUAL:
+ * arreglar el tvMovs de Local
+ * arreglar el txtVs
+ *
+ *
+ * BUGS CONOCIDOS:
+ * servidor crashea cuando cierras la app en medio de la partida y quieres volver a jugar
+ *
  * IDEAS:
  * pausar partida guardando la posición de las fichas
  *
  * TAREAS EXTRA:
  * ver tabla con usuarios con más ELO / más nivel
  * cambiar contraseña
+ * hash contraseñas
+ * cifrado
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

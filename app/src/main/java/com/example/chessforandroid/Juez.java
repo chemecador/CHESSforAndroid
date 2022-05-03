@@ -1,6 +1,7 @@
 package com.example.chessforandroid;
 
 import static com.example.chessforandroid.OfflineActivity.movs;
+import static com.example.chessforandroid.OfflineActivity.tvMovs;
 import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
 
@@ -19,7 +20,6 @@ public class Juez {
     public boolean jaque;
     public boolean jaqueMate;
     public boolean puedeMover;
-    public int nMovs;
 
     public Juez(){
         inTablero = new int[NUM_FILAS][NUM_COLUMNAS];
@@ -236,9 +236,6 @@ public class Juez {
     }
 
     public boolean mover(Casilla cInicial, Casilla cFinal) {
-
-        if (turno)
-            nMovs++;
 
         if (!cInicial.getPieza().getTag().equalsIgnoreCase("PEON")) {
             for (int i = 0; i < NUM_FILAS; i++) {
@@ -715,44 +712,5 @@ public class Juez {
                 break;
         }
         return ch;
-    }
-
-
-    public StringBuilder actualizarTxt(char c1, char c2) {
-
-        movs.append("   ").append(nMovs).append(". ");
-        switch (OfflineActivity.tag) {
-            case "REY":
-                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8'){
-                    movs.append("O-O-O");
-                    return movs;
-                }
-                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8'){
-                    movs.append("O-O");
-                    return movs;
-                }
-                movs.append("R");
-                break;
-            case "DAMA":
-                movs.append("D");
-                break;
-            case "ALFIL":
-                movs.append("A");
-                break;
-            case "CABALLO":
-                movs.append("C");
-                break;
-            case "TORRE":
-                movs.append("T");
-                break;
-        }
-        if (captura)
-            movs.append("x");
-
-        movs.append(c1).append(c2);
-        if (jaque)
-            movs.append("+");
-
-        return movs;
     }
 }

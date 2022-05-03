@@ -147,13 +147,48 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void actualizarTxt(int fila, int col) {
-        movs = juez.actualizarTxt(juez.coorToChar(fila, col)[0], juez.coorToChar(fila, col)[1]);
+
+        char[] cs = juez.coorToChar(fila, col);
+        char c1 = cs[0];
+        char c2 = cs[1];
+        movs.append("   ").append(nMovs).append(". ");
+        switch (tag) {
+            case "REY":
+                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8'){
+                    movs.append("O-O-O");
+                    return;
+                }
+                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8'){
+                    movs.append("O-O");
+                    return;
+                }
+                movs.append("R");
+                break;
+            case "DAMA":
+                movs.append("D");
+                break;
+            case "ALFIL":
+                movs.append("A");
+                break;
+            case "CABALLO":
+                movs.append("C");
+                break;
+            case "TORRE":
+                movs.append("T");
+                break;
+        }
+        if (juez.captura)
+            movs.append("x");
+
+        movs.append(c1).append(c2);
+        if (juez.jaque)
+            movs.append("+");
 
         //autoscroll hacia abajo cuando sea necesario
         final int scrollAmount = tvMovs.getLayout().getLineTop
                 (tvMovs.getLineCount()) - tvMovs.getHeight();
         tvMovs.scrollTo(0, Math.max(scrollAmount, 0));
-        tvMovs.setText(movs + "  ");
+        tvMovs.setText(movs);
     }
 
 
