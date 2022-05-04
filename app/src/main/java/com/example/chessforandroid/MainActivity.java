@@ -14,8 +14,9 @@ import android.widget.Button;
  *
  *
  * TAREA ACTUAL:
- * arreglar el tvMovs de Local
- * arreglar el txtVs
+ * gestionar jaque
+ * gestionar boton tablas
+ * gestionar boton rendirse
  *
  *
  * BUGS CONOCIDOS:

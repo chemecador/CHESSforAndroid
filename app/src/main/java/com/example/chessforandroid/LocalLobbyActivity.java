@@ -8,19 +8,17 @@ import android.util.Log;
 
 public class LocalLobbyActivity extends AppCompatActivity {
 
-    private String token;
-    private Cliente c;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_local_lobby);
         Intent intent = getIntent();
-        token = intent.getStringExtra("token");
+        String token = intent.getStringExtra("token");
 
-        c = new Cliente();
+        Cliente c = new Cliente();
         if (c.isConectado()){
             c.local(this, token);
+            //finish(); con callback
         } else {
             Log.i ("************************", "error");
         }

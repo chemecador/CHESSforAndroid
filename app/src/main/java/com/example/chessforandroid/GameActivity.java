@@ -36,7 +36,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button tablas;
     private Button rendirse;
     public TextView tvMovs;
-    private TextView mueven;
+    private TextView tvMueven;
     private TextView vs;
     public StringBuilder movs;
     public String tag;
@@ -99,38 +99,39 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        Casilla cas = (Casilla) view;
+        Casilla casSelec = (Casilla) view;
 
         if (!miTurno) {
             Toast.makeText(this, "Turno del rival", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!haySeleccionada) {
-            if (cas.getPieza() == null)
+            if (casSelec.getPieza() == null)
                 return;
-            if (cas.getPieza().isBlancas() != soyBlancas)
+            if (casSelec.getPieza().isBlancas() != soyBlancas)
                 return;
 
-            cas.setBackgroundColor(Color.parseColor("#36E0FA"));
-            quieroMover = cas;
+            casSelec.setBackgroundColor(Color.parseColor("#36E0FA"));
+            quieroMover = casSelec;
             tag = quieroMover.getPieza().getTag();
-            quieroMover.setPieza(cas.getPieza());
+            quieroMover.setPieza(casSelec.getPieza());
         } else {
 
             pintarFondo();
-            if (juez.esValido(juez.casillas, quieroMover, cas)) {
-                juez.captura = cas.getPieza() != null;
-                juez.mover(quieroMover, cas);
-                nMovs++;
-                if (nMovs % 3 == 0) {
+            if (juez.esValido(juez.casillas, quieroMover, casSelec)) {
+                juez.captura = casSelec.getPieza() != null;
+                juez.mover(quieroMover, casSelec);
+                if (nMovs > 0 && nMovs % 3 == 0) {
                     movs.append("\n");
+                    tvMovs.setText(movs);
                 }
-
-                actualizarTxt(cas.getFila(), cas.getColumna());
+                nMovs++;
+                actualizarTxt(casSelec.getFila(), casSelec.getColumna());
                 juez.sTablero = juez.casillasToString();
                 if (cliente.isConectado()) {
                     cliente.enviarMov(this, this, juez.casillasToString(), movs.toString());
                     miTurno = false;
+                    actualizarTurno();
                     esperarMov();
                 }
             } else {
@@ -141,6 +142,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         haySeleccionada = !haySeleccionada;
     }
 
+    private void actualizarTurno() {
+        if (soyBlancas == miTurno)
+            tvMueven.setText(R.string.white_move);
+        else
+            tvMueven.setText(R.string.black_move);
+    }
+
 
     public void trasRecibirMov(Object[] objects) {
 
@@ -148,9 +156,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         juez.sTablero = (String) objects[0];
         //movs actualizados
         String s = (String) objects[1];
-        Log.i("***", "s vale: " + s);
         tvMovs.setText(s);
-        Log.i("***", juez.sTablero);
         //es jaque mate?
         fin = (boolean) objects[2];
         //es jaque?
@@ -162,6 +168,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         juez.inTablero = juez.stringToInt(juez.sTablero);
         juez.actualizarCasillas(juez.inTablero);
         miTurno = true;
+        actualizarTurno();
     }
 
     public void trasMoverPieza(Object[] objects) {
@@ -217,17 +224,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (juez.jaque)
             movs.append("+");
 
-        //autoscroll hacia abajo cuando sea necesario
-        final int scrollAmount = tvMovs.getLayout().getLineTop
-                (tvMovs.getLineCount()) - tvMovs.getHeight();
-        tvMovs.scrollTo(0, Math.max(scrollAmount, 0));
         tvMovs.setText(movs);
     }
 
     private void esperarMov() {
         if (cliente.isConectado()) {
             cliente.esperarMov(this, this);
-            nMovs++;
         } else {
             Log.e("************************", "error");
         }
@@ -236,7 +238,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void addListeners() {
         pintarFondo();
         movs = new StringBuilder();
-        mueven = findViewById(R.id.txtMuevenLocal);
+        tvMueven = findViewById(R.id.txtMuevenLocal);
         vs = findViewById(R.id.txtVs);
         tvMovs = (TextView) findViewById(R.id.txtMovsLocal);
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
@@ -260,10 +262,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         soyBlancas = (boolean) o[2];
         miTurno = soyBlancas;
         if (soyBlancas) {
-            vs.setText("(BLANCAS) " + o[0] + " vs " + o[1] + " (NEGRAS)");
+            vs.setText("(B) " + o[0] + " vs " + o[1] + " (N)");
             Toast.makeText(this, "Juegas con blancas", Toast.LENGTH_SHORT).show();
         } else {
-            vs.setText("(BLANCAS) " + o[1] + " vs " + o[0] + " (NEGRAS)");
+            vs.setText("(B) " + o[1] + " vs " + o[0] + " (N)");
             Toast.makeText(this, "Juegas con negras", Toast.LENGTH_SHORT).show();
             esperarMov();
         }

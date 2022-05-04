@@ -46,4 +46,6 @@
     <string name="waiting">Esperando jugadores...</string>
     <string name="local_net">Jugar en una red local</string>
     <string name="turn">Comienzan las blancas</string>
+    <string name="white_move">Mueven las blancas</string>
+    <string name="black_move">Mueven las negras</string>
 </resources>

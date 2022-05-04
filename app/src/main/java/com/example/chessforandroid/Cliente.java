@@ -97,8 +97,6 @@ public class Cliente {
     public void esperarMov(Context context, GameActivity ga) {
         this.context = context;
         new EsperarMov(ga).execute();
-
-        Log.i("***", "ejecuto esperarmov");
     }
 
     public void enviarMov(Context context, GameActivity ga, String casillas, String movs) {

@@ -87,12 +87,12 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         }
 
 
-        Casilla c = (Casilla) view;
+        Casilla casSelec = (Casilla) view;
 
         if (!haySeleccionada) {
-            if (c.getPieza() == null)
+            if (casSelec.getPieza() == null)
                 return;
-            if (c.getPieza().isBlancas() != juez.turno) {
+            if (casSelec.getPieza().isBlancas() != juez.turno) {
                 if (juez.turno)
                     Toast.makeText(this, "Mueven las blancas", Toast.LENGTH_SHORT).show();
                 else
@@ -100,21 +100,21 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 return;
             }
 
-            c.setBackgroundColor(Color.parseColor("#36E0FA"));
-            quieroMover = c;
-            quieroMover.setPieza(c.getPieza());
+            casSelec.setBackgroundColor(Color.parseColor("#36E0FA"));
+            quieroMover = casSelec;
+            quieroMover.setPieza(casSelec.getPieza());
         } else {
             pintarFondo();
-            if (juez.esValido(juez.casillas, quieroMover, c)) {
+            if (juez.esValido(juez.casillas, quieroMover, casSelec)) {
                 if (juez.turno) {
                     if (nMovs % 3 == 0) {
                         movs.append("\n");
                     }
                     nMovs++;
                 }
-                juez.captura = c.getPieza() != null;
+                juez.captura = casSelec.getPieza() != null;
                 tag = quieroMover.getPieza().getTag();
-                juez.mover(quieroMover, c);
+                juez.mover(quieroMover, casSelec);
                 juez.turno = !juez.turno;
                 if (juez.buscarRey(juez.casillas, juez.turno) == null) {
                     if (juez.turno)
@@ -127,7 +127,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 juez.puedeMover = juez.puedeMover(juez.casillas, juez.turno);
                 juez.jaque = juez.comprobarJaque(juez.casillas);
-                actualizarTxt(c.getFila(), c.getColumna());
+                actualizarTxt(casSelec.getFila(), casSelec.getColumna());
                 if (juez.jaque) {
                     Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
                     juez.buscarRey(juez.casillas, juez.turno).setBackgroundColor(Color.RED);
