@@ -50,6 +50,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private int nMovs;
     private String token;
     private boolean soyBlancas;
+    private boolean quieroTablas;
     private boolean miTurno;
     private Cliente cliente;
     private Juez juez;
@@ -59,6 +60,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         haySeleccionada = false;
+        quieroTablas = false;
         nMovs = 0;
         juez = new Juez();
 
@@ -85,15 +87,40 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (fin)
             return;
 
+        if (quieroTablas && !miTurno) {
+            Toast.makeText(this, "El rival está decidiendo si acepta las tablas", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!miTurno) {
+            Toast.makeText(this, "Turno del rival", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (view.getId() == R.id.bTablasLocal) {
 
-            Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
-            fin = true;
+            quieroTablas = true;
+            tablas.setBackgroundColor(Color.GREEN);
+            Toast.makeText(this, "Tablas ofrecidas al rival", Toast.LENGTH_SHORT).show();
+            if (cliente.isConectado()) {
+                cliente.ofrecerTablas(this, this);
+                miTurno = false;
+                cliente.esperarTablas(this, this);
+            }
             return;
         }
         if (view.getId() == R.id.bRendirseLocal) {
 
-            Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
+            if (soyBlancas) {
+                Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Ganan las blancas", Toast.LENGTH_SHORT).show();
+            }
+
+            if (cliente.isConectado()) {
+                cliente.enviarMov(this, this, "rendirse", movs.toString());
+                miTurno = false;
+            }
 
             fin = true;
             return;
@@ -101,10 +128,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         Casilla casSelec = (Casilla) view;
 
-        if (!miTurno) {
-            Toast.makeText(this, "Turno del rival", Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (!haySeleccionada) {
             if (casSelec.getPieza() == null)
                 return;
@@ -119,6 +142,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             pintarFondo();
             if (juez.esValido(juez.casillas, quieroMover, casSelec)) {
+                quieroTablas = false;
+                tablas.setBackgroundColor(Color.parseColor("#646464"));
                 juez.captura = casSelec.getPieza() != null;
                 juez.mover(quieroMover, casSelec);
                 if (nMovs > 0 && nMovs % 3 == 0) {
@@ -142,25 +167,55 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         haySeleccionada = !haySeleccionada;
     }
 
-    private void actualizarTurno() {
-        if (soyBlancas == miTurno)
-            tvMueven.setText(R.string.white_move);
-        else
-            tvMueven.setText(R.string.black_move);
+
+    public void trasRespuestaTablas(boolean aceptadas){
+        Log.i("****" , "recibo tablas");
+
+        if (aceptadas){
+            Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
+            fin = true;
+        } else {
+            Toast.makeText(this, "El rival ofrece tablas", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cliente.cerrarConexion();
     }
 
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cliente.cerrarConexion();
+    }
+
     public void trasRecibirMov(Object[] objects) {
 
+        String s0 = (String) objects[0];
+        Log.i("***", "s0 vale: " + s0);
+        if (s0.equalsIgnoreCase("rendirse")) {
+
+            Toast.makeText(this, "¡Has ganado por abandono del rival!", Toast.LENGTH_SHORT).show();
+            fin = true;
+            return;
+        }
+
         //tablero
-        juez.sTablero = (String) objects[0];
+        juez.sTablero = s0;
         //movs actualizados
-        String s = (String) objects[1];
-        tvMovs.setText(s);
+        String s1 = (String) objects[1];
+        tvMovs.setText(s1);
         //es jaque mate?
         fin = (boolean) objects[2];
         //es jaque?
         juez.jaque = (boolean) objects[3];
+        if (juez.jaque) {
+            Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
+            Log.i("*****", "jaque");
+        }
         //puede mover?
         juez.puedeMover = (boolean) objects[4];
 
@@ -173,10 +228,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public void trasMoverPieza(Object[] objects) {
 
+        if (objects[0] == null) {
+            return;
+        }
         //es jaque mate?
         fin = (boolean) objects[0];
+        if (fin) {
+            return;
+        }
         //es jaque?
         juez.jaque = (boolean) objects[1];
+        if (juez.jaque) {
+            Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
+            Log.i("*****", "jaque");
+        }
         //puede mover?
         juez.puedeMover = (boolean) objects[2];
 
@@ -185,53 +250,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void actualizarTxt(int fila, int col) {
-
-        char[] cs = juez.coorToChar(fila, col);
-        char c1 = cs[0];
-        char c2 = cs[1];
-        movs = new StringBuilder(tvMovs.getText().toString());
-        movs.append("   ").append(nMovs).append(". ");
-        switch (tag) {
-            case "REY":
-                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8'){
-                    movs.append("O-O-O");
-                    return;
-                }
-                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8'){
-                    movs.append("O-O");
-                    return;
-                }
-                movs.append("R");
-                break;
-            case "DAMA":
-                movs.append("D");
-                break;
-            case "ALFIL":
-                movs.append("A");
-                break;
-            case "CABALLO":
-                movs.append("C");
-                break;
-            case "TORRE":
-                movs.append("T");
-                break;
-        }
-        if (juez.captura)
-            movs.append("x");
-
-        movs.append(c1).append(c2);
-        if (juez.jaque)
-            movs.append("+");
-
-        tvMovs.setText(movs);
-    }
-
     private void esperarMov() {
         if (cliente.isConectado()) {
             cliente.esperarMov(this, this);
         } else {
-            Log.e("************************", "error");
+            Log.e("************************", "Error al esperar movimiento");
         }
     }
 
@@ -247,7 +270,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (cliente.isConectado()) {
             o = cliente.getDatosIniciales(this, token);
         } else {
-            Log.e("************************", "error");
+            Log.e("************************", "Error al recibir los datos iniciales");
         }
 
         tablas = findViewById(R.id.bTablasLocal);
@@ -358,6 +381,56 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 x++;
             }
         }
+    }
+
+
+    private void actualizarTurno() {
+        if (soyBlancas == miTurno)
+            tvMueven.setText(R.string.white_move);
+        else
+            tvMueven.setText(R.string.black_move);
+    }
+
+    private void actualizarTxt(int fila, int col) {
+
+        char[] cs = juez.coorToChar(fila, col);
+        char c1 = cs[0];
+        char c2 = cs[1];
+        movs = new StringBuilder(tvMovs.getText().toString());
+        movs.append("   ").append(nMovs).append(". ");
+        switch (tag) {
+            case "REY":
+                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8') {
+                    movs.append("O-O-O");
+                    return;
+                }
+                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8') {
+                    movs.append("O-O");
+                    return;
+                }
+                movs.append("R");
+                break;
+            case "DAMA":
+                movs.append("D");
+                break;
+            case "ALFIL":
+                movs.append("A");
+                break;
+            case "CABALLO":
+                movs.append("C");
+                break;
+            case "TORRE":
+                movs.append("T");
+                break;
+        }
+        if (juez.captura)
+            movs.append("x");
+
+        movs.append(c1).append(c2);
+        if (juez.jaque)
+            movs.append("+");
+
+        tvMovs.setText(movs);
     }
 
     public void crearCasillas() {

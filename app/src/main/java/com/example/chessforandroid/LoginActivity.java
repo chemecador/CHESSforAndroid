@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,6 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 c = new Cliente();
                 if (c.isConectado()) {
+                    Log.i("**", "user: " + user.getText().toString());
                     c.iniciarSesion(this, user.getText().toString(), pass.getText().toString());
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();

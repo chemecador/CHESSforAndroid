@@ -104,19 +104,58 @@ public class Cliente {
         new EnviarMov(ga).execute(casillas, movs);
     }
 
-    public Object[] getDatosIniciales(Context context, String token) {
+    public void ofrecerTablas(Context context, GameActivity ga) {
         this.context = context;
-        this.token = token;
-        Object[] o = null;
-        try {
-            o = new DatosIniciales().execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return o;
+        //new EnviarTablas(ga).execute();
     }
+
+    public void esperarTablas(Context context, GameActivity ga) {
+        this.context = context;
+        //new EsperarTablas(ga).execute();
+    }
+
+
+    public class EnviarMov extends AsyncTask<String, Void, Object[]> {
+
+        GameActivity caller;
+
+        EnviarMov(GameActivity caller) {
+            this.caller = caller;
+        }
+
+        @Override
+        protected Object[] doInBackground(String... strings) {
+            Object[] objects = new Object[3];
+            try {
+                //envío las casillas
+                out.writeUTF(strings[0]);
+                System.out.println("he enviado: " + strings[0]);
+
+                if (strings[0].equalsIgnoreCase("rendirse")){
+                    return objects;
+                }
+
+                //envío movs
+                out.writeUTF(strings[1]);
+                //es jaque mate?
+                objects[0] = in.readBoolean();
+                //es jaque?
+                objects[1] = in.readBoolean();
+                //puede mover?
+                objects[2] = in.readBoolean();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return objects;
+        }
+
+        @Override
+        protected void onPostExecute(Object[] objects) {
+            super.onPostExecute(objects);
+            caller.trasMoverPieza(objects);
+        }
+    }
+
 
     public class EsperarMov extends AsyncTask<Void, Void, Object[]> {
 
@@ -131,7 +170,12 @@ public class Cliente {
             Object[] objects = new Object[5];
             try {
                 //tablero
-                objects[0] = in.readUTF();
+                String s = in.readUTF();
+                objects[0] = s;
+                System.out.println("he recibido: " + s);
+                if (s.equalsIgnoreCase("rendirse")){
+                    return objects;
+                }
                 //movs
                 objects[1] = in.readUTF();
                 //es jaque mate?
@@ -155,39 +199,18 @@ public class Cliente {
     }
 
 
-    public class EnviarMov extends AsyncTask<String, Void, Object[]> {
-
-        GameActivity caller;
-
-        EnviarMov(GameActivity caller) {
-            this.caller = caller;
+    public Object[] getDatosIniciales(Context context, String token) {
+        this.context = context;
+        this.token = token;
+        Object[] o = null;
+        try {
+            o = new DatosIniciales().execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
-        @Override
-        protected Object[] doInBackground(String... strings) {
-            Object[] objects = new Object[3];
-            try {
-                //envío las casillas
-                out.writeUTF(strings[0]);
-                //envío movs
-                out.writeUTF(strings[1]);
-                //es jaque mate?
-                objects[0] = in.readBoolean();
-                //es jaque?
-                objects[1] = in.readBoolean();
-                //puede mover?
-                objects[2] = in.readBoolean();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return objects;
-        }
-
-        @Override
-        protected void onPostExecute(Object[] objects) {
-            super.onPostExecute(objects);
-            caller.trasMoverPieza(objects);
-        }
+        return o;
     }
 
     public class DatosIniciales extends AsyncTask<Object, Void, Object[]> {
