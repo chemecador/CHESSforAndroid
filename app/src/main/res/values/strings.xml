@@ -47,5 +47,10 @@
     <string name="local_net">Jugar en una red local</string>
     <string name="turn">Comienzan las blancas</string>
     <string name="white_move">Mueven las blancas</string>
+    <string name="you_win">¡Has ganado!</string>
+    <string name="you_lose">¡Has perdido!</string>
     <string name="black_move">Mueven las negras</string>
+    <string name="winner">El ganador es </string>
+    <string name="draw_offered">El rival ofrece tablas</string>
+    <string name="draw_accepted">Tablas por mutuo acuerdo</string>
 </resources>

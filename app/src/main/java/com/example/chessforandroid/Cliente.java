@@ -104,15 +104,55 @@ public class Cliente {
         new EnviarMov(ga).execute(casillas, movs);
     }
 
+
     public void ofrecerTablas(Context context, GameActivity ga) {
         this.context = context;
-        //new EnviarTablas(ga).execute();
+        new EnviarTablas(ga).execute();
     }
 
-    public void esperarTablas(Context context, GameActivity ga) {
-        this.context = context;
-        //new EsperarTablas(ga).execute();
+    public void enviarMensaje(String s) {
+        new EnviarMensaje().execute(s);
     }
+
+    public class EnviarMensaje extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            try {
+                Log.i("***", "envio: " + strings[0]);
+                out.writeUTF(strings[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public class EnviarTablas extends AsyncTask<Void, Void, Boolean> {
+
+        GameActivity caller;
+
+        EnviarTablas(GameActivity caller) {
+            this.caller = caller;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                out.writeUTF("tablas");
+                return in.readBoolean();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean b) {
+            super.onPostExecute(b);
+            caller.trasOfrecerTablas(b);
+        }
+    }
+
 
 
     public class EnviarMov extends AsyncTask<String, Void, Object[]> {
@@ -129,9 +169,10 @@ public class Cliente {
             try {
                 //envío las casillas
                 out.writeUTF(strings[0]);
-                System.out.println("he enviado: " + strings[0]);
+                Log.i("*****","envio mov: " + strings[0]);
 
-                if (strings[0].equalsIgnoreCase("rendirse")){
+                if (strings[0].equalsIgnoreCase("rendirse") ||
+                        strings[0].equalsIgnoreCase("tablas")){
                     return objects;
                 }
 
@@ -169,11 +210,13 @@ public class Cliente {
         protected Object[] doInBackground(Void... voids) {
             Object[] objects = new Object[5];
             try {
+                Log.i("****","estoy esperando movimiento...");
                 //tablero
                 String s = in.readUTF();
                 objects[0] = s;
-                System.out.println("he recibido: " + s);
-                if (s.equalsIgnoreCase("rendirse")){
+                Log.i("**", "he recibido: " + s);
+                if (s.equalsIgnoreCase("rendirse") ||
+                        s.equalsIgnoreCase("tablas")){
                     return objects;
                 }
                 //movs

@@ -3,8 +3,11 @@ package com.example.chessforandroid;
 import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -40,6 +43,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private TextView vs;
     public StringBuilder movs;
     public String tag;
+    public String rival;
+    public String yo;
 
     //tablero
     private boolean haySeleccionada;
@@ -48,6 +53,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     //elementos de juego
     private int nMovs;
+    private int contadorTablas;
     private String token;
     private boolean soyBlancas;
     private boolean quieroTablas;
@@ -62,6 +68,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         haySeleccionada = false;
         quieroTablas = false;
         nMovs = 0;
+        contadorTablas = 0;
         juez = new Juez();
 
         setContentView(R.layout.activity_game);
@@ -98,6 +105,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (view.getId() == R.id.bTablasLocal) {
+            if (contadorTablas > 3){
+                Toast.makeText(this, "Ya has solicitado tablas 3 veces", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             quieroTablas = true;
             tablas.setBackgroundColor(Color.GREEN);
@@ -105,7 +116,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             if (cliente.isConectado()) {
                 cliente.ofrecerTablas(this, this);
                 miTurno = false;
-                cliente.esperarTablas(this, this);
             }
             return;
         }
@@ -168,14 +178,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void trasRespuestaTablas(boolean aceptadas){
-        Log.i("****" , "recibo tablas");
-
+    public void trasOfrecerTablas(boolean aceptadas){
+        Log.i("***", "me han aceptado las tablas? " + aceptadas);
         if (aceptadas){
             Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
+            tablas.setBackgroundColor(Color.GREEN);
             fin = true;
         } else {
-            Toast.makeText(this, "El rival ofrece tablas", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El rival rechaza las tablas", Toast.LENGTH_SHORT).show();
+            miTurno = true;
+            tablas.setBackgroundColor(Color.parseColor("#646464"));
+            contadorTablas++;
         }
     }
 
@@ -192,6 +205,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         cliente.cerrarConexion();
     }
 
+
     public void trasRecibirMov(Object[] objects) {
 
         String s0 = (String) objects[0];
@@ -202,6 +216,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             fin = true;
             return;
         }
+        if (s0.equalsIgnoreCase("tablas")) {
+
+            gestionarTablas();
+            miTurno = false;
+            return;
+        }
 
         //tablero
         juez.sTablero = s0;
@@ -209,7 +229,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         String s1 = (String) objects[1];
         tvMovs.setText(s1);
         //es jaque mate?
+        Log.i("***", "es jm?" + objects[0]);
         fin = (boolean) objects[2];
+        if (fin){
+            gestionarFinal(soyBlancas != miTurno);
+            return;
+        }
         //es jaque?
         juez.jaque = (boolean) objects[3];
         if (juez.jaque) {
@@ -226,14 +251,75 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         actualizarTurno();
     }
 
+    public void gestionarFinal(Boolean ganoBlancas){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String ganador = null;
+        if (ganoBlancas == null) {
+            builder.setTitle(R.string.draw);
+            builder.setMessage(R.string.draw_accepted);
+        }
+        if(ganoBlancas && soyBlancas){
+            builder.setTitle(R.string.you_win);
+            ganador = "El ganador es " + yo;
+        }
+        if(ganoBlancas && !soyBlancas){
+            builder.setTitle(R.string.you_lose);
+            ganador = "El ganador es " + rival;
+        }
+        if(!ganoBlancas && soyBlancas){
+            builder.setTitle(R.string.you_lose);
+            ganador = "El ganador es " + rival;
+        }
+        if(!ganoBlancas && !soyBlancas){
+            builder.setTitle(R.string.you_win);
+            ganador = "El ganador es " + yo;
+        }
+        builder.setMessage(ganador);
+        builder.setPositiveButton(R.string.accept, null);
+        Dialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void gestionarTablas() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.draw);
+        builder.setMessage(R.string.draw_offered);
+        builder.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (cliente.isConectado()) {
+                    cliente.enviarMensaje("aceptadas");
+                    Toast.makeText(GameActivity.this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
+                    fin = true;
+                    gestionarFinal(null);
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (cliente.isConectado()) {
+                    cliente.enviarMensaje("rechazadas");
+                    Toast.makeText(GameActivity.this, "Tablas rechazadas", Toast.LENGTH_SHORT).show();
+                }
+                esperarMov();
+            }
+        });
+        Dialog dialog = builder.create();
+        dialog.show();
+    }
+
     public void trasMoverPieza(Object[] objects) {
 
         if (objects[0] == null) {
+            Log.i("***", "obj[0] es null");
             return;
         }
         //es jaque mate?
+        Log.i("***", "es jm?" + objects[0]);
         fin = (boolean) objects[0];
         if (fin) {
+            gestionarFinal(soyBlancas == miTurno);
             return;
         }
         //es jaque?
@@ -283,12 +369,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         soyBlancas = (boolean) o[2];
+        yo = (String) o[0];
+        rival = (String) o[1];
         miTurno = soyBlancas;
         if (soyBlancas) {
-            vs.setText("(B) " + o[0] + " vs " + o[1] + " (N)");
+            vs.setText("(B) " + yo + " vs " + rival + " (N)");
             Toast.makeText(this, "Juegas con blancas", Toast.LENGTH_SHORT).show();
         } else {
-            vs.setText("(B) " + o[1] + " vs " + o[0] + " (N)");
+            vs.setText("(B) " + rival + " vs " + yo + " (N)");
             Toast.makeText(this, "Juegas con negras", Toast.LENGTH_SHORT).show();
             esperarMov();
         }
