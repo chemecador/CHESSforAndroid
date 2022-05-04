@@ -179,7 +179,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void trasOfrecerTablas(boolean aceptadas){
-        Log.i("***", "me han aceptado las tablas? " + aceptadas);
         if (aceptadas){
             Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
             tablas.setBackgroundColor(Color.GREEN);
@@ -209,7 +208,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void trasRecibirMov(Object[] objects) {
 
         String s0 = (String) objects[0];
-        Log.i("***", "s0 vale: " + s0);
         if (s0.equalsIgnoreCase("rendirse")) {
 
             Toast.makeText(this, "¡Has ganado por abandono del rival!", Toast.LENGTH_SHORT).show();
@@ -229,17 +227,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         String s1 = (String) objects[1];
         tvMovs.setText(s1);
         //es jaque mate?
-        Log.i("***", "es jm?" + objects[0]);
         fin = (boolean) objects[2];
         if (fin){
-            gestionarFinal(soyBlancas != miTurno);
+            gestionarFinal(miTurno == soyBlancas);
             return;
         }
         //es jaque?
         juez.jaque = (boolean) objects[3];
         if (juez.jaque) {
             Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
-            Log.i("*****", "jaque");
         }
         //puede mover?
         juez.puedeMover = (boolean) objects[4];
@@ -312,21 +308,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void trasMoverPieza(Object[] objects) {
 
         if (objects[0] == null) {
-            Log.i("***", "obj[0] es null");
             return;
         }
         //es jaque mate?
-        Log.i("***", "es jm?" + objects[0]);
         fin = (boolean) objects[0];
         if (fin) {
-            gestionarFinal(soyBlancas == miTurno);
+            gestionarFinal(miTurno != soyBlancas);
             return;
         }
         //es jaque?
         juez.jaque = (boolean) objects[1];
         if (juez.jaque) {
             Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
-            Log.i("*****", "jaque");
         }
         //puede mover?
         juez.puedeMover = (boolean) objects[2];

@@ -54,8 +54,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_offline);
         crearCasillas();
 
-        this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoard);
-        this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoard);
+        this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoardOffline);
+        this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoardOffline);
         Tablero t = new Tablero();
         t.execute();
 
@@ -69,13 +69,13 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         if (fin)
             return;
 
-        if (view.getId() == R.id.bTablas) {
+        if (view.getId() == R.id.bTablasOffline) {
 
             Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
             fin = true;
             return;
         }
-        if (view.getId() == R.id.bRendirse) {
+        if (view.getId() == R.id.bRendirseOffline) {
 
             if (juez.turno) {
                 Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
@@ -195,12 +195,12 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     private void addListeners() {
         pintarFondo();
         movs = new StringBuilder();
-        mueven = findViewById(R.id.txtMueven);
-        tvMovs = (TextView) findViewById(R.id.txtMovs);
+        mueven = findViewById(R.id.txtMuevenOffline);
+        tvMovs = (TextView) findViewById(R.id.txtMovsOffline);
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
 
-        tablas = findViewById(R.id.bTablas);
-        rendirse = findViewById(R.id.bRendirse);
+        tablas = findViewById(R.id.bTablasOffline);
+        rendirse = findViewById(R.id.bRendirseOffline);
         tablas.setOnClickListener(this);
         rendirse.setOnClickListener(this);
         for (int i = 0; i < NUM_FILAS; i++) {

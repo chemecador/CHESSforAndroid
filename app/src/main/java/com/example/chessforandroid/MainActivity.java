@@ -14,16 +14,14 @@ import android.widget.Button;
  *
  *
  * TAREA ACTUAL:
- * gestionar jaque
- * gestionar boton tablas
- * gestionar boton rendirse
+ * gestionar postpartida en la bbdd
  *
  *
  * BUGS CONOCIDOS:
  * servidor crashea cuando cierras la app en medio de la partida y quieres volver a jugar
  *
  * IDEAS:
- * pausar partida guardando la posición de las fichas
+ * pausar partida guardando la posición de las piezas
  *
  * TAREAS EXTRA:
  * ver tabla con usuarios con más ELO / más nivel

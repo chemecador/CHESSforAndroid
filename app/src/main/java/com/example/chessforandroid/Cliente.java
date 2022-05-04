@@ -169,7 +169,6 @@ public class Cliente {
             try {
                 //envío las casillas
                 out.writeUTF(strings[0]);
-                Log.i("*****","envio mov: " + strings[0]);
 
                 if (strings[0].equalsIgnoreCase("rendirse") ||
                         strings[0].equalsIgnoreCase("tablas")){
@@ -210,11 +209,9 @@ public class Cliente {
         protected Object[] doInBackground(Void... voids) {
             Object[] objects = new Object[5];
             try {
-                Log.i("****","estoy esperando movimiento...");
                 //tablero
                 String s = in.readUTF();
                 objects[0] = s;
-                Log.i("**", "he recibido: " + s);
                 if (s.equalsIgnoreCase("rendirse") ||
                         s.equalsIgnoreCase("tablas")){
                     return objects;
