@@ -110,7 +110,7 @@ public class Cliente {
         new EnviarTablas(ga).execute();
     }
 
-    public void enviarMensaje(String s) {
+    public void enviarMensaje(String... s) {
         new EnviarMensaje().execute(s);
     }
 

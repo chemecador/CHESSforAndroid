@@ -26,7 +26,6 @@ import android.widget.Button;
  * TAREAS EXTRA:
  * ver tabla con usuarios con más ELO / más nivel
  * cambiar contraseña
- * hash contraseñas
  * cifrado
  *
  */
@@ -38,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String user;
     private String token;
     private Cliente c;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.menu_perfil:
                 if (user.length() > 0) {
                     c = new Cliente();
-                    if (c.isConectado()){
+                    if (c.isConectado()) {
                         c.pedirDatos(this, user);
                     }
                     return true;
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.menu_acercade:
                 startActivity(new Intent(this, AboutUsActivity.class));
-                 break;
+                break;
 
         }
         return super.onOptionsItemSelected(item);

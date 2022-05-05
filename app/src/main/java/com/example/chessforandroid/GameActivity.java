@@ -105,7 +105,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (view.getId() == R.id.bTablasLocal) {
-            if (contadorTablas > 3){
+            if (contadorTablas > 3) {
                 Toast.makeText(this, "Ya has solicitado tablas 3 veces", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -121,18 +121,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (view.getId() == R.id.bRendirseLocal) {
 
-            if (soyBlancas) {
-                Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Ganan las blancas", Toast.LENGTH_SHORT).show();
-            }
 
             if (cliente.isConectado()) {
                 cliente.enviarMov(this, this, "rendirse", movs.toString());
                 miTurno = false;
             }
-
             fin = true;
+            gestionarFinal(!soyBlancas);
             return;
         }
 
@@ -178,8 +173,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void trasOfrecerTablas(boolean aceptadas){
-        if (aceptadas){
+    public void trasOfrecerTablas(boolean aceptadas) {
+        if (aceptadas) {
             Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
             tablas.setBackgroundColor(Color.GREEN);
             fin = true;
@@ -211,12 +206,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (s0.equalsIgnoreCase("rendirse")) {
 
             Toast.makeText(this, "¡Has ganado por abandono del rival!", Toast.LENGTH_SHORT).show();
+            gestionarFinal(soyBlancas);
             fin = true;
             return;
         }
         if (s0.equalsIgnoreCase("tablas")) {
 
-            gestionarTablas();
+            propuestaTablas();
             miTurno = false;
             return;
         }
@@ -228,7 +224,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         tvMovs.setText(s1);
         //es jaque mate?
         fin = (boolean) objects[2];
-        if (fin){
+        if (fin) {
             gestionarFinal(miTurno == soyBlancas);
             return;
         }
@@ -247,36 +243,41 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         actualizarTurno();
     }
 
-    public void gestionarFinal(Boolean ganoBlancas){
+    public void gestionarFinal(Boolean ganoBlancas) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String ganador = null;
         if (ganoBlancas == null) {
             builder.setTitle(R.string.draw);
             builder.setMessage(R.string.draw_accepted);
+
+            builder.setPositiveButton(R.string.accept, null);
+            Dialog dialog = builder.create();
+            dialog.show();
+            return;
         }
-        if(ganoBlancas && soyBlancas){
+        if (ganoBlancas && soyBlancas) {
             builder.setTitle(R.string.you_win);
-            ganador = "El ganador es " + yo;
+            ganador = yo;
         }
-        if(ganoBlancas && !soyBlancas){
+        if (ganoBlancas && !soyBlancas) {
             builder.setTitle(R.string.you_lose);
-            ganador = "El ganador es " + rival;
+            ganador = rival;
         }
-        if(!ganoBlancas && soyBlancas){
+        if (!ganoBlancas && soyBlancas) {
             builder.setTitle(R.string.you_lose);
-            ganador = "El ganador es " + rival;
+            ganador = rival;
         }
-        if(!ganoBlancas && !soyBlancas){
+        if (!ganoBlancas && !soyBlancas) {
             builder.setTitle(R.string.you_win);
-            ganador = "El ganador es " + yo;
+            ganador = yo;
         }
-        builder.setMessage(ganador);
+        builder.setMessage("El ganador es " + ganador);
         builder.setPositiveButton(R.string.accept, null);
         Dialog dialog = builder.create();
         dialog.show();
     }
 
-    private void gestionarTablas() {
+    private void propuestaTablas() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.draw);
         builder.setMessage(R.string.draw_offered);
