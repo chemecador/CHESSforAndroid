@@ -14,7 +14,6 @@ import android.widget.Button;
  *
  *
  * TAREA ACTUAL:
- * gestionar postpartida en la bbdd
  *
  *
  * BUGS CONOCIDOS:
@@ -25,7 +24,6 @@ import android.widget.Button;
  *
  * TAREAS EXTRA:
  * ver tabla con usuarios con más ELO / más nivel
- * cambiar contraseña
  * cifrado
  *
  */

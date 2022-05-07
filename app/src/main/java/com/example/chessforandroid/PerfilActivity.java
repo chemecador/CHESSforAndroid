@@ -12,6 +12,7 @@ import android.widget.Toast;
 public class PerfilActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button cerrarSesion;
+    private Button cambiarPass;
     private TextView username, nivel, elo, jugadas, victorias, tablas, derrotas;
     private String user;
     private int[] datos;
@@ -41,6 +42,8 @@ public class PerfilActivity extends AppCompatActivity implements View.OnClickLis
         derrotas.setText(String.valueOf(datos[4]));
         tablas.setText(String.valueOf(datos[5]));
 
+        cambiarPass = findViewById(R.id.bCambiarPass);
+        cambiarPass.setOnClickListener(this);
         cerrarSesion = findViewById(R.id.bCerrarSesion);
         cerrarSesion.setOnClickListener(this);
     }
@@ -48,7 +51,15 @@ public class PerfilActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
 
-        Toast.makeText(PerfilActivity.this, "cerrando sesión...", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, LoginActivity.class));
+        if (view.getId() == R.id.bCambiarPass){
+            Intent i = new Intent(this, PasswordActivity.class);
+            i.putExtra("user", user);
+            startActivity(i);
+        }
+        if (view.getId() == R.id.bCerrarSesion){
+            Toast.makeText(PerfilActivity.this, "cerrando sesión...", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
     }
 }

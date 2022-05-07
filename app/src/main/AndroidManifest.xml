@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CHESSForAndroid">
         <activity
+            android:name=".PasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".GameActivity"
             android:exported="false" />
         <activity

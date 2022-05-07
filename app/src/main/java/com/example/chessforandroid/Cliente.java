@@ -73,6 +73,11 @@ public class Cliente {
         new InicioSesion().execute(user, pass);
     }
 
+    public void cambiarPass(Context context, String user, String oldPass, String newPass) {
+        this.context = context;
+        new CambiarPass().execute(user, oldPass, newPass);
+    }
+
     public void pedirDatos(Context context, String user) {
         this.context = context;
         new PedirDatos().execute(user);
@@ -114,6 +119,7 @@ public class Cliente {
         new EnviarMensaje().execute(s);
     }
 
+
     public class EnviarMensaje extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... strings) {
@@ -154,7 +160,6 @@ public class Cliente {
     }
 
 
-
     public class EnviarMov extends AsyncTask<String, Void, Object[]> {
 
         GameActivity caller;
@@ -171,7 +176,7 @@ public class Cliente {
                 out.writeUTF(strings[0]);
 
                 if (strings[0].equalsIgnoreCase("rendirse") ||
-                        strings[0].equalsIgnoreCase("tablas")){
+                        strings[0].equalsIgnoreCase("tablas")) {
                     return objects;
                 }
 
@@ -213,7 +218,7 @@ public class Cliente {
                 String s = in.readUTF();
                 objects[0] = s;
                 if (s.equalsIgnoreCase("rendirse") ||
-                        s.equalsIgnoreCase("tablas")){
+                        s.equalsIgnoreCase("tablas")) {
                     return objects;
                 }
                 //movs
@@ -394,6 +399,38 @@ public class Cliente {
                 default:
                     Log.e("**", "Error de conexión con la base de datos");
                     break;
+            }
+            cerrarConexion();
+        }
+    }
+
+    public class CambiarPass extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            try {
+                user = strings[0];
+                out.writeUTF("cambiarpass");
+                //envio el user
+                out.writeUTF(strings[0]);
+                //enviar la pass vieja
+                out.writeUTF(strings[1]);
+                //enviar la pass nueva
+                out.writeUTF(strings[2]);
+                return in.readBoolean();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean b) {
+            super.onPostExecute(b);
+            if (b) {
+                Toast.makeText(context, "Contraseña cambiada correctamente", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Nombre de usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
             }
             cerrarConexion();
         }
