@@ -8,7 +8,7 @@
     android:layout_margin="15dp"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".PerfilActivity">
+    tools:context=".ProfileActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,13 +37,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="10dp"
                 android:text="@string/username" />
 
             <TextView
                 android:id="@+id/pUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingLeft="10dp" />
 
         </LinearLayout>
 
@@ -57,13 +60,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="10dp"
                 android:text="@string/level" />
 
             <TextView
                 android:id="@+id/pNivel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingLeft="10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -76,13 +82,54 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="10dp"
                 android:text="@string/elo" />
 
             <TextView
                 android:id="@+id/pElo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingLeft="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_weight="1"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="10dp"
+                    android:text="@string/show_achievements" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/ibMisiones"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    app:srcCompat="@android:drawable/btn_star_big_on" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <TextView
@@ -106,14 +153,18 @@
                 android:id="@+id/textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="10dp"
                 android:text="@string/total" />
 
             <TextView
                 android:id="@+id/pJugadas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingLeft="10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -126,13 +177,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="10dp"
                 android:text="@string/wins" />
 
             <TextView
                 android:id="@+id/pGanadas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingLeft="10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -145,13 +199,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="10dp"
                 android:text="@string/loss" />
 
             <TextView
                 android:id="@+id/pDerrotas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingLeft="10dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -164,13 +221,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="10dp"
                 android:text="@string/draws" />
 
             <TextView
                 android:id="@+id/pTablas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingLeft="10dp" />
         </LinearLayout>
 
         <LinearLayout

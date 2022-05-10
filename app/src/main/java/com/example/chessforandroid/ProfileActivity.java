@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PerfilActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button cerrarSesion;
-    private Button cambiarPass;
+    private Button cerrarSesion, cambiarPass;
+    private ImageButton ibMisiones;
     private TextView username, nivel, elo, jugadas, victorias, tablas, derrotas;
     private String user;
     private int[] datos;
@@ -21,7 +22,7 @@ public class PerfilActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perfil);
+        setContentView(R.layout.activity_profile);
 
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
@@ -34,6 +35,7 @@ public class PerfilActivity extends AppCompatActivity implements View.OnClickLis
         victorias = (TextView) findViewById(R.id.pGanadas);
         derrotas = (TextView) findViewById(R.id.pDerrotas);
         tablas = (TextView) findViewById(R.id.pTablas);
+
         username.setText(user);
         nivel.setText(String.valueOf(datos[0]));
         elo.setText(String.valueOf(datos[1]));
@@ -44,8 +46,12 @@ public class PerfilActivity extends AppCompatActivity implements View.OnClickLis
 
         cambiarPass = findViewById(R.id.bCambiarPass);
         cambiarPass.setOnClickListener(this);
+
         cerrarSesion = findViewById(R.id.bCerrarSesion);
         cerrarSesion.setOnClickListener(this);
+
+        ibMisiones = findViewById(R.id.ibMisiones);
+        ibMisiones.setOnClickListener(this);
     }
 
     @Override
@@ -57,8 +63,14 @@ public class PerfilActivity extends AppCompatActivity implements View.OnClickLis
             startActivity(i);
         }
         if (view.getId() == R.id.bCerrarSesion){
-            Toast.makeText(PerfilActivity.this, "cerrando sesión...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ProfileActivity.this, "cerrando sesión...", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, LoginActivity.class));
+        }
+        if (view.getId() == R.id.ibMisiones){
+            Intent i = new Intent(this, AchievementsActivity.class);
+            i.putExtra("user", user);
+            i.putExtra("victorias", victorias.getText().toString());
+            startActivity(i);
         }
 
     }

@@ -20,7 +20,6 @@
     <string name="preferences">Preferencias</string>
     <string name="level">Nivel:</string>
     <string name="elo">ELO:</string>
-    <string name="my_account">MI CUENTA:</string>
     <string name="history">Historial</string>
     <string name="wins">Victorias:</string>
     <string name="loss">Derrotas:</string>
@@ -56,4 +55,9 @@
     <string name="change_pass">Cambiar contraseña</string>
     <string name="old_pass">Contraseña antigua:</string>
     <string name="new_pass">Nueva contraseña:</string>
+    <string name="my_account">Mi cuenta</string>
+    <string name="show_achievements">Mostrar logros:</string>
+    <string name="win_10">Gana 10 partidas</string>
+    <string name="win_20">Gana 20 partidas</string>
+    <string name="win_30">Gana 30 partidas</string>
 </resources>

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -15,9 +16,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button login;
     private Button signUp;
     private Button invitado;
+    private TextView tvChess;
     private EditText user;
     private EditText pass;
     private Cliente c;
+    private int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         invitado = findViewById(R.id.bInvitado);
         invitado.setOnClickListener(this);
+
+        tvChess = findViewById(R.id.txtChess);
+        tvChess.setOnClickListener(this);
+
+        i = 0;
     }
 
     @Override
@@ -76,6 +84,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 mainIntentOffline.putExtra("user", "");
                 startActivity(mainIntentOffline);
                 finish();
+                break;
+            case R.id.txtVersion:
+                Toast.makeText(this, "lo toco "+i, Toast.LENGTH_SHORT).show();
+                i++;
+                if (i > 7) {
+                    startActivity(new Intent(this, AdvancedActivity.class));
+                }
                 break;
         }
     }

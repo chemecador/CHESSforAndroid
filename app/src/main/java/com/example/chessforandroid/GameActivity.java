@@ -195,14 +195,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         Log.i("********************************************************************", "socket cerrado en onPause()");
-        cliente.cerrarConexion();
+        cliente.abandonar();
+        //cliente.cerrarConexion();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.i("********************************************************************", "socket cerrado en onDestroy()");
-        cliente.cerrarConexion();
+        //cliente.cerrarConexion();
     }
 
 
@@ -210,7 +211,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         Log.i("********************************************************************", "socket cerrado en onStop()");
-        cliente.cerrarConexion();
+        //cliente.cerrarConexion();
     }
 
 

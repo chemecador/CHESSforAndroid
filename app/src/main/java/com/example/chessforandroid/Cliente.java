@@ -119,16 +119,27 @@ public class Cliente {
         new EnviarMensaje().execute(s);
     }
 
+    public void abandonar() {
+        enviarMensaje("abandonar");
+    }
 
-    public class EnviarMensaje extends AsyncTask<String, Void, Void> {
+
+    public class EnviarMensaje extends AsyncTask<String, Void, String> {
         @Override
-        protected Void doInBackground(String... strings) {
+        protected String doInBackground(String... strings) {
             try {
                 out.writeUTF(strings[0]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return strings[0];
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s.equalsIgnoreCase("abandonar")){
+                //cerrarConexion();
+            }
         }
     }
 
@@ -519,7 +530,7 @@ public class Cliente {
             for (int i = 0; i < res.length; i++) {
                 datos[i] = res[i];
             }
-            Intent i = new Intent(context, PerfilActivity.class);
+            Intent i = new Intent(context, ProfileActivity.class);
             i.putExtra("user", user);
             i.putExtra("datos", datos);
             cerrarConexion();
