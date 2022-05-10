@@ -94,9 +94,9 @@ public class Cliente {
     }
 
 
-    public void local(Context context, String token) {
+    public void local(Context context, LocalLobbyActivity lla, String token) {
         this.context = context;
-        new Local().execute(token);
+        new Local(lla).execute(token);
     }
 
     public void esperarMov(Context context, GameActivity ga) {
@@ -124,7 +124,6 @@ public class Cliente {
         @Override
         protected Void doInBackground(String... strings) {
             try {
-                Log.i("***", "envio: " + strings[0]);
                 out.writeUTF(strings[0]);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -183,7 +182,11 @@ public class Cliente {
                 //envío movs
                 out.writeUTF(strings[1]);
                 //es jaque mate?
-                objects[0] = in.readBoolean();
+                Boolean b = in.readBoolean();
+                objects[0] = b;
+                if (b){
+                    return objects;
+                }
                 //es jaque?
                 objects[1] = in.readBoolean();
                 //puede mover?
@@ -197,7 +200,7 @@ public class Cliente {
         @Override
         protected void onPostExecute(Object[] objects) {
             super.onPostExecute(objects);
-            caller.trasMoverPieza(objects);
+            caller.trasEnviarMov(objects);
         }
     }
 
@@ -224,7 +227,11 @@ public class Cliente {
                 //movs
                 objects[1] = in.readUTF();
                 //es jaque mate?
-                objects[2] = in.readBoolean();
+                Boolean b = in.readBoolean();
+                objects[2] = b;
+                if (b){
+                    return objects;
+                }
                 //es jaque?
                 objects[3] = in.readBoolean();
                 //puede mover?
@@ -281,6 +288,12 @@ public class Cliente {
 
     public class Local extends AsyncTask<String, Void, String> {
 
+        LocalLobbyActivity lla;
+
+        public Local(LocalLobbyActivity lla){
+            this.lla = lla;
+        }
+
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -303,6 +316,7 @@ public class Cliente {
                 localIntent.putExtra("token", token);
                 context.startActivity(localIntent);
             }
+            lla.terminar();
             cerrarConexion();
         }
     }

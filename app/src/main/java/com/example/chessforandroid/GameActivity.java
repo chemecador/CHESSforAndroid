@@ -162,7 +162,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     cliente.enviarMov(this, this, juez.casillasToString(), movs.toString());
                     miTurno = false;
                     actualizarTurno();
-                    esperarMov();
                 }
             } else {
                 Log.e("************************", "error");
@@ -175,7 +174,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public void trasOfrecerTablas(boolean aceptadas) {
         if (aceptadas) {
-            Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setMessage(R.string.draw_accepted);
+
+            builder.setPositiveButton(R.string.accept, null);
+            Dialog dialog = builder.create();
+            dialog.show();
             tablas.setBackgroundColor(Color.GREEN);
             fin = true;
         } else {
@@ -187,8 +192,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("********************************************************************", "socket cerrado en onPause()");
+        cliente.cerrarConexion();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.i("********************************************************************", "socket cerrado en onDestroy()");
         cliente.cerrarConexion();
     }
 
@@ -196,6 +209,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
+        Log.i("********************************************************************", "socket cerrado en onStop()");
         cliente.cerrarConexion();
     }
 
@@ -203,14 +217,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public void trasRecibirMov(Object[] objects) {
 
         String s0 = (String) objects[0];
-        if (s0.equalsIgnoreCase("rendirse")) {
+        if (s0 != null && s0.equalsIgnoreCase("rendirse")) {
 
             Toast.makeText(this, "¡Has ganado por abandono del rival!", Toast.LENGTH_SHORT).show();
             gestionarFinal(soyBlancas);
             fin = true;
             return;
         }
-        if (s0.equalsIgnoreCase("tablas")) {
+        if (s0 != null && s0.equalsIgnoreCase("tablas")) {
 
             propuestaTablas();
             miTurno = false;
@@ -224,6 +238,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         tvMovs.setText(s1);
         //es jaque mate?
         fin = (boolean) objects[2];
+        System.out.println("fin vale: " + fin);
         if (fin) {
             gestionarFinal(miTurno == soyBlancas);
             return;
@@ -247,12 +262,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String ganador = null;
         if (ganoBlancas == null) {
-            builder.setTitle(R.string.draw);
             builder.setMessage(R.string.draw_accepted);
 
             builder.setPositiveButton(R.string.accept, null);
             Dialog dialog = builder.create();
             dialog.show();
+            tablas.setBackgroundColor(Color.GREEN);
             return;
         }
         if (ganoBlancas && soyBlancas) {
@@ -275,18 +290,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         builder.setPositiveButton(R.string.accept, null);
         Dialog dialog = builder.create();
         dialog.show();
+
     }
 
     private void propuestaTablas() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.draw);
         builder.setMessage(R.string.draw_offered);
         builder.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (cliente.isConectado()) {
                     cliente.enviarMensaje("aceptadas");
-                    Toast.makeText(GameActivity.this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(GameActivity.this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
                     fin = true;
                     gestionarFinal(null);
                 }
@@ -306,13 +321,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         dialog.show();
     }
 
-    public void trasMoverPieza(Object[] objects) {
+    public void trasEnviarMov(Object[] objects) {
 
         if (objects[0] == null) {
             return;
         }
         //es jaque mate?
         fin = (boolean) objects[0];
+        System.out.println("fin vale: " + fin);
         if (fin) {
             gestionarFinal(miTurno != soyBlancas);
             return;
@@ -327,10 +343,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         juez.inTablero = juez.stringToInt(juez.sTablero);
         juez.actualizarCasillas(juez.inTablero);
+        esperarMov();
     }
 
 
     private void esperarMov() {
+        if (fin)
+            return;
         if (cliente.isConectado()) {
             cliente.esperarMov(this, this);
         } else {

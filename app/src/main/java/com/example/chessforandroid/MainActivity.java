@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button redLocal;
     private String user;
     private String token;
-    private Cliente c;
+    private Cliente cliente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +71,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
             case R.id.menu_perfil:
                 if (user.length() > 0) {
-                    c = new Cliente();
-                    if (c.isConectado()) {
-                        c.pedirDatos(this, user);
+                    cliente = new Cliente();
+                    if (cliente.isConectado()) {
+                        cliente.pedirDatos(this, user);
                     }
                     return true;
                 }

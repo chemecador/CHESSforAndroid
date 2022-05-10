@@ -3,8 +3,10 @@ package com.example.chessforandroid;
 import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -71,7 +73,12 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
         if (view.getId() == R.id.bTablasOffline) {
 
-            Toast.makeText(this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Tablas");
+            builder.setMessage("Tablas de mutuo acuerdo");
+            builder.setPositiveButton(R.string.accept, null);
+            Dialog dialog = builder.create();
+            dialog.show();
             fin = true;
             return;
         }
