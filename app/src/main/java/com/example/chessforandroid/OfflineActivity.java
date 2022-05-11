@@ -6,6 +6,7 @@ import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -37,8 +38,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     private Casilla quieroMover;
     public static String tag;
     private int nMovs;
-    private Button tablas;
-    private Button rendirse;
+    @SuppressLint("StaticFieldLeak")
     public static TextView tvMovs;
     private TextView mueven;
     public static StringBuilder movs;
@@ -56,8 +56,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_offline);
         crearCasillas();
 
-        this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoardOffline);
-        this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoardOffline);
+        this.oGameBoardShell = this.findViewById(R.id.shellGameBoardOffline);
+        this.oGameBoard = this.findViewById(R.id.gridGameBoardOffline);
         Tablero t = new Tablero();
         t.execute();
 
@@ -65,6 +65,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onClick(View view) {
 
@@ -203,11 +204,11 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         pintarFondo();
         movs = new StringBuilder();
         mueven = findViewById(R.id.txtMuevenOffline);
-        tvMovs = (TextView) findViewById(R.id.txtMovsOffline);
+        tvMovs = findViewById(R.id.txtMovsOffline);
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
 
-        tablas = findViewById(R.id.bTablasOffline);
-        rendirse = findViewById(R.id.bRendirseOffline);
+        Button tablas = findViewById(R.id.bTablasOffline);
+        Button rendirse = findViewById(R.id.bRendirseOffline);
         tablas.setOnClickListener(this);
         rendirse.setOnClickListener(this);
         for (int i = 0; i < NUM_FILAS; i++) {
@@ -217,6 +218,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class Tablero extends AsyncTask<Void, Void, Void> {
 
         ViewTreeObserver.OnGlobalLayoutListener tablero;
@@ -239,6 +241,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
             return new ViewTreeObserver.OnGlobalLayoutListener() {
 
+                @SuppressLint("ObsoleteSdkInt")
                 @Override
                 public void onGlobalLayout() {
                     int width = OfflineActivity.this.oGameBoardShell.getMeasuredWidth();

@@ -2,6 +2,7 @@ package com.example.chessforandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,45 +12,43 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button login;
-    private Button signUp;
-    private Button invitado;
-    private TextView tvChess;
     private EditText user;
     private EditText pass;
-    private Cliente c;
     private int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_login);
 
 
-        user = (EditText) findViewById(R.id.loginUser);
+        user = findViewById(R.id.loginUser);
         user.setOnClickListener(this);
 
-        pass = (EditText) findViewById(R.id.loginPass);
+        pass = findViewById(R.id.loginPass);
         pass.setOnClickListener(this);
 
-        login = findViewById(R.id.bLogin);
+        Button login = findViewById(R.id.bLogin);
         login.setOnClickListener(this);
 
-        signUp = findViewById(R.id.bSignup);
+        Button signUp = findViewById(R.id.bSignup);
         signUp.setOnClickListener(this);
 
-        invitado = findViewById(R.id.bInvitado);
+        Button invitado = findViewById(R.id.bInvitado);
         invitado.setOnClickListener(this);
 
-        tvChess = findViewById(R.id.txtChessLogin);
+        TextView tvChess = findViewById(R.id.txtChessLogin);
         tvChess.setOnClickListener(this);
 
         i = 0;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -59,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     break;
                 }
 
-                c = new Cliente();
+                Cliente c = new Cliente();
                 if (c.isConectado()) {
                     Log.i("**", "user: " + user.getText().toString());
                     c.iniciarSesion(this, user.getText().toString(), pass.getText().toString());

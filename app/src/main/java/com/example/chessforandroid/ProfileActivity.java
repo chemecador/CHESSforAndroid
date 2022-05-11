@@ -12,29 +12,30 @@ import android.widget.Toast;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button cerrarSesion, cambiarPass;
-    private ImageButton ibMisiones;
-    private TextView username, nivel, elo, jugadas, victorias, tablas, derrotas;
+    private TextView victorias;
     private String user;
-    private int[] datos;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        Button cerrarSesion, cambiarPass;
+        ImageButton ibMisiones;
+        TextView username, nivel, elo, jugadas, tablas, derrotas;
+
+
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
-        datos = intent.getIntArrayExtra("datos");
+        int[] datos = intent.getIntArrayExtra("datos");
 
-        username = (TextView) findViewById(R.id.pUser);
-        nivel = (TextView) findViewById(R.id.pNivel);
-        elo = (TextView) findViewById(R.id.pElo);
-        jugadas = (TextView) findViewById(R.id.pJugadas);
-        victorias = (TextView) findViewById(R.id.pGanadas);
-        derrotas = (TextView) findViewById(R.id.pDerrotas);
-        tablas = (TextView) findViewById(R.id.pTablas);
+        username =  findViewById(R.id.pUser);
+        nivel =  findViewById(R.id.pNivel);
+        elo =  findViewById(R.id.pElo);
+        jugadas =  findViewById(R.id.pJugadas);
+        victorias =  findViewById(R.id.pGanadas);
+        derrotas =  findViewById(R.id.pDerrotas);
+        tablas =  findViewById(R.id.pTablas);
 
         username.setText(user);
         nivel.setText(String.valueOf(datos[0]));

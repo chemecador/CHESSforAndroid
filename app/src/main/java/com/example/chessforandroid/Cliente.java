@@ -2,6 +2,7 @@ package com.example.chessforandroid;
 
 import static com.example.chessforandroid.util.Constantes.debug;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -42,12 +43,9 @@ public class Cliente {
             // inicializamos el socket, dis y dos
             conn = new Socket();
             if (debug){
-                Log.i("**", "me conecto en local");
-                conn.connect(new InetSocketAddress("localhost", puerto), 1200);
-            } else {
-                Log.i("**", "me conecto online");
-                conn.connect(new InetSocketAddress(host, puerto), 1200);
+                host = Constantes.ipLocal;
             }
+            conn.connect(new InetSocketAddress(host, puerto), 1200);
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
             conectado = true;
@@ -151,6 +149,7 @@ public class Cliente {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class EnviarTablas extends AsyncTask<Void, Void, Boolean> {
 
         GameActivity caller;

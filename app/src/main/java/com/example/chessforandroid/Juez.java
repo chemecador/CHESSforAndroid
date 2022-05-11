@@ -1,13 +1,7 @@
 package com.example.chessforandroid;
 
-import static com.example.chessforandroid.OfflineActivity.movs;
-import static com.example.chessforandroid.OfflineActivity.tvMovs;
 import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
-
-
-import android.util.Log;
-
 import com.example.chessforandroid.piezas.*;
 
 public class Juez {
@@ -100,7 +94,7 @@ public class Juez {
         int x = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-                if (s.substring(x, x + 1).equals("-")) {
+                if (s.charAt(x) == '-') {
                     t[i][j] = Integer.parseInt(s.substring(x, x + 2));
                     x = x+2;
                 } else {
@@ -167,7 +161,7 @@ public class Juez {
      * 5: Caballo
      * 6: Peón
      */
-    private void crearTablero() {
+    /*private void crearTablero() {
 
         inTablero = new int[NUM_FILAS][NUM_COLUMNAS];
         for (int i = 0; i < NUM_FILAS; i++) {
@@ -203,9 +197,9 @@ public class Juez {
         inTablero[7][5] = 4;
         inTablero[7][3] = 2;
         inTablero[7][4] = 1;
-    }
+    }*/
 
-    public static void mostrarTablero(int[][] tablero) {
+    /*public static void mostrarTablero(int[][] tablero) {
         StringBuilder t = new StringBuilder();
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[0].length; j++) {
@@ -214,7 +208,7 @@ public class Juez {
             t.append("\n");
         }
         Log.i("Tablero: ", "\n" + t);
-    }
+    }*/
 
 
     public boolean comprobarJaque(Casilla[][] copia) {

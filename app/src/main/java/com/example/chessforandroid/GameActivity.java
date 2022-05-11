@@ -3,11 +3,8 @@ package com.example.chessforandroid;
 import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -23,6 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.chessforandroid.piezas.Alfil;
 import com.example.chessforandroid.piezas.Caballo;
 import com.example.chessforandroid.piezas.Dama;
@@ -37,10 +37,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;
     private Button tablas;
-    private Button rendirse;
     public TextView tvMovs;
     private TextView tvMueven;
-    private TextView vs;
     public StringBuilder movs;
     public String tag;
     public String rival;
@@ -60,7 +58,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private boolean miTurno;
     private Cliente cliente;
     private Juez juez;
-    private Object[] o = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +71,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_game);
         crearCasillas();
 
-        this.oGameBoardShell = (LinearLayout) this.findViewById(R.id.shellGameBoardLocal);
-        this.oGameBoard = (GridLayout) this.findViewById(R.id.gridGameBoardLocal);
+        this.oGameBoardShell = this.findViewById(R.id.shellGameBoardLocal);
+        this.oGameBoard = this.findViewById(R.id.gridGameBoardLocal);
         Tablero t = new Tablero();
         t.execute();
         Intent intent = getIntent();
@@ -297,26 +294,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void propuestaTablas() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.draw_offered);
-        builder.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (cliente.isConectado()) {
-                    cliente.enviarMensaje("aceptadas");
-                    //Toast.makeText(GameActivity.this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
-                    fin = true;
-                    gestionarFinal(null);
-                }
+        builder.setPositiveButton(R.string.accept, (dialogInterface, i) -> {
+            if (cliente.isConectado()) {
+                cliente.enviarMensaje("aceptadas");
+                //Toast.makeText(GameActivity.this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
+                fin = true;
+                gestionarFinal(null);
             }
         });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (cliente.isConectado()) {
-                    cliente.enviarMensaje("rechazadas");
-                    Toast.makeText(GameActivity.this, "Tablas rechazadas", Toast.LENGTH_SHORT).show();
-                }
-                esperarMov();
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
+            if (cliente.isConectado()) {
+                cliente.enviarMensaje("rechazadas");
+                Toast.makeText(GameActivity.this, "Tablas rechazadas", Toast.LENGTH_SHORT).show();
             }
+            esperarMov();
         });
         Dialog dialog = builder.create();
         dialog.show();
@@ -358,12 +349,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void addListeners() {
         pintarFondo();
         movs = new StringBuilder();
         tvMueven = findViewById(R.id.txtMuevenLocal);
-        vs = findViewById(R.id.txtVs);
-        tvMovs = (TextView) findViewById(R.id.txtMovsLocal);
+        TextView vs = findViewById(R.id.txtVs);
+        tvMovs = findViewById(R.id.txtMovsLocal);
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
 
         Object[] o = null;
@@ -374,7 +366,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         tablas = findViewById(R.id.bTablasLocal);
-        rendirse = findViewById(R.id.bRendirseLocal);
+        Button rendirse = findViewById(R.id.bRendirseLocal);
         tablas.setOnClickListener(this);
         rendirse.setOnClickListener(this);
         for (int i = 0; i < NUM_FILAS; i++) {
@@ -382,6 +374,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 juez.casillas[i][j].setOnClickListener(this);
             }
         }
+        assert o != null;
         soyBlancas = (boolean) o[2];
         yo = (String) o[0];
         rival = (String) o[1];
@@ -397,6 +390,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     public class Tablero extends AsyncTask<Void, Void, Void> {
 
         ViewTreeObserver.OnGlobalLayoutListener tablero;
@@ -419,6 +413,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
             return new ViewTreeObserver.OnGlobalLayoutListener() {
 
+                @SuppressLint("ObsoleteSdkInt")
                 @Override
                 public void onGlobalLayout() {
                     int width = GameActivity.this.oGameBoardShell.getMeasuredWidth();

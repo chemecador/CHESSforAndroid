@@ -548,6 +548,7 @@ public class ClientHandler extends Thread {
             passw = System.getenv("MYSQL_PASSWORD");
             url = "jdbc:mysql://"+ host + "/" + System.getenv("MYSQL_DB");
         }
+        System.out.println("user vale : " + user);
         // MYSQL_DB
         // MYSQL_USER
         // MYSQL_PASSWORD

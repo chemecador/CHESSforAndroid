@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +13,6 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
 
     private EditText oldPass;
     private EditText newPass;
-    private Button ok;
-    private Cliente c;
     private String user;
 
     @Override
@@ -26,7 +23,7 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
         user = i.getStringExtra("user");
         oldPass = findViewById(R.id.txtOldPass);
         newPass = findViewById(R.id.txtNewPass);
-        ok = findViewById(R.id.bOk);
+        Button ok = findViewById(R.id.bOk);
 
         oldPass.setOnClickListener(this);
         newPass.setOnClickListener(this);
@@ -38,7 +35,7 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
 
         if(view.getId() == R.id.bOk){
-            c = new Cliente();
+            Cliente c = new Cliente();
             if (c.isConectado()) {
                 c.cambiarPass(this, user, oldPass.getText().toString(), newPass.getText().toString());
             } else {

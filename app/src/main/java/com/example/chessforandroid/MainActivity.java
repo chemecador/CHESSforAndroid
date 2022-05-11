@@ -3,6 +3,7 @@ package com.example.chessforandroid;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,12 +30,8 @@ import android.widget.Button;
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button offline;
-    private Button online;
-    private Button redLocal;
     private String user;
     private String token;
-    private Cliente cliente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         user = intent.getStringExtra("user");
         token = intent.getStringExtra("token");
 
-        offline = findViewById(R.id.bOffline);
-        online = findViewById(R.id.bJugarOnline);
-        redLocal = findViewById(R.id.bRedLocal);
+        Button offline = findViewById(R.id.bOffline);
+        Button online = findViewById(R.id.bJugarOnline);
+        Button redLocal = findViewById(R.id.bRedLocal);
 
         offline.setOnClickListener(this);
         online.setOnClickListener(this);
@@ -64,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         /*Método que se ejecuta cuando el usuario selecciona un elemento
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
             case R.id.menu_perfil:
                 if (user.length() > 0) {
-                    cliente = new Cliente();
+                    Cliente cliente = new Cliente();
                     if (cliente.isConectado()) {
                         cliente.pedirDatos(this, user);
                     }
