@@ -13,9 +13,9 @@ public class ClientHandler extends Thread {
     private ServerSocket ss;
     private DataOutputStream out; // flujo de salida
     private DataInputStream in; // flujo de entrada
-    private Socket socket; // socket con la conexiÃ³n con el cliente
+    private Socket socket; // socket con la conexión con el cliente
     private String s;
-    static Connection conexion; // conexiÃ³n con la base de datos
+    static Connection conexion; // conexión con la base de datos
 
     // constructor
     public ClientHandler(ServerSocket ss, Socket cliente) {
