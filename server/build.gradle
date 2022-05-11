@@ -1,9 +1,14 @@
 plugins {
     id 'application'
     id 'jacoco'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 mainClassName = "servidor.Servidor"
+
+shadowJar {
+    archiveBaseName.set('chess-server')
+}
 
 dependencies {
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
@@ -11,6 +16,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
 }
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
