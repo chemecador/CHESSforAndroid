@@ -13,9 +13,9 @@ public class ClientHandler extends Thread {
     private ServerSocket ss;
     private DataOutputStream out; // flujo de salida
     private DataInputStream in; // flujo de entrada
-    private Socket socket; // socket con la conexión con el cliente
+    private Socket socket; // socket con la conexiï¿½n con el cliente
     private String s;
-    static Connection conexion; // conexión con la base de datos
+    static Connection conexion; // conexiï¿½n con la base de datos
 
     // constructor
     public ClientHandler(ServerSocket ss, Socket cliente) {
@@ -220,7 +220,7 @@ public class ClientHandler extends Thread {
         switch (res) {
             case -2:
             case -1:
-                System.err.println("Error de conexión con la base de datos");
+                System.err.println("Error de conexiï¿½n con la base de datos");
                 break;
             case 0:
                 System.out.println("El usuario " + user + "ya existe");
@@ -234,10 +234,10 @@ public class ClientHandler extends Thread {
     }
 
     /***
-     * Método que gestiona el registro en la base de datos.
+     * Mï¿½todo que gestiona el registro en la base de datos.
      *
      * @param user Nombre de usuario
-     * @param pass Contraseña (ya hasheada previamente)
+     * @param pass Contraseï¿½a (ya hasheada previamente)
      * @return int
      * @throws SQLException
      */
@@ -264,7 +264,7 @@ public class ClientHandler extends Thread {
             sentencia.close();
         }
         desconectar();
-        // se desconecta de la base de datos y se devuelve el número de registros
+        // se desconecta de la base de datos y se devuelve el nï¿½mero de registros
         // afectados
         return numReg;
     }
@@ -530,20 +530,40 @@ public class ClientHandler extends Thread {
     }
 
     /**
-     * Método que conecta con la base de datos.
+     * Mï¿½todo que conecta con la base de datos.
      */
     static void conectar() {
+        String url = null;
+        String user = null;
+        String passw = null;
+
+        String host = System.getenv("MYSQL_HOST");
+        if (host == null) {
+            url = "jdbc:mysql://localhost/chessforandroid";
+            user = "chess4android";
+            //prohibido mirar
+            passw = "ttDfdqxmf3ynnSozTMYSzH7H2ncfwD";
+        } else {
+
+            user = System.getenv("MYSQL_USER");
+            passw = System.getenv("MYSQL_PASSWORD");
+            url = "jdbc:mysql://"+ host + "/" + System.getenv("MYSQL_DB");
+        }
+        // MYSQL_DB
+        // MYSQL_USER
+        // MYSQL_PASSWORD
+
         conexion = null;
         try {
-            // conexión con localhost a través de mi puerto
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost/chessforandroid", "root", "");
+            // conexiï¿½n con localhost a travï¿½s de mi puerto
+            conexion = DriverManager.getConnection(url, user, passw);
         } catch (SQLException e) {
             System.out.println("No se ha podido conectar con la base de datos. \n" + e.toString());
         }
     }
 
     /**
-     * Método que desconecta de la base de datos
+     * Mï¿½todo que desconecta de la base de datos
      */
     static void desconectar() {
         try {
