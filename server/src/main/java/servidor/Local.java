@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
+import util.DB;
+
 public class Local extends Thread {
     private DataOutputStream out1; // flujo de salida de datos con el jugador 1 (a partir de ahora, J1)
     private DataOutputStream out2;// flujo de salida con el jugador 2 (a partir de ahora, J2)
@@ -25,7 +27,7 @@ public class Local extends Thread {
 
 
             String t1 = in1.readUTF();
-            id1 = ClientHandler.getIdFromToken(t1);
+            id1 = DB.getIdFromToken(t1);
 
             // se suma el jugador al arraylist
             jugadores[0] = j1;
@@ -45,7 +47,7 @@ public class Local extends Thread {
 
 
             String t2 = in2.readUTF();
-            id2 = ClientHandler.getIdFromToken(t2);
+            id2 = DB.getIdFromToken(t2);
 
             out2.writeUTF("jugar");
             out1.writeUTF("jugar");

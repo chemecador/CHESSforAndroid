@@ -3,9 +3,14 @@ package servidor;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import util.DB;
 
 /**
  * Clase Servidor.
@@ -36,11 +41,19 @@ public class Servidor {
     public Servidor() {
         conexiones = new ArrayList<>();
         locales = new ArrayList<>();
+        try {
+            DB.conectar();
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "No se ha podido conectar con la base de datos.");
+            e.printStackTrace();
+            System.exit(-1);
+        }
 
         try {
             // se inicializa el serversocket.
             ss = new ServerSocket(5566);
             logger.log(Level.INFO, "El servidor se ha iniciado. Esperando jugadores...");
+
 
             while (true) {
                 // se crea un socket que espera a que llegue un cliente.
@@ -53,8 +66,15 @@ public class Servidor {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Error al iniciar el servidor.");
             e.printStackTrace();
+        } finally {
+            try {
+                DB.desconectar();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
     /**
      * Metodo principal.

@@ -24,7 +24,6 @@ public class Hash {
             md.update(s.getBytes());
             //Se realiza el Hashing
             byte[] mb = md.digest();
-            //Se muestra por pantalla
             return new String(Hex.encodeHex(mb));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

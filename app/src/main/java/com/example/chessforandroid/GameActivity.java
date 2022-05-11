@@ -193,7 +193,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
         Log.i("********************************************************************", "socket cerrado en onPause()");
         cliente.abandonar();
-        //cliente.cerrarConexion();
     }
 
     @Override

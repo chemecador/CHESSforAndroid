@@ -1,17 +1,15 @@
 package servidor;
 
 import casillas.*;
+import util.DB;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Random;
 
-import static servidor.ClientHandler.*;
 
 public class Partida {
 
@@ -52,12 +50,11 @@ public class Partida {
             jugadores[1] = j2;
 
             String t1 = in1.readUTF();
-            id1 = ClientHandler.getIdFromToken(t1);
+            id1 = DB.getIdFromToken(t1);
             String t2 = in2.readUTF();
-            id2 = ClientHandler.getIdFromToken(t2);
+            id2 = DB.getIdFromToken(t2);
 
             datosIniciales();
-            System.out.println("entro en jugar");
             jugar();
 
         } catch (SocketException se) {
@@ -88,23 +85,24 @@ public class Partida {
                     s = in1.readUTF();
                     if (s.equalsIgnoreCase("tablas")) {
                         out2.writeUTF(s);
-                        System.out.println(ClientHandler.getUserFromId(id1) + "(id1) ofrece tablas");
+                        System.out.println(DB.getUserFromId(id1) + "(id1) ofrece tablas");
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("aceptadas")) {
                         System.out.println("Tablas aceptadas");
                         out2.writeBoolean(true);
-                        gestionarFinal(id1, id2, true);
-                        actualizarJugadores(id1, id2, true);
+                        DB.gestionarFinal(movs, id1, id2, true);
+                        DB.actualizarJugadores(id1, id2, true);
                         break;
                     } else if (s.equalsIgnoreCase("rechazadas")) {
                         System.out.println("Tablas rechazadas");
                         out2.writeBoolean(false);
+                        juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("rendirse") || s.equalsIgnoreCase("abandonar")) {
-                        fin = true;
                         System.out.println("Gana " + id2);
+                        fin = true;
                         out2.writeUTF("rendirse");
-                        gestionarFinal(id2, id1, false);
-                        actualizarJugadores(id2, id1, false);
+                        DB.gestionarFinal(movs,id2, id1, false);
+                        DB.actualizarJugadores(id2, id1, false);
                     } else {
                         juez.tablero = juez.stringToInt(s);
                         juez.intToCasillas(juez.tablero);
@@ -119,8 +117,8 @@ public class Partida {
                             out1.writeBoolean(true);
                             out2.writeBoolean(true);
                             fin = true;
-                            gestionarFinal(id1, id2, false);
-                            actualizarJugadores(id1, id2, false);
+                            DB.gestionarFinal(movs,id1, id2, false);
+                            DB.actualizarJugadores(id1, id2, false);
                         } else {
                             //no es jaque mate
                             out1.writeBoolean(false);
@@ -139,25 +137,24 @@ public class Partida {
                     s = in2.readUTF();
                     if (s.equalsIgnoreCase("tablas")) {
                         out1.writeUTF(s);
-                        System.out.println(ClientHandler.getUserFromId(id2) + "(id2) ofrece tablas");
+                        System.out.println(DB.getUserFromId(id2) + "(id2) ofrece tablas");
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("aceptadas")) {
                         System.out.println("Tablas aceptadas");
                         out1.writeBoolean(true);
-                        gestionarFinal(id1, id2, true);
-                        actualizarJugadores(id1, id2, true);
+                        DB.gestionarFinal(movs,id1, id2, true);
+                        DB.actualizarJugadores(id1, id2, true);
                         break;
                     } else if (s.equalsIgnoreCase("rechazadas")) {
                         System.out.println("Tablas rechazadas");
                         out1.writeBoolean(false);
+                        juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("rendirse") || s.equalsIgnoreCase("abandonar")) {
                         System.out.println("Gana " + id1);
                         fin = true;
-                        gestionarFinal(id1, id2, false);
-                        actualizarJugadores(id1, id2, false);
-                        out1.writeUTF(s);
-                        movs = in2.readUTF();
-                        out1.writeUTF(movs);
+                        out1.writeUTF("rendirse");
+                        DB.gestionarFinal(movs,id1, id2, false);
+                        DB.actualizarJugadores(id1, id2, false);
                     } else {
                         juez.tablero = juez.stringToInt(s);
                         juez.intToCasillas(juez.tablero);
@@ -173,8 +170,8 @@ public class Partida {
                             out1.writeBoolean(true);
                             out2.writeBoolean(true);
                             fin = true;
-                            gestionarFinal(id2, id1, false);
-                            actualizarJugadores(id2, id1, false);
+                            DB.gestionarFinal(movs,id2, id1, false);
+                            DB.actualizarJugadores(id2, id1, false);
                         } else {
                             //no es jaque mate
                             out1.writeBoolean(false);
@@ -201,110 +198,14 @@ public class Partida {
             e.printStackTrace();
         }
     }
-
-    private boolean actualizarJugadores(int id1, int id2, boolean tablas) {
-        String consulta;
-        PreparedStatement sentencia;
-        try {
-            conectar();
-            if (conexion == null) {
-                return false;
-            }
-
-            if (conexion.isClosed()) {
-                return false;
-            }
-
-            if (tablas) {
-                // si no ha habido errores, se crea una consulta
-                consulta = "UPDATE jugadores SET tablas = tablas + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
-                sentencia = conexion.prepareStatement(consulta);
-                sentencia.setInt(1, id1);
-                // se sustituyen los datos en la consulta y se ejecuta
-                sentencia.executeUpdate();
-
-                consulta = "UPDATE jugadores SET tablas = tablas + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
-                sentencia = conexion.prepareStatement(consulta);
-                sentencia.setInt(1, id2);
-                sentencia.executeUpdate();
-            } else {
-                // si no ha habido errores, se crea una consulta
-                consulta = "UPDATE jugadores SET elo = elo + 10, victorias = victorias + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
-                sentencia = conexion.prepareStatement(consulta);
-                sentencia.setInt(1, id1);
-                // se sustituyen los datos en la consulta y se ejecuta
-                sentencia.executeUpdate();
-
-
-                consulta = "UPDATE jugadores SET elo = elo - 10, derrotas = derrotas + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
-                sentencia = conexion.prepareStatement(consulta);
-                sentencia.setInt(1, id2);
-                // se sustituyen los datos en la consulta y se ejecuta
-                sentencia.executeUpdate();
-            }
-            if (sentencia != null) {
-                sentencia.close();
-            }
-            desconectar();
-            Servidor.jugadores = Servidor.jugadores - 2;
-            System.out.println("Ahora hay " + Servidor.jugadores);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private boolean gestionarFinal(int id1, int id2, boolean tablas) {
-        try {
-            conectar();
-            if (conexion == null) {
-                return false;
-            }
-
-            if (conexion.isClosed()) {
-                return false;
-            }
-
-            // si no ha habido errores, se crea una consulta
-            String consulta = "INSERT INTO partidas (movimientos, idanfitrion, idinvitado, ganador, perdedor) VALUES (?,?,?,?,?)";
-            PreparedStatement sentencia = conexion.prepareStatement(consulta);
-            sentencia.setString(1, movs);
-            sentencia.setInt(2, id1);
-            sentencia.setInt(3, id2);
-            if (tablas) {
-                sentencia.setInt(4, 0);
-                sentencia.setInt(5, 0);
-            } else {
-                sentencia.setInt(4, id1);
-                sentencia.setInt(5, id2);
-            }
-            // se sustituyen los datos en la consulta y se ejecuta
-            int numReg = sentencia.executeUpdate();
-
-
-            if (sentencia != null) {
-                sentencia.close();
-            }
-            desconectar();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-
-    }
-
     private void datosIniciales() {
 
         crearCasillas();
         try {
             juez.turnoBlancas = true;
             j1EsBlancas = new Random().nextBoolean();
-            String user1 = ClientHandler.getUserFromId(id1);
-            System.out.println("user1 es :" + user1);
-            String user2 = ClientHandler.getUserFromId(id2);
-            System.out.println("user2 es : " + user2);
+            String user1 = DB.getUserFromId(id1);
+            String user2 = DB.getUserFromId(id2);
             out1.writeUTF(user1);
             out1.writeUTF(user2);
             out2.writeUTF(user2);
