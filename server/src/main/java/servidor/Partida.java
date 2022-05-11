@@ -246,14 +246,10 @@ public class Partida {
                 sentencia.close();
             }
             desconectar();
-            jugadores[0].close();
-            jugadores[1].close();
             Servidor.jugadores = Servidor.jugadores - 2;
-            System.out.println("sockets cerrados");
+            System.out.println("Ahora hay " + Servidor.jugadores);
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         return false;

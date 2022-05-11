@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chessforandroid.util.Constantes;
+
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {

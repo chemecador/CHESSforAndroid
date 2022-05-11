@@ -44,8 +44,11 @@ public class Cliente {
             conn = new Socket();
             if (debug){
                 host = Constantes.ipLocal;
+            } else{
+                host = Constantes.ip;
             }
             conn.connect(new InetSocketAddress(host, puerto), 1200);
+            Log.i("*****" , "me conecto a " + host);
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
             conectado = true;

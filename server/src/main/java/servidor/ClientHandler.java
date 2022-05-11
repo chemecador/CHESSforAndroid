@@ -67,9 +67,9 @@ public class ClientHandler extends Thread {
 
 
     private void gestionarJugarLocal() throws IOException {
-
-        System.out.println("Hay " + Servidor.jugadores + " jugadores");
-        if (Servidor.jugadores % 2 == 0) {
+        Servidor.jugadores++;
+        System.out.println("Hay " + Servidor.jugadores + " jugadores ");
+        if (Servidor.jugadores % 2 != 0) {
             Local l = new Local(socket);
             l.start();
             Servidor.locales.add(l);
@@ -78,7 +78,6 @@ public class ClientHandler extends Thread {
             lo.setJugador(socket);
             new Partida(ss.accept(), ss.accept());
         }
-        Servidor.jugadores++;
     }
 
     private boolean gestionarCrearSala() throws IOException, SQLException {
@@ -548,7 +547,6 @@ public class ClientHandler extends Thread {
             passw = System.getenv("MYSQL_PASSWORD");
             url = "jdbc:mysql://"+ host + "/" + System.getenv("MYSQL_DB");
         }
-        System.out.println("user vale : " + user);
         // MYSQL_DB
         // MYSQL_USER
         // MYSQL_PASSWORD

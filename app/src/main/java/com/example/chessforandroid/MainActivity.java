@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.chessforandroid.util.Constantes;
 
 /***
  *
@@ -50,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         online.setOnClickListener(this);
         redLocal.setOnClickListener(this);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

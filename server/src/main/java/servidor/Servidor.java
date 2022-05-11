@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Clase Servidor
  */
 public class Servidor {
 
+    private static final Logger logger = Logger.getLogger(Servidor.class.getName());
     private ServerSocket ss; //ServerSocket que escucha la llegada de nuevos clientes
     public static int jugadores = 0;
     public static ArrayList<Socket> conexiones;
@@ -22,7 +25,7 @@ public class Servidor {
             ss = new ServerSocket(5566);
             conexiones = new ArrayList<>();
             locales = new ArrayList<>();
-            System.out.println("El servidor se ha iniciado. Esperando jugadores...");
+            logger.log(Level.INFO,"El servidor se ha iniciado. Esperando jugadores...");
             while (true) {
                 //se crea un socket que espera a que llegue un cliente
                 Socket cliente = ss.accept();
@@ -31,18 +34,8 @@ public class Servidor {
                 new ClientHandler(ss, cliente).start();
             }
         } catch (IOException e) {
+            logger.log(Level.SEVERE,"Error al iniciar el servidor ");
             e.printStackTrace();
-        }
-    }
-
-    static void cerrarConexiones() {
-        for (Socket soc : conexiones) {
-            try {
-                soc.close();
-            } catch (IOException e) {
-                System.err.println("Error al cerrar la conexion");
-                e.printStackTrace();
-            }
         }
     }
 
