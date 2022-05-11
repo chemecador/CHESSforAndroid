@@ -27,11 +27,11 @@ public class Local extends Thread {
             String t1 = in1.readUTF();
             id1 = ClientHandler.getIdFromToken(t1);
 
-            // se añade el jugador al arraylist
+            // se suma el jugador al arraylist
             jugadores[0] = j1;
 
         } catch (SocketException se) {
-            System.out.println("Conexión con el cliente cerrada.");
+            System.out.println("Conexion con el cliente cerrada.");
         } catch (IOException e) {
             e.printStackTrace();
         }

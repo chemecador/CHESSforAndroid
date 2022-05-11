@@ -277,19 +277,19 @@ public class Juez {
         boolean izquierda = cInicial.getColumna() > cFinal.getColumna();
 
         for (int i = 1; i < dis; i++) {
-            //si estás pasando por encima de una pieza... arriba izquierda
+            //si estas pasando por encima de una pieza... arriba izquierda
             if (arriba && izquierda && copia[cInicial.getFila() - i][cInicial.getColumna() - i].getPieza() != null) {
                 return false;
             }
-            //si estás pasando por encima de una pieza... arriba derecha
+            //si estas pasando por encima de una pieza... arriba derecha
             if (arriba && !izquierda && copia[cInicial.getFila() - i][cInicial.getColumna() + i].getPieza() != null) {
                 return false;
             }
-            //si estás pasando por encima de una pieza... abajo izquierda
+            //si estas pasando por encima de una pieza... abajo izquierda
             if (!arriba && izquierda && copia[cInicial.getFila() + i][cInicial.getColumna() - i].getPieza() != null) {
                 return false;
             }
-            //si estás pasando por encima de una pieza... abajo derecha
+            //si estas pasando por encima de una pieza... abajo derecha
             if (!arriba && !izquierda && copia[cInicial.getFila() + i][cInicial.getColumna() + i].getPieza() != null) {
                 return false;
             }
@@ -308,7 +308,7 @@ public class Juez {
         if (disFila > disColumna) {
             boolean arriba = cInicial.getFila() > cFinal.getFila();
             for (int i = 1; i < disFila; i++) {
-                //si estás pasando por encima de una pieza...
+                //si estas pasando por encima de una pieza...
                 if (arriba && copia[cInicial.getFila() - i][cInicial.getColumna()].getPieza() != null) {
                     return false;
                 }
@@ -321,7 +321,7 @@ public class Juez {
         else if (disFila < disColumna) {
             boolean izquierda = cInicial.getColumna() > cFinal.getColumna();
             for (int i = 1; i < disColumna; i++) {
-                //si estás pasando por encima de una pieza...
+                //si estas pasando por encima de una pieza...
                 if (izquierda && copia[cInicial.getFila()][cInicial.getColumna() - i].getPieza() != null) {
                     return false;
                 }
@@ -333,7 +333,7 @@ public class Juez {
             //no hay movimiento
             return false;
         }
-        //se cumplen todas las reglas, es válido
+        //se cumplen todas las reglas, es valido
         return true;
     }
 
@@ -377,7 +377,7 @@ public class Juez {
                         (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
                         (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
 
-            //han movido las blancas así que ningún peón negro es capturable al paso
+            //han movido las blancas asi que ningun peon negro es capturable al paso
             for (int i = 0; i < NUM_FILAS; i++) {
                 if (casillas[3][i].getPieza() != null &&
                         casillas[3][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
@@ -396,7 +396,7 @@ public class Juez {
                 ((cInicial.getColumna() == cFinal.getColumna()) ||
                         (cInicial.getColumna() == cFinal.getColumna() - 1 && cFinal.getPieza() != null) ||
                         (cInicial.getColumna() == cFinal.getColumna() + 1 && cFinal.getPieza() != null))) {
-            //han movido las negras así que ningún peón blanco es capturable al paso
+            //han movido las negras asi que ningun peon blanco es capturable al paso
             for (int i = 0; i < NUM_FILAS; i++) {
                 if (casillas[3][i].getPieza() != null &&
                         casillas[3][i].getPieza().getTag().equalsIgnoreCase("PEON")) {

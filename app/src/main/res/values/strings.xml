@@ -60,4 +60,5 @@
     <string name="win_10">Gana 10 partidas</string>
     <string name="win_20">Gana 20 partidas</string>
     <string name="win_30">Gana 30 partidas</string>
+    <string name="developer_mode">Modo desarrollador</string>
 </resources>

@@ -13,16 +13,16 @@ public class ClientHandler extends Thread {
     private ServerSocket ss;
     private DataOutputStream out; // flujo de salida
     private DataInputStream in; // flujo de entrada
-    private Socket socket; // socket con la conexi�n con el cliente
+    private Socket socket; // socket con la conexion con el cliente
     private String s;
-    static Connection conexion; // conexi�n con la base de datos
+    static Connection conexion; // conexion con la base de datos
 
     // constructor
     public ClientHandler(ServerSocket ss, Socket cliente) {
         // se muestra por pantalla que ha llegado un nuevo cliente
         this.socket = cliente;
         this.ss = ss;
-        // se inicializan los flujos de entrada y de salida, así como el centinela
+        // se inicializan los flujos de entrada y de salida, asi como el centinela
         try {
             out = new DataOutputStream(cliente.getOutputStream());
             in = new DataInputStream(cliente.getInputStream());
@@ -234,7 +234,7 @@ public class ClientHandler extends Thread {
     }
 
     /***
-     * M�todo que gestiona el registro en la base de datos.
+     * Metodo que gestiona el registro en la base de datos.
      *
      * @param user Nombre de usuario
      * @param pass Contrase�a (ya hasheada previamente)
@@ -530,7 +530,7 @@ public class ClientHandler extends Thread {
     }
 
     /**
-     * M�todo que conecta con la base de datos.
+     * Metodo que conecta con la base de datos.
      */
     static void conectar() {
         String url = null;
@@ -541,7 +541,6 @@ public class ClientHandler extends Thread {
         if (host == null) {
             url = "jdbc:mysql://localhost/chessforandroid";
             user = "chess4android";
-            //prohibido mirar
             passw = "ttDfdqxmf3ynnSozTMYSzH7H2ncfwD";
         } else {
 
@@ -563,7 +562,7 @@ public class ClientHandler extends Thread {
     }
 
     /**
-     * M�todo que desconecta de la base de datos
+     * Metodo que desconecta de la base de datos
      */
     static void desconectar() {
         try {

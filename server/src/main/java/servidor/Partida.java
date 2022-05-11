@@ -43,7 +43,7 @@ public class Partida {
             in1 = new DataInputStream(j1.getInputStream());
             out1 = new DataOutputStream(j1.getOutputStream());
 
-            //se añade el jugador al arraylist
+            //se suma el jugador al arraylist
             jugadores[0] = j1;
 
             //lo mismo
@@ -62,7 +62,7 @@ public class Partida {
 
         } catch (SocketException se) {
             se.printStackTrace();
-            System.err.println("Conexión con el cliente cerrada.");
+            System.err.println("Conexion con el cliente cerrada.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,7 +127,7 @@ public class Partida {
                             out2.writeBoolean(false);
                             juez.puedeMover = juez.puedeMover(juez.casillas, !j1EsBlancas);
                             juez.jaque = juez.comprobarJaque(juez.casillas);
-                            //envío a cada jugador si es jaque, si está ahogado y los movs
+                            //envio a cada jugador si es jaque, si esta ahogado y los movs
                             out1.writeBoolean(juez.jaque);
                             out2.writeBoolean(juez.jaque);
                             out1.writeBoolean(juez.puedeMover);
@@ -181,7 +181,7 @@ public class Partida {
                             out2.writeBoolean(false);
                             juez.puedeMover = juez.puedeMover(juez.casillas, j1EsBlancas);
                             juez.jaque = juez.comprobarJaque(juez.casillas);
-                            //envío a cada jugador si es jaque, si está ahogado y los movs
+                            //envio a cada jugador si es jaque, si esta ahogado y los movs
                             out1.writeBoolean(juez.jaque);
                             out2.writeBoolean(juez.jaque);
                             out1.writeBoolean(juez.puedeMover);

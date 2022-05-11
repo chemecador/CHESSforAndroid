@@ -1,5 +1,7 @@
 package com.example.chessforandroid;
 
+import static com.example.chessforandroid.util.Constantes.debug;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -39,7 +41,13 @@ public class Cliente {
         try {
             // inicializamos el socket, dis y dos
             conn = new Socket();
-            conn.connect(new InetSocketAddress(host, puerto), 1200);
+            if (debug){
+                Log.i("**", "me conecto en local");
+                conn.connect(new InetSocketAddress("localhost", puerto), 1200);
+            } else {
+                Log.i("**", "me conecto online");
+                conn.connect(new InetSocketAddress(host, puerto), 1200);
+            }
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
             conectado = true;

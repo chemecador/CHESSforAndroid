@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         invitado = findViewById(R.id.bInvitado);
         invitado.setOnClickListener(this);
 
-        tvChess = findViewById(R.id.txtChess);
+        tvChess = findViewById(R.id.txtChessLogin);
         tvChess.setOnClickListener(this);
 
         i = 0;
@@ -85,8 +85,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(mainIntentOffline);
                 finish();
                 break;
-            case R.id.txtVersion:
-                Toast.makeText(this, "lo toco "+i, Toast.LENGTH_SHORT).show();
+            case R.id.txtChessLogin:
                 i++;
                 if (i > 7) {
                     startActivity(new Intent(this, AdvancedActivity.class));

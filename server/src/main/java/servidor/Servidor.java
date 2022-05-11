@@ -1,7 +1,5 @@
 package servidor;
 
-import casillas.Casilla;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,7 +27,7 @@ public class Servidor {
                 //se crea un socket que espera a que llegue un cliente
                 Socket cliente = ss.accept();
                 conexiones.add(cliente);
-                //se lanza un hilo de la clase ClientHandler que gestiona la conexión de manera independiente a esta clase
+                //se lanza un hilo de la clase ClientHandler que gestiona la conexiï¿½n de manera independiente a esta clase
                 new ClientHandler(ss, cliente).start();
             }
         } catch (IOException e) {
@@ -42,14 +40,14 @@ public class Servidor {
             try {
                 soc.close();
             } catch (IOException e) {
-                System.err.println("Error al cerrar la conexión");
+                System.err.println("Error al cerrar la conexion");
                 e.printStackTrace();
             }
         }
     }
 
     /**
-     * Método principal
+     * Metodo principal
      *
      * @param args
      */

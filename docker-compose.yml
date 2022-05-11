@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  server:
+    image: ghcr.io/chemecador/chessserver:latest
+    environment:
+      - name=value
+    ports:
+      - 5566:5566/tcp
+    restart: unless-stopped
