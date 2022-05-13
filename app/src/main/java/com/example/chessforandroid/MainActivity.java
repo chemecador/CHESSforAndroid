@@ -6,28 +6,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.chessforandroid.util.Constantes;
-
 /***
  *
  *
  * TAREA ACTUAL:
- *
+ * temporizador al buscar partida y al realizar movimiento
  *
  * BUGS CONOCIDOS:
- * servidor crashea cuando cierras la app en medio de la partida y quieres volver a jugar
+ * los sockets no se cierran bien si la app se cierra inesperadamente
  *
  * IDEAS:
  * pausar partida guardando la posición de las piezas
  *
  * TAREAS EXTRA:
- * ver tabla con usuarios con más ELO / más nivel
+ * ver tabla con usuarios con más nivel
  * cifrado
  *
  */
@@ -46,12 +43,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         token = intent.getStringExtra("token");
 
         Button offline = findViewById(R.id.bOffline);
-        Button online = findViewById(R.id.bJugarOnline);
-        Button redLocal = findViewById(R.id.bRedLocal);
+        Button friend = findViewById(R.id.bPlayFriend);
+        Button mm = findViewById(R.id.bMatchmaking);
+        Button ranking = findViewById(R.id.bRanking);
 
         offline.setOnClickListener(this);
-        online.setOnClickListener(this);
-        redLocal.setOnClickListener(this);
+        friend.setOnClickListener(this);
+        mm.setOnClickListener(this);
+        ranking.setOnClickListener(this);
     }
 
     @Override
@@ -98,20 +97,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent offlineIntent = new Intent(this, OfflineActivity.class);
                 startActivity(offlineIntent);
                 break;
-            case R.id.bRedLocal:
+            case R.id.bMatchmaking:
                 if (user.length() > 0) {
-                    Intent redLocalIntent = new Intent(this, LocalLobbyActivity.class);
+                    Intent redLocalIntent = new Intent(this, OnlineLobbyActivity.class);
                     redLocalIntent.putExtra("token", token);
                     startActivity(redLocalIntent);
                     break;
                 }
                 startActivity(new Intent(this, LoginActivity.class));
 
-            case R.id.bJugarOnline:
+            case R.id.bPlayFriend:
                 if (user.length() > 0) {
                     Intent onlineIntent = new Intent(this, OnlineActivity.class);
                     onlineIntent.putExtra("token", token);
                     startActivity(onlineIntent);
+                    break;
+                }
+                startActivity(new Intent(this, LoginActivity.class));
+            case R.id.bRanking:
+                if (user.length() > 0) {
+                    Intent rankingIntent = new Intent(this, RankingActivity.class);
+                    rankingIntent.putExtra("token", token);
+                    startActivity(rankingIntent);
                     break;
                 }
                 startActivity(new Intent(this, LoginActivity.class));

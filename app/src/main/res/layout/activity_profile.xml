@@ -84,7 +84,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:paddingRight="10dp"
-                android:text="@string/elo" />
+                android:text="@string/ELO" />
 
             <TextView
                 android:id="@+id/pElo"

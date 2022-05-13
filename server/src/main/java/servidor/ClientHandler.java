@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.SecureRandom;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,40 +30,61 @@ public class ClientHandler extends Thread {
             in = new DataInputStream(cliente.getInputStream());
             String peticion = in.readUTF();
             logger.log(Level.INFO, "Peticion de " + peticion + " recibida");
-            gestionarPeticion(peticion);
+            peticion(peticion);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void gestionarPeticion(String peticion) throws SQLException, IOException {
+    private void peticion(String peticion) throws SQLException, IOException {
         switch (peticion) {
             case "signup":
-                gestionarRegistro();
+                registro();
                 cerrarConexion();
                 break;
             case "login":
-                gestionarInicioSesion();
+                inicioSesion();
                 cerrarConexion();
                 break;
             case "cambiarpass":
-                out.writeBoolean(gestionarCambiarPass());
+                out.writeBoolean(cambiarPass());
                 cerrarConexion();
                 break;
             case "pedirdatos":
-                gestionarPedirDatos();
+                pedirDatos();
                 cerrarConexion();
                 break;
             case "local":
-                gestionarJugarLocal();
+                jugarLocal();
                 break;
             case "crearsala":
-                gestionarCrearSala();
+                crearSala();
                 break;
             case "unirse":
-                gestionarUnirse();
+                unirse();
                 cerrarConexion();
                 break;
+            case "ranking":
+                ranking();
+                cerrarConexion();
+                break;
+        }
+    }
+
+    private void ranking() throws IOException {
+        ArrayList<String> users = DB.getRankingUsers();
+        ArrayList<String> elos = DB.getRankingElos();
+        int numDatos = Math.min(users.size(), elos.size());
+        if (users == null || elos == null){
+            out.writeInt(0);
+            return;
+        }
+        out.writeInt(numDatos);
+        for (int i = 0; i < numDatos; i++){
+            out.writeUTF(users.get(i));
+        }
+        for (int i = 0; i < numDatos; i++){
+            out.writeUTF(elos.get(i));
         }
     }
 
@@ -71,7 +93,7 @@ public class ClientHandler extends Thread {
     }
 
 
-    private void gestionarJugarLocal() throws IOException {
+    private void jugarLocal() throws IOException {
         Servidor.jugadores++;
         System.out.println("Ahora hay " + Servidor.jugadores + " jugadores ");
         if (Servidor.jugadores % 2 != 0) {
@@ -85,7 +107,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private boolean gestionarCrearSala() throws IOException, SQLException {
+    private boolean crearSala() throws IOException, SQLException {
         int idAnfitrion = DB.getIdFromToken(in.readUTF());
         int codigo;
         String AB = "0123456789";
@@ -107,7 +129,7 @@ public class ClientHandler extends Thread {
 
     }
 
-    private boolean gestionarUnirse() throws IOException, SQLException {
+    private boolean unirse() throws IOException, SQLException {
         int idInvitado = DB.getIdFromToken(in.readUTF());
         int codigo = in.readInt();
         System.out.println("El idInv es " + idInvitado + " y el codigo " + codigo);
@@ -122,7 +144,7 @@ public class ClientHandler extends Thread {
         return false;
     }
 
-    private boolean gestionarCambiarPass() {
+    private boolean cambiarPass() {
         String user = null;
         String oldPass = null;
         String newPass = null;
@@ -141,7 +163,7 @@ public class ClientHandler extends Thread {
         return false;
     }
 
-    private void gestionarInicioSesion() throws IOException, SQLException {
+    private void inicioSesion() throws IOException, SQLException {
         String user, pass;
         int id;
         boolean bool;
@@ -156,7 +178,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void gestionarRegistro() throws IOException, SQLException {
+    private void registro() throws IOException, SQLException {
         String user, pass;
         user = in.readUTF();
         pass = in.readUTF();
@@ -182,7 +204,7 @@ public class ClientHandler extends Thread {
     }
 
 
-    private void gestionarPedirDatos() throws IOException {
+    private void pedirDatos() throws IOException {
         int[] datos = DB.pedirDatos(in.readUTF());
         out.writeInt(datos[0]);
         out.writeInt(datos[1]);

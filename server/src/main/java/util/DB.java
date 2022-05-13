@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -475,5 +476,53 @@ public class DB {
         // se sustituyen los datos en la consulta y se ejecuta
         sentencia.executeUpdate();
         return true;
+    }
+
+    public static ArrayList<String> getRankingUsers() {
+        // conecta con la base de datos
+
+        // realiza la consulta de la tabla actual
+        String consulta = "SELECT user FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.elo DESC";
+        PreparedStatement sentencia;
+        try {
+            ArrayList<String> datos = new ArrayList<>();
+            // realiza la consulta y la ejecuta
+            sentencia = conn.prepareStatement(consulta);
+            ResultSet res = sentencia.executeQuery();
+
+            while (res.next()) {
+                datos.add(res.getString("user"));
+            }
+            return datos;
+        } catch (SQLException e) {
+            System.err.println("Error al consultar + " + e.toString());
+        }
+
+        // ha habido un error; desconecta y devuelve null.
+        return null;
+    }
+
+    public static ArrayList<String> getRankingElos() {
+        // conecta con la base de datos
+
+        // realiza la consulta de la tabla actual
+        String consulta = "SELECT elo FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.elo DESC";
+        PreparedStatement sentencia;
+        try {
+            ArrayList<String> datos = new ArrayList<>();
+            // realiza la consulta y la ejecuta
+            sentencia = conn.prepareStatement(consulta);
+            ResultSet res = sentencia.executeQuery();
+
+            while (res.next()) {
+                datos.add(String.valueOf(res.getInt("elo")));
+            }
+            return datos;
+        } catch (SQLException e) {
+            System.err.println("Error al consultar + " + e.toString());
+        }
+
+        // ha habido un error; desconecta y devuelve null.
+        return null;
     }
 }

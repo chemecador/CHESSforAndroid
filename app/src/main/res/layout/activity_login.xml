@@ -22,7 +22,7 @@
             android:fontFamily="casual"
             android:gravity="center"
             android:text="@string/chess"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -64,7 +64,7 @@
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/password" />
 

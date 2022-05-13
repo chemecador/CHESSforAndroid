@@ -9,10 +9,13 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Partida {
 
+    private static final Logger logger = Logger.getLogger(Partida.class.getName());
     private static final int NUM_FILAS = 8;
     private static final int NUM_COLUMNAS = 8;
     private DataOutputStream out1; //flujo de salida de datos con el jugador 1 (a partir de ahora, J1)
@@ -206,6 +209,21 @@ public class Partida {
             j1EsBlancas = new Random().nextBoolean();
             String user1 = DB.getUserFromId(id1);
             String user2 = DB.getUserFromId(id2);
+            if (user1 == null && user2 == null){
+                Servidor.jugadores = Servidor.jugadores - 2;
+                logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
+                return;
+            }
+            if (user1 == null){
+                Servidor.jugadores--;
+                logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
+                return;
+            }
+            if (user2 == null){
+                Servidor.jugadores--;
+                logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
+                return;
+            }
             out1.writeUTF(user1);
             out1.writeUTF(user2);
             out2.writeUTF(user2);

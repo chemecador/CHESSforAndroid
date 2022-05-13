@@ -22,8 +22,9 @@
             android:layout_height="wrap_content"
             android:fontFamily="casual"
             android:gravity="center"
-            android:text="@string/offline"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+            android:text="@string/play_offline"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/bOffline"
@@ -47,22 +48,47 @@
             android:layout_height="wrap_content"
             android:fontFamily="casual"
             android:gravity="center"
-            android:text="@string/online"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
+            android:text="@string/play_online"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textStyle="bold" />
 
         <Button
-            android:id="@+id/bRedLocal"
+            android:id="@+id/bMatchmaking"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#A4552A"
-            android:text="@string/local_net" />
+            android:text="@string/matchmaking" />
 
         <Button
-            android:id="@+id/bJugarOnline"
+            android:id="@+id/bPlayFriend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#A4552A"
-            android:text="Jugar online" />
+            android:text="@string/play_friend" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="casual"
+            android:gravity="center"
+            android:text="@string/ranking"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/bRanking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A4552A"
+            android:text="@string/show_ranking" />
+    </LinearLayout>
+
 </LinearLayout>

@@ -71,8 +71,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_game);
         crearCasillas();
 
-        this.oGameBoardShell = this.findViewById(R.id.shellGameBoardLocal);
-        this.oGameBoard = this.findViewById(R.id.gridGameBoardLocal);
+        this.oGameBoardShell = this.findViewById(R.id.shellGameBoardOnline);
+        this.oGameBoard = this.findViewById(R.id.gridGameBoardOnline);
         Tablero t = new Tablero();
         t.execute();
         Intent intent = getIntent();
@@ -101,7 +101,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        if (view.getId() == R.id.bTablasLocal) {
+        if (view.getId() == R.id.bTablasOnline) {
             if (contadorTablas > 3) {
                 Toast.makeText(this, "Ya has solicitado tablas 3 veces", Toast.LENGTH_SHORT).show();
                 return;
@@ -116,7 +116,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
             return;
         }
-        if (view.getId() == R.id.bRendirseLocal) {
+        if (view.getId() == R.id.bRendirseOnline) {
 
 
             if (cliente.isConectado()) {
@@ -191,23 +191,35 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("********************************************************************", "socket cerrado en onPause()");
-        cliente.abandonar();
+        if (cliente.isConectado()) {
+            Log.i("**", "socket cerrado en onPause()");
+            cliente.abandonar();
+        } else {
+            Log.i("**", "cliente ya no conectado en onPause()");
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("********************************************************************", "socket cerrado en onDestroy()");
-        //cliente.cerrarConexion();
+        if (cliente.isConectado()) {
+            Log.i("**", "socket cerrado en onDestroy()");
+            cliente.abandonar();
+        } else {
+            Log.i("**", "cliente ya no conectado en onDestroy()");
+        }
     }
 
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("********************************************************************", "socket cerrado en onStop()");
-        //cliente.cerrarConexion();
+        if (cliente.isConectado()) {
+            Log.i("**", "socket cerrado en onStop()");
+            cliente.abandonar();
+        } else {
+            Log.i("**", "cliente ya no conectado en onStop()");
+        }
     }
 
 
@@ -352,9 +364,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void addListeners() {
         pintarFondo();
         movs = new StringBuilder();
-        tvMueven = findViewById(R.id.txtMuevenLocal);
+        tvMueven = findViewById(R.id.txtMuevenOnline);
         TextView vs = findViewById(R.id.txtVs);
-        tvMovs = findViewById(R.id.txtMovsLocal);
+        tvMovs = findViewById(R.id.txtMovsOnline);
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
 
         Object[] o = null;
@@ -364,8 +376,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("************************", "Error al recibir los datos iniciales");
         }
 
-        tablas = findViewById(R.id.bTablasLocal);
-        Button rendirse = findViewById(R.id.bRendirseLocal);
+        tablas = findViewById(R.id.bTablasOnline);
+        Button rendirse = findViewById(R.id.bRendirseOnline);
         tablas.setOnClickListener(this);
         rendirse.setOnClickListener(this);
         for (int i = 0; i < NUM_FILAS; i++) {

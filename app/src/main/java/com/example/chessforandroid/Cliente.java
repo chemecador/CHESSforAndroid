@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class Cliente {
@@ -103,7 +104,7 @@ public class Cliente {
     }
 
 
-    public void local(Context context, LocalLobbyActivity lla, String token) {
+    public void local(Context context, OnlineLobbyActivity lla, String token) {
         this.context = context;
         new Local(lla).execute(token);
     }
@@ -132,6 +133,47 @@ public class Cliente {
         enviarMensaje("abandonar");
     }
 
+    public void getRanking(RankingActivity ra) {
+        new Ranking(ra).execute();
+    }
+
+
+    public class Ranking extends AsyncTask<Void, Void, ArrayList<RankingItem>> {
+
+        private RankingActivity ra;
+
+        public Ranking(RankingActivity ra){
+            this.ra = ra;
+        }
+
+        @Override
+        protected ArrayList<RankingItem> doInBackground(Void... voids) {
+            ArrayList<RankingItem> datos = new ArrayList<>();
+            try {
+                out.writeUTF("ranking");
+                int numUsuarios = in.readInt();
+                for (int i = 0; i< numUsuarios; i++){
+                    RankingItem ri = new RankingItem();
+                    ri.setPosition(i+1);
+                    ri.setUser(in.readUTF());
+                    datos.add(ri);
+                }
+                for (int i = 0; i< numUsuarios; i++){
+                    RankingItem ri = datos.get(i);
+                    ri.setElo(in.readUTF());
+                }
+                return datos;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<RankingItem> datos) {
+            ra.alRecibirDatos(datos);
+        }
+    }
 
     public class EnviarMensaje extends AsyncTask<String, Void, String> {
         @Override
@@ -309,9 +351,9 @@ public class Cliente {
 
     public class Local extends AsyncTask<String, Void, String> {
 
-        LocalLobbyActivity lla;
+        OnlineLobbyActivity lla;
 
-        public Local(LocalLobbyActivity lla){
+        public Local(OnlineLobbyActivity lla){
             this.lla = lla;
         }
 
@@ -388,7 +430,7 @@ public class Cliente {
         protected void onPostExecute(Integer res) {
             super.onPostExecute(res);
 
-            Intent lobbyIntent = new Intent(context, LobbyActivity.class);
+            Intent lobbyIntent = new Intent(context, FriendLobbyActivity.class);
             lobbyIntent.putExtra("id", res);
             lobbyIntent.putExtra("token", token);
             context.startActivity(lobbyIntent);

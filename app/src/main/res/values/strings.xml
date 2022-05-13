@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">CHESS for Android</string>
-    <string name="offline">Offline</string>
-    <string name="online">Online</string>
+    <string name="play_online">Jugar en línea</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -19,7 +18,7 @@
     <string name="about_us">Acerca de...</string>
     <string name="preferences">Preferencias</string>
     <string name="level">Nivel:</string>
-    <string name="elo">ELO:</string>
+    <string name="ELO">ELO:</string>
     <string name="history">Historial</string>
     <string name="wins">Victorias:</string>
     <string name="loss">Derrotas:</string>
@@ -43,7 +42,7 @@
     <string name="join">Unirse</string>
     <string name="write_code">Escribe aquí el código...</string>
     <string name="waiting">Esperando jugadores...</string>
-    <string name="local_net">Jugar en una red local</string>
+    <string name="matchmaking">Buscar partida</string>
     <string name="turn">Comienzan las blancas</string>
     <string name="white_move">Mueven las blancas</string>
     <string name="you_win">¡Has ganado!</string>
@@ -61,4 +60,12 @@
     <string name="win_20">Gana 20 partidas</string>
     <string name="win_30">Gana 30 partidas</string>
     <string name="developer_mode">Modo desarrollador</string>
+    <string name="play_friend">Jugar con un amigo</string>
+    <string name="play">Jugar</string>
+    <string name="ranking">Ranking</string>
+    <string name="show_ranking">Mostrar clasificación</string>
+    <string name="loading_data">Cargando datos...</string>
+    <string name="position">Posición</string>
+    <string name="player">Jugador</string>
+    <string name="elo">ELO</string>
 </resources>

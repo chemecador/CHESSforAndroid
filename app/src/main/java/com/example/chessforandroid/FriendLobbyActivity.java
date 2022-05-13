@@ -8,13 +8,13 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class LobbyActivity extends AppCompatActivity {
+public class FriendLobbyActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lobby);
+        setContentView(R.layout.activity_friend_lobby);
 
 
         Intent intent = getIntent();

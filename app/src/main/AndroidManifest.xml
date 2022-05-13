@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CHESSForAndroid">
         <activity
+            android:name=".RankingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SimpleRankingActivity"
+            android:exported="false" />
+        <activity
             android:name=".AchievementsActivity"
             android:exported="false" />
         <activity
@@ -21,10 +27,10 @@
             android:name=".GameActivity"
             android:exported="false" />
         <activity
-            android:name=".LocalLobbyActivity"
+            android:name=".OnlineLobbyActivity"
             android:exported="false" />
         <activity
-            android:name=".LobbyActivity"
+            android:name=".FriendLobbyActivity"
             android:exported="false" />
         <activity
             android:name=".OnlineActivity"

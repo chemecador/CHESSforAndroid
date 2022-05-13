@@ -28,14 +28,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/bTablasLocal"
+            android:id="@+id/bTablasOnline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="15dp"
             android:text="@string/draw" />
 
         <Button
-            android:id="@+id/bRendirseLocal"
+            android:id="@+id/bRendirseOnline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -49,7 +49,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/txtMuevenLocal"
+            android:id="@+id/txtMuevenOnline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -64,7 +64,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/txtMovsLocal"
+            android:id="@+id/txtMovsOnline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -75,7 +75,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/shellGameBoardLocal"
+        android:id="@+id/shellGameBoardOnline"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -83,7 +83,7 @@
 
         <GridLayout
 
-            android:id="@+id/gridGameBoardLocal"
+            android:id="@+id/gridGameBoardOnline"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_margin="0dp"
