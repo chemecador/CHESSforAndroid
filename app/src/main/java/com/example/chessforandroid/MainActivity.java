@@ -108,14 +108,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 startActivity(new Intent(this, LoginActivity.class));
 
-            case R.id.bPlayFriend:
+            /*case R.id.bPlayFriend:
                 if (user.length() > 0) {
                     Intent onlineIntent = new Intent(this, OnlineActivity.class);
                     onlineIntent.putExtra("token", token);
                     startActivity(onlineIntent);
                     break;
                 }
-                startActivity(new Intent(this, LoginActivity.class));
+                startActivity(new Intent(this, LoginActivity.class));*/
             case R.id.bRanking:
                 if (user.length() > 0) {
                     Intent rankingIntent = new Intent(this, RankingActivity.class);
