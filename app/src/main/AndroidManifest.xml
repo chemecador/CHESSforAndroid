@@ -15,9 +15,6 @@
             android:name=".RankingActivity"
             android:exported="false" />
         <activity
-            android:name=".SimpleRankingActivity"
-            android:exported="false" />
-        <activity
             android:name=".AchievementsActivity"
             android:exported="false" />
         <activity
