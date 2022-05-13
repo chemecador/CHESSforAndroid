@@ -223,7 +223,7 @@ public class DB {
                 sentencia.close();
             }
             Servidor.jugadores = Servidor.jugadores - 2;
-            System.out.println("Ahora hay " + Servidor.jugadores);
+            System.out.println("Ahora hay " + Servidor.jugadores + " jugadores");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -242,7 +242,7 @@ public class DB {
             }
 
             // si no ha habido errores, se crea una consulta
-            String consulta = "INSERT INTO partidas (movimientos, idanfitrion, idinvitado, ganador, perdedor) VALUES (?,?,?,?,?)";
+            String consulta = "INSERT INTO partidas (movimientos, idanfitrion, idinvitado, idganador, idperdedor) VALUES (?,?,?,?,?)";
             PreparedStatement sentencia = conn.prepareStatement(consulta);
             sentencia.setString(1, movs);
             sentencia.setInt(2, id1);

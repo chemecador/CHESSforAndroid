@@ -3,12 +3,11 @@ package servidor;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 import util.DB;
 
@@ -24,23 +23,23 @@ public class Servidor {
     private ServerSocket ss;
 
     /**
-     * 
+     *
      */
     public static int jugadores = 0;
 
     /**
-     * 
+     *
      */
     public static ArrayList<Socket> conexiones;
 
     /**
-     * 
+     *
      */
-    public static ArrayList<Local> locales;
+    public static ArrayList<Lobby> lobbies;
 
     public Servidor() {
         conexiones = new ArrayList<>();
-        locales = new ArrayList<>();
+        lobbies = new ArrayList<>();
         try {
             DB.conectar();
         } catch (SQLException e) {

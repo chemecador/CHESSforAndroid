@@ -43,13 +43,13 @@ public class Cliente {
         try {
             // inicializamos el socket, dis y dos
             conn = new Socket();
-            if (debug){
+            if (debug) {
                 host = Constantes.ipLocal;
-            } else{
+            } else {
                 host = Constantes.ip;
             }
             conn.connect(new InetSocketAddress(host, puerto), 1200);
-            Log.i("*****" , "me conecto a " + host);
+            Log.i("*****", "me conecto a " + host);
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
             conectado = true;
@@ -106,7 +106,7 @@ public class Cliente {
 
     public void local(Context context, OnlineLobbyActivity lla, String token) {
         this.context = context;
-        new Local(lla).execute(token);
+        new Online(lla).execute(token);
     }
 
     public void esperarMov(Context context, GameActivity ga) {
@@ -142,7 +142,7 @@ public class Cliente {
 
         private RankingActivity ra;
 
-        public Ranking(RankingActivity ra){
+        public Ranking(RankingActivity ra) {
             this.ra = ra;
         }
 
@@ -152,13 +152,13 @@ public class Cliente {
             try {
                 out.writeUTF("ranking");
                 int numUsuarios = in.readInt();
-                for (int i = 0; i< numUsuarios; i++){
+                for (int i = 0; i < numUsuarios; i++) {
                     RankingItem ri = new RankingItem();
-                    ri.setPosition(i+1);
+                    ri.setPosition(i + 1);
                     ri.setUser(in.readUTF());
                     datos.add(ri);
                 }
-                for (int i = 0; i< numUsuarios; i++){
+                for (int i = 0; i < numUsuarios; i++) {
                     RankingItem ri = datos.get(i);
                     ri.setElo(in.readUTF());
                 }
@@ -185,10 +185,11 @@ public class Cliente {
             }
             return strings[0];
         }
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (s.equalsIgnoreCase("abandonar")){
+            if (s.equalsIgnoreCase("abandonar")) {
                 //cerrarConexion();
             }
         }
@@ -247,7 +248,7 @@ public class Cliente {
                 //es jaque mate?
                 Boolean b = in.readBoolean();
                 objects[0] = b;
-                if (b){
+                if (b) {
                     return objects;
                 }
                 //es jaque?
@@ -292,7 +293,7 @@ public class Cliente {
                 //es jaque mate?
                 Boolean b = in.readBoolean();
                 objects[2] = b;
-                if (b){
+                if (b) {
                     return objects;
                 }
                 //es jaque?
@@ -349,11 +350,11 @@ public class Cliente {
     }
 
 
-    public class Local extends AsyncTask<String, Void, String> {
+    public class Online extends AsyncTask<String, Void, String> {
 
         OnlineLobbyActivity lla;
 
-        public Local(OnlineLobbyActivity lla){
+        public Online(OnlineLobbyActivity lla) {
             this.lla = lla;
         }
 
@@ -361,7 +362,7 @@ public class Cliente {
         protected String doInBackground(String... strings) {
             try {
                 token = strings[0];
-                out.writeUTF("local");
+                out.writeUTF("online");
                 out.writeUTF(token);
                 return in.readUTF();
             } catch (IOException e) {
@@ -374,7 +375,13 @@ public class Cliente {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            if (s != null) {
+            if (s == null) {
+                Log.e("**********", "Clase Online recibe null en onPostExecute");
+            }
+            if (s.equalsIgnoreCase("norivales")) {
+                Toast.makeText(lla, "No se han encontrado rivales", Toast.LENGTH_SHORT).show();
+            }
+            if (s.equalsIgnoreCase("jugar")) {
                 Intent localIntent = new Intent(context, GameActivity.class);
                 localIntent.putExtra("token", token);
                 context.startActivity(localIntent);

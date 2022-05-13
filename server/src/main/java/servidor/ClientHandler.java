@@ -54,8 +54,8 @@ public class ClientHandler extends Thread {
                 pedirDatos();
                 cerrarConexion();
                 break;
-            case "local":
-                jugarLocal();
+            case "online":
+                jugarOnline();
                 break;
             case "crearsala":
                 crearSala();
@@ -93,15 +93,15 @@ public class ClientHandler extends Thread {
     }
 
 
-    private void jugarLocal() throws IOException {
+    private void jugarOnline() throws IOException {
         Servidor.jugadores++;
         System.out.println("Ahora hay " + Servidor.jugadores + " jugadores ");
         if (Servidor.jugadores % 2 != 0) {
-            Local l = new Local(socket);
+            Lobby l = new Lobby(socket);
             l.start();
-            Servidor.locales.add(l);
+            Servidor.lobbies.add(l);
         } else {
-            Local lo = Servidor.locales.get(Servidor.locales.size() - 1);
+            Lobby lo = Servidor.lobbies.get(Servidor.lobbies.size() - 1);
             lo.setJugador(socket);
             new Partida(ss.accept(), ss.accept());
         }
