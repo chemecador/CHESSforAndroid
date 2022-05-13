@@ -9,6 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
+import com.example.chessforandroid.util.RankingItem;
+
 import java.util.ArrayList;
 
 public class RankingAdapter extends BaseAdapter {

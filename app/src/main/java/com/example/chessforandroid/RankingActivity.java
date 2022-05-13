@@ -2,13 +2,14 @@ package com.example.chessforandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
+import com.example.chessforandroid.util.Cliente;
+import com.example.chessforandroid.util.RankingItem;
+
 import java.util.ArrayList;
 
 public class RankingActivity extends AppCompatActivity {

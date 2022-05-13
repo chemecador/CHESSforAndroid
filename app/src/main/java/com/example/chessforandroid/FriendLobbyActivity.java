@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chessforandroid.util.Cliente;
+
 public class FriendLobbyActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")

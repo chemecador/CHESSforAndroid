@@ -1,4 +1,4 @@
-package com.example.chessforandroid;
+package com.example.chessforandroid.util;
 
 import static com.example.chessforandroid.util.Constantes.debug;
 
@@ -10,7 +10,12 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.chessforandroid.util.Constantes;
+import com.example.chessforandroid.FriendLobbyActivity;
+import com.example.chessforandroid.GameActivity;
+import com.example.chessforandroid.MainActivity;
+import com.example.chessforandroid.OnlineLobbyActivity;
+import com.example.chessforandroid.ProfileActivity;
+import com.example.chessforandroid.RankingActivity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

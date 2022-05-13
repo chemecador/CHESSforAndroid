@@ -1,4 +1,4 @@
-package com.example.chessforandroid;
+package com.example.chessforandroid.util;
 
 public class RankingItem {
     private int position;

@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.chessforandroid.util.Constantes;
+import com.example.chessforandroid.util.Cliente;
 
 import java.util.Objects;
 

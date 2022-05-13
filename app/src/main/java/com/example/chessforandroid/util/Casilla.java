@@ -1,7 +1,6 @@
-package com.example.chessforandroid;
+package com.example.chessforandroid.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 

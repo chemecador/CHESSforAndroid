@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.chessforandroid.util.Cliente;
+
 public class OnlineLobbyActivity extends AppCompatActivity {
 
     @Override

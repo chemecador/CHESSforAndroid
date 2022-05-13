@@ -1,7 +1,9 @@
-package com.example.chessforandroid;
+package com.example.chessforandroid.util;
 
 import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
+
+import com.example.chessforandroid.R;
 import com.example.chessforandroid.piezas.*;
 
 public class Juez {
