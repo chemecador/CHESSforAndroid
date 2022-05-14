@@ -110,7 +110,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 return;
             }
 
-            casSelec.setBackgroundColor(Color.parseColor("#36E0FA"));
+            casSelec.setBackgroundColor(Color.parseColor("#459CCD"));
             quieroMover = casSelec;
             quieroMover.setPieza(casSelec.getPieza());
         } else {
@@ -125,6 +125,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 juez.captura = casSelec.getPieza() != null;
                 tag = quieroMover.getPieza().getTag();
                 juez.mover(quieroMover, casSelec);
+                quieroMover.setBackgroundColor(Color.parseColor("#AECDDF"));
+                casSelec.setBackgroundColor(Color.parseColor("#8DC5E5"));
                 juez.turno = !juez.turno;
                 if (juez.buscarRey(juez.casillas, juez.turno) == null) {
                     if (juez.turno)

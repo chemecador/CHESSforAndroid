@@ -141,7 +141,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             if (casSelec.getPieza().isBlancas() != soyBlancas)
                 return;
 
-            casSelec.setBackgroundColor(Color.parseColor("#36E0FA"));
+            casSelec.setBackgroundColor(Color.parseColor("#459CCD"));
             quieroMover = casSelec;
             tag = quieroMover.getPieza().getTag();
             quieroMover.setPieza(casSelec.getPieza());
@@ -153,6 +153,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 tablas.setBackgroundColor(Color.parseColor("#646464"));
                 juez.captura = casSelec.getPieza() != null;
                 juez.mover(quieroMover, casSelec);
+                quieroMover.setBackgroundColor(Color.parseColor("#AECDDF"));
+                casSelec.setBackgroundColor(Color.parseColor("#8DC5E5"));
                 if (nMovs > 0 && nMovs % 3 == 0) {
                     movs.append("\n");
                     tvMovs.setText(movs);

@@ -7,16 +7,8 @@ import juego.casillas.*;
 import servidor.Servidor;
 import db.DB;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketException;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Level;
-
 
 public class Partida {
 
