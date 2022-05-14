@@ -18,7 +18,7 @@ public class Juez {
     public boolean jaqueMate;
     public boolean puedeMover;
 
-    public Juez(){
+    public Juez() {
         inTablero = new int[NUM_FILAS][NUM_COLUMNAS];
         turno = true;
         casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
@@ -28,10 +28,10 @@ public class Juez {
         captura = false;
     }
 
-    public void actualizarCasillas(int[][] t){
+    public void actualizarCasillas(int[][] t) {
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-                switch (t[i][j]){
+                switch (t[i][j]) {
                     case 0:
                         casillas[i][j].setPieza(null);
                         casillas[i][j].setImageResource(0);
@@ -92,14 +92,14 @@ public class Juez {
         }
     }
 
-    public int[][] stringToInt(String s){
+    public int[][] stringToInt(String s) {
         int[][] t = new int[NUM_FILAS][NUM_COLUMNAS];
         int x = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 if (s.charAt(x) == '-') {
                     t[i][j] = Integer.parseInt(s.substring(x, x + 2));
-                    x = x+2;
+                    x = x + 2;
                 } else {
                     t[i][j] = Integer.parseInt(s.substring(x, x + 1));
                     x++;
@@ -151,7 +151,6 @@ public class Juez {
         }
         return sbResult.toString();
     }
-
 
 
     /***
@@ -405,39 +404,35 @@ public class Juez {
 
         Rey rey = (Rey) cInicial.getPieza();
         if (!rey.haMovido && !jaque) {
-            if (!turno) {
-                //enroque largo negras
-                if (casillas[0][0].getPieza() != null &&
-                        casillas[0][0].getPieza().getTag().equalsIgnoreCase("TORRE") &&
-                        cFinal.getFila() == 0 && cFinal.getColumna() == 2 &&
-                        casillas[0][1].getPieza() == null && casillas[0][2].getPieza() == null &&
-                        casillas[0][3].getPieza() == null) {
-                    return true;
-                }
-                //enroque corto negras
-                if (casillas[0][7].getPieza() != null &&
-                        casillas[0][7].getPieza().getTag().equalsIgnoreCase("TORRE") &&
-                        cFinal.getFila() == 0 && cFinal.getColumna() == 6 &&
-                        casillas[0][6].getPieza() == null && casillas[0][5].getPieza() == null) {
-                    return true;
-                }
+            //enroque largo negras
+            if (casillas[0][0].getPieza() != null &&
+                    casillas[0][0].getPieza().getTag().equalsIgnoreCase("TORRE") &&
+                    cFinal.getFila() == 0 && cFinal.getColumna() == 2 &&
+                    casillas[0][1].getPieza() == null && casillas[0][2].getPieza() == null &&
+                    casillas[0][3].getPieza() == null) {
+                return true;
             }
-            if (turno) {
-                //enroque largo blancas
-                if (casillas[7][0].getPieza() != null &&
-                        casillas[7][0].getPieza().getTag().equalsIgnoreCase("TORRE") &&
-                        cFinal.getFila() == 7 && cFinal.getColumna() == 2 &&
-                        casillas[7][1].getPieza() == null && casillas[7][2].getPieza() == null &&
-                        casillas[7][3].getPieza() == null) {
-                    return true;
-                }
-                //enroque corto blancas
-                if (casillas[7][7].getPieza() != null &&
-                        casillas[7][7].getPieza().getTag().equalsIgnoreCase("TORRE") &&
-                        cFinal.getFila() == 7 && cFinal.getColumna() == 6 &&
-                        casillas[7][6].getPieza() == null && casillas[7][5].getPieza() == null) {
-                    return true;
-                }
+            //enroque corto negras
+            if (casillas[0][7].getPieza() != null &&
+                    casillas[0][7].getPieza().getTag().equalsIgnoreCase("TORRE") &&
+                    cFinal.getFila() == 0 && cFinal.getColumna() == 6 &&
+                    casillas[0][6].getPieza() == null && casillas[0][5].getPieza() == null) {
+                return true;
+            }
+            //enroque largo blancas
+            if (casillas[7][0].getPieza() != null &&
+                    casillas[7][0].getPieza().getTag().equalsIgnoreCase("TORRE") &&
+                    cFinal.getFila() == 7 && cFinal.getColumna() == 2 &&
+                    casillas[7][1].getPieza() == null && casillas[7][2].getPieza() == null &&
+                    casillas[7][3].getPieza() == null) {
+                return true;
+            }
+            //enroque corto blancas
+            if (casillas[7][7].getPieza() != null &&
+                    casillas[7][7].getPieza().getTag().equalsIgnoreCase("TORRE") &&
+                    cFinal.getFila() == 7 && cFinal.getColumna() == 6 &&
+                    casillas[7][6].getPieza() == null && casillas[7][5].getPieza() == null) {
+                return true;
             }
         }
 

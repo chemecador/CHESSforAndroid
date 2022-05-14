@@ -342,10 +342,11 @@ public class Cliente {
             Object[] o = new Object[3];
             String s = "ok";
             try {
-                out.writeUTF(token);
-
+                // recibo mi nombre
                 o[0] = in.readUTF();
+                // recibo el nombre del rival
                 o[1] = in.readUTF();
+                // recibo si es mi turno
                 o[2] = in.readBoolean();
             } catch (IOException e) {
                 e.printStackTrace();
