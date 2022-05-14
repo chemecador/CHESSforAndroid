@@ -98,34 +98,17 @@ public class ClientHandler extends Thread {
 
 
     private void jugarOnline() throws IOException {
-        Jugador j1 = null;
-        Jugador j2 = null;
         Servidor.jugadores++;
         System.out.println("Ahora hay " + Servidor.jugadores + " jugadores ");
         if (Servidor.jugadores % 2 != 0) {
-            j1 = new Jugador(socket);
+            Jugador j1 = new Jugador(socket);
             Lobby l = new Lobby(j1);
             l.start();
             Servidor.lobbies.add(l);
         } else {
             Lobby lo = Servidor.lobbies.get(Servidor.lobbies.size() - 1);
-            j2 = new Jugador(socket);
+            Jugador j2 = new Jugador(socket);
             lo.setJugador(j2);
-            System.out.println("listo para jugar");
-            if (j1 != null && j2 != null) {
-                new Partida(j1, j2);
-                return;
-            }
-            if (j1 == null){
-                //loggear
-                Servidor.jugadores--;
-                j2.enviarString("abortada");
-            }
-            if (j2 == null){
-                //loggear
-                Servidor.jugadores--;
-                j1.enviarString("abortada");
-            }
         }
     }
 

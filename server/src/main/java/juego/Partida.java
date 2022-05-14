@@ -36,12 +36,18 @@ public class Partida {
 
 
     public Partida(Jugador j1, Jugador j2) {
+        System.out.println("ENTRO EN PARTIDA");
         fin = false;
         juez = new Juez();
 
         jugadores = new Jugador[2];
         jugadores[0] = j1;
         jugadores[1] = j2;
+
+        id1 = jugadores[0].getId();
+        id2 = jugadores[1].getId();
+
+
 
         datosIniciales();
 
@@ -62,31 +68,6 @@ public class Partida {
     private void jugar() {
         String s;
         try {
-            Timer t = new Timer();
-            TimerTask task = new TimerTask() {
-                int segundos = 0;
-
-                @Override
-                public void run() {
-                    segundos++;
-                    if (juez.turnoBlancas == j1EsBlancas && haMovido)
-                        this.cancel();
-                    if (juez.turnoBlancas != j1EsBlancas && haMovido)
-                        this.cancel();
-                    if (segundos == 5) {
-                        try {
-                            jugadores[0].enviarString("norivales");
-                            Servidor.jugadores--;
-                            System.out.println("Ahora hay " + Servidor.jugadores + " jugadores en cola");
-                            System.out.println("Ahora hay " + Servidor.lobbies.size() + " lobbies en cola");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        this.cancel();
-                    }
-                }
-            };
-            t.scheduleAtFixedRate(task, 1000, 1000);
             while (!fin) {
                 haMovido = false;
                 if (juez.turnoBlancas == j1EsBlancas) {
@@ -209,8 +190,8 @@ public class Partida {
         try {
             juez.turnoBlancas = true;
             j1EsBlancas = new Random().nextBoolean();
-            String user1 = DB.getUserFromId(id1);
-            String user2 = DB.getUserFromId(id2);
+            String user1 = jugadores[0].getUser();
+            String user2 = jugadores[1].getUser();
             if (user1 == null && user2 == null) {
                 Servidor.jugadores = Servidor.jugadores - 2;
                 logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);

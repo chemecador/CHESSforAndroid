@@ -24,9 +24,7 @@ public class Jugador {
         this.socket = socket;
         this.in = new DataInputStream(socket.getInputStream());
         this.out = new DataOutputStream(socket.getOutputStream());
-        System.out.println("id antes vale " + id);
         this.id = db.DB.getIdFromToken(recibirString());
-        System.out.println("id vale " + id);
     }
 
     public String getUser() {

@@ -51,6 +51,7 @@ public class Lobby extends Thread {
             hayRival = true;
             jugadores[0].enviarString("jugar");
             jugadores[1].enviarString("jugar");
+            new Partida(jugadores[0], jugadores[1]);
         } catch (IOException e) {
             System.out.println("Error al introducir el segundo jugador");
             e.printStackTrace();
