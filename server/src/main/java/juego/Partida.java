@@ -22,11 +22,7 @@ public class Partida {
     private static final Logger logger = Logger.getLogger(Partida.class.getName());
     private static final int NUM_FILAS = 8;
     private static final int NUM_COLUMNAS = 8;
-    private DataOutputStream out1; //flujo de salida de datos con el jugador 1 (a partir de ahora, J1)
-    private DataOutputStream out2;//flujo de salida con el jugador 2 (a partir de ahora, J2)
-    private DataInputStream in1; //flujo de entrada de datos con J1
-    private DataInputStream in2; //flujo de entrada con J2
-    private Socket[] jugadores; //lista de jugadores
+    private Jugador[] jugadores; //lista de jugadores
 
 
     //variables de la partida
@@ -39,39 +35,17 @@ public class Partida {
     private String movs;
 
 
-    public Partida(Socket j1, Socket j2) {
-        try {
-            fin = false;
-            juez = new Juez();
-            //se inicializa el serversocket y el arraylist de jugadores
-            jugadores = new Socket[2];
+    public Partida(Jugador j1, Jugador j2) {
+        fin = false;
+        juez = new Juez();
 
-            //se inicializan los flujos de entrada y salida
-            in1 = new DataInputStream(j1.getInputStream());
-            out1 = new DataOutputStream(j1.getOutputStream());
+        jugadores = new Jugador[2];
+        jugadores[0] = j1;
+        jugadores[1] = j2;
 
-            //se suma el jugador al arraylist
-            jugadores[0] = j1;
+        datosIniciales();
 
-            //lo mismo
-            in2 = new DataInputStream(j2.getInputStream());
-            out2 = new DataOutputStream(j2.getOutputStream());
-            jugadores[1] = j2;
-
-            String t1 = in1.readUTF();
-            id1 = DB.getIdFromToken(t1);
-            String t2 = in2.readUTF();
-            id2 = DB.getIdFromToken(t2);
-
-            datosIniciales();
-            jugar();
-
-        } catch (SocketException se) {
-            se.printStackTrace();
-            System.err.println("Conexion con el cliente cerrada.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        jugar();
     }
 
     private void crearCasillas() {
@@ -101,7 +75,7 @@ public class Partida {
                         this.cancel();
                     if (segundos == 5) {
                         try {
-                            out1.writeUTF("norivales");
+                            jugadores[0].enviarString("norivales");
                             Servidor.jugadores--;
                             System.out.println("Ahora hay " + Servidor.jugadores + " jugadores en cola");
                             System.out.println("Ahora hay " + Servidor.lobbies.size() + " lobbies en cola");
@@ -117,108 +91,108 @@ public class Partida {
                 haMovido = false;
                 if (juez.turnoBlancas == j1EsBlancas) {
                     //turno del jugador 1, espero respuesta
-                    s = in1.readUTF();
+                    s = jugadores[0].recibirString();
                     if (s.equalsIgnoreCase("tablas")) {
-                        out2.writeUTF(s);
+                        jugadores[1].enviarString(s);
                         System.out.println(DB.getUserFromId(id1) + "(id1) ofrece tablas");
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("aceptadas")) {
                         System.out.println("Tablas aceptadas");
-                        out2.writeBoolean(true);
+                        jugadores[1].enviarBool(true);
                         DB.gestionarFinal(movs, id1, id2, true);
                         DB.actualizarJugadores(id1, id2, true);
                         break;
                     } else if (s.equalsIgnoreCase("rechazadas")) {
                         System.out.println("Tablas rechazadas");
-                        out2.writeBoolean(false);
+                        jugadores[1].enviarBool(false);
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("rendirse") || s.equalsIgnoreCase("abandonar")) {
                         System.out.println("Gana " + id2);
                         fin = true;
-                        out2.writeUTF("rendirse");
-                        DB.gestionarFinal(movs,id2, id1, false);
+                        jugadores[1].enviarString("rendirse");
+                        DB.gestionarFinal(movs, id2, id1, false);
                         DB.actualizarJugadores(id2, id1, false);
                     } else {
                         juez.tablero = juez.stringToInt(s);
                         juez.intToCasillas(juez.tablero);
-                        out2.writeUTF(s);
-                        movs = in1.readUTF();
-                        out2.writeUTF(movs);
+                        jugadores[1].enviarString(s);
+                        movs = jugadores[0].recibirString();
+                        jugadores[1].enviarString(movs);
                         juez.turnoBlancas = !juez.turnoBlancas;
                         //comprobar jaques, etc
-                        if (juez.buscarRey(juez.casillas, !j1EsBlancas) == null){
+                        if (juez.buscarRey(juez.casillas, !j1EsBlancas) == null) {
                             System.out.println("Gana " + id1);
                             //es jaque mate
-                            out1.writeBoolean(true);
-                            out2.writeBoolean(true);
+                            jugadores[0].enviarBool(true);
+                            jugadores[1].enviarBool(true);
                             fin = true;
-                            DB.gestionarFinal(movs,id1, id2, false);
+                            DB.gestionarFinal(movs, id1, id2, false);
                             DB.actualizarJugadores(id1, id2, false);
                         } else {
                             //no es jaque mate
-                            out1.writeBoolean(false);
-                            out2.writeBoolean(false);
+                            jugadores[0].enviarBool(false);
+                            jugadores[1].enviarBool(false);
                             juez.puedeMover = juez.puedeMover(juez.casillas, !j1EsBlancas);
                             juez.jaque = juez.comprobarJaque(juez.casillas);
                             //envio a cada jugador si es jaque, si esta ahogado y los movs
-                            out1.writeBoolean(juez.jaque);
-                            out2.writeBoolean(juez.jaque);
-                            out1.writeBoolean(juez.puedeMover);
-                            out2.writeBoolean(juez.puedeMover);
+                            jugadores[0].enviarBool(juez.jaque);
+                            jugadores[1].enviarBool(juez.jaque);
+                            jugadores[0].enviarBool(juez.puedeMover);
+                            jugadores[1].enviarBool(juez.puedeMover);
                         }
 
                     }
                 } else {
                     //turno del jugador 2
-                    s = in2.readUTF();
+                    s = jugadores[1].recibirString();
                     if (s.equalsIgnoreCase("tablas")) {
-                        out1.writeUTF(s);
+                        jugadores[0].enviarString(s);
                         System.out.println(DB.getUserFromId(id2) + "(id2) ofrece tablas");
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("aceptadas")) {
                         System.out.println("Tablas aceptadas");
-                        out1.writeBoolean(true);
-                        DB.gestionarFinal(movs,id1, id2, true);
+                        jugadores[0].enviarBool(true);
+                        DB.gestionarFinal(movs, id1, id2, true);
                         DB.actualizarJugadores(id1, id2, true);
                         break;
                     } else if (s.equalsIgnoreCase("rechazadas")) {
                         System.out.println("Tablas rechazadas");
-                        out1.writeBoolean(false);
+                        jugadores[0].enviarBool(false);
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("rendirse") || s.equalsIgnoreCase("abandonar")) {
                         System.out.println("Gana " + id1);
                         fin = true;
-                        out1.writeUTF("rendirse");
-                        DB.gestionarFinal(movs,id1, id2, false);
+                        jugadores[0].enviarString("rendirse");
+                        DB.gestionarFinal(movs, id1, id2, false);
                         DB.actualizarJugadores(id1, id2, false);
                     } else {
                         juez.tablero = juez.stringToInt(s);
                         juez.intToCasillas(juez.tablero);
 
-                        out1.writeUTF(s);
-                        movs = in2.readUTF();
-                        out1.writeUTF(movs);
+                        jugadores[0].enviarString(s);
+                        movs = jugadores[1].recibirString();
+                        jugadores[0].enviarString(movs);
                         juez.turnoBlancas = !juez.turnoBlancas;
                         //comprobar jaques, etc
                         if (juez.buscarRey(juez.casillas, j1EsBlancas) == null) {
                             System.out.println("Gana " + id2);
                             //es jaque mate
-                            out1.writeBoolean(true);
-                            out2.writeBoolean(true);
+                            jugadores[0].enviarBool(true);
+                            jugadores[1].enviarBool(true);
                             fin = true;
-                            DB.gestionarFinal(movs,id2, id1, false);
+                            DB.gestionarFinal(movs, id2, id1, false);
                             DB.actualizarJugadores(id2, id1, false);
                         } else {
                             //no es jaque mate
-                            out1.writeBoolean(false);
-                            out2.writeBoolean(false);
+                            jugadores[0].enviarBool(false);
+                            jugadores[1].enviarBool(false);
                             juez.puedeMover = juez.puedeMover(juez.casillas, j1EsBlancas);
                             juez.jaque = juez.comprobarJaque(juez.casillas);
                             //envio a cada jugador si es jaque, si esta ahogado y los movs
-                            out1.writeBoolean(juez.jaque);
-                            out2.writeBoolean(juez.jaque);
-                            out1.writeBoolean(juez.puedeMover);
-                            out2.writeBoolean(juez.puedeMover);
+                            jugadores[0].enviarBool(juez.jaque);
+                            jugadores[1].enviarBool(juez.jaque);
+                            jugadores[0].enviarBool(juez.puedeMover);
+                            jugadores[1].enviarBool(juez.puedeMover);
                         }
 
                     }
@@ -228,6 +202,7 @@ public class Partida {
             e.printStackTrace();
         }
     }
+
     private void datosIniciales() {
 
         crearCasillas();
@@ -236,31 +211,31 @@ public class Partida {
             j1EsBlancas = new Random().nextBoolean();
             String user1 = DB.getUserFromId(id1);
             String user2 = DB.getUserFromId(id2);
-            if (user1 == null && user2 == null){
+            if (user1 == null && user2 == null) {
                 Servidor.jugadores = Servidor.jugadores - 2;
                 logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
                 return;
             }
-            if (user1 == null){
+            if (user1 == null) {
                 Servidor.jugadores--;
                 logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
                 return;
             }
-            if (user2 == null){
+            if (user2 == null) {
                 Servidor.jugadores--;
                 logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
                 return;
             }
-            out1.writeUTF(user1);
-            out1.writeUTF(user2);
-            out2.writeUTF(user2);
-            out2.writeUTF(user1);
+            jugadores[0].enviarString(user1);
+            jugadores[0].enviarString(user2);
+            jugadores[1].enviarString(user2);
+            jugadores[1].enviarString(user1);
             if (j1EsBlancas) {
-                out1.writeBoolean(true);
-                out2.writeBoolean(false);
+                jugadores[0].enviarBool(true);
+                jugadores[1].enviarBool(false);
             } else {
-                out2.writeBoolean(true);
-                out1.writeBoolean(false);
+                jugadores[1].enviarBool(true);
+                jugadores[0].enviarBool(false);
             }
             System.out.println("Partida entre " + user1 + " ( " + j1EsBlancas + ") y " + user2 + " ( " + !j1EsBlancas + ") comenzada");
         } catch (IOException e) {
