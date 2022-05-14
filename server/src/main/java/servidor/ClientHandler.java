@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import util.DB;
+import juego.Lobby;
+import juego.Partida;
+import db.DB;
 import util.Hash;
 
 public class ClientHandler extends Thread {

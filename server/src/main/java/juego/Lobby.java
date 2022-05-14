@@ -1,4 +1,4 @@
-package servidor;
+package juego;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,7 +8,8 @@ import java.net.SocketException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import util.DB;
+import servidor.Servidor;
+import db.DB;
 
 public class Lobby extends Thread {
     private DataOutputStream out1; // flujo de salida de datos con el jugador 1 (a partir de ahora, J1)

@@ -9,7 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-import util.DB;
+import juego.Lobby;
+import db.DB;
 
 /**
  * Clase Servidor.

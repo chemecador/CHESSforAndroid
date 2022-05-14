@@ -1,4 +1,4 @@
-package casillas;
+package juego.casillas;
 
 public class Dama extends Pieza {
     public Dama(boolean blancas) {

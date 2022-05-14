@@ -1,7 +1,8 @@
-package servidor;
+package juego;
 
-import casillas.*;
-import util.DB;
+import juego.casillas.*;
+import servidor.Servidor;
+import db.DB;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,12 +10,15 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class Partida {
 
+    //conexiones
     private static final Logger logger = Logger.getLogger(Partida.class.getName());
     private static final int NUM_FILAS = 8;
     private static final int NUM_COLUMNAS = 8;
@@ -25,6 +29,8 @@ public class Partida {
     private Socket[] jugadores; //lista de jugadores
 
 
+    //variables de la partida
+    private static boolean haMovido;
     private int id1;
     private int id2;
     private boolean fin;
@@ -82,9 +88,35 @@ public class Partida {
     private void jugar() {
         String s;
         try {
+            Timer t = new Timer();
+            TimerTask task = new TimerTask() {
+                int segundos = 0;
+
+                @Override
+                public void run() {
+                    segundos++;
+                    if (juez.turnoBlancas == j1EsBlancas && haMovido)
+                        this.cancel();
+                    if (juez.turnoBlancas != j1EsBlancas && haMovido)
+                        this.cancel();
+                    if (segundos == 5) {
+                        try {
+                            out1.writeUTF("norivales");
+                            Servidor.jugadores--;
+                            System.out.println("Ahora hay " + Servidor.jugadores + " jugadores en cola");
+                            System.out.println("Ahora hay " + Servidor.lobbies.size() + " lobbies en cola");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        this.cancel();
+                    }
+                }
+            };
+            t.scheduleAtFixedRate(task, 1000, 1000);
             while (!fin) {
+                haMovido = false;
                 if (juez.turnoBlancas == j1EsBlancas) {
-                    //juegan las blancas
+                    //turno del jugador 1, espero respuesta
                     s = in1.readUTF();
                     if (s.equalsIgnoreCase("tablas")) {
                         out2.writeUTF(s);
@@ -137,6 +169,7 @@ public class Partida {
 
                     }
                 } else {
+                    //turno del jugador 2
                     s = in2.readUTF();
                     if (s.equalsIgnoreCase("tablas")) {
                         out1.writeUTF(s);
@@ -192,12 +225,6 @@ public class Partida {
                 }
             }
         } catch (IOException e) {
-            /*try {
-                this.jugadores[0].close();
-                this.jugadores[1].close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }*/
             e.printStackTrace();
         }
     }

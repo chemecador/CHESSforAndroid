@@ -27,7 +27,7 @@ import com.example.chessforandroid.piezas.Dama;
 import com.example.chessforandroid.piezas.Peon;
 import com.example.chessforandroid.piezas.Rey;
 import com.example.chessforandroid.piezas.Torre;
-import com.example.chessforandroid.util.Casilla;
+import com.example.chessforandroid.juego.Casilla;
 import com.example.chessforandroid.util.Juez;
 
 

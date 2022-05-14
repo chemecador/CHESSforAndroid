@@ -1,4 +1,4 @@
-package casillas;
+package juego.casillas;
 
 public abstract class Pieza {
     protected boolean blancas;

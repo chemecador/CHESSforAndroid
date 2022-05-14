@@ -29,7 +29,7 @@ import com.example.chessforandroid.piezas.Dama;
 import com.example.chessforandroid.piezas.Peon;
 import com.example.chessforandroid.piezas.Rey;
 import com.example.chessforandroid.piezas.Torre;
-import com.example.chessforandroid.util.Casilla;
+import com.example.chessforandroid.juego.Casilla;
 import com.example.chessforandroid.util.Cliente;
 import com.example.chessforandroid.util.Juez;
 
@@ -482,11 +482,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     cambiar = !cambiar;
                 }
                 if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
-                    //juez.casillas negras
+                    //casillas negras
                     juez.casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
                 } else {
 
-                    //juez.casillas blancas
+                    //casillas blancas
                     juez.casillas[i][j].setBackgroundColor(Color.parseColor("#DDDDDD"));
                 }
                 x++;

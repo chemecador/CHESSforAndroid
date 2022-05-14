@@ -1,4 +1,4 @@
-package util;
+package db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import servidor.ClientHandler;
 import servidor.Servidor;
 
 public class DB {

@@ -4,6 +4,7 @@ import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
 
 import com.example.chessforandroid.R;
+import com.example.chessforandroid.juego.Casilla;
 import com.example.chessforandroid.piezas.*;
 
 public class Juez {
@@ -163,54 +164,6 @@ public class Juez {
      * 5: Caballo
      * 6: Peón
      */
-    /*private void crearTablero() {
-
-        inTablero = new int[NUM_FILAS][NUM_COLUMNAS];
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                //colocar juez.casillas en blanco
-                inTablero[i][j] = 0;
-                //colocar peones negros
-                if (i == 1) {
-                    inTablero[i][j] = -6;
-                }
-                //colocar peones blancos
-                if (i == 6) {
-                    inTablero[i][j] = 6;
-                }
-            }
-        }
-        //colocar piezas negras
-        inTablero[0][0] = -3;
-        inTablero[0][7] = -3;
-        inTablero[0][1] = -5;
-        inTablero[0][6] = -5;
-        inTablero[0][2] = -4;
-        inTablero[0][5] = -4;
-        inTablero[0][3] = -2;
-        inTablero[0][4] = -1;
-
-        //colocar piezas blancas
-        inTablero[7][0] = 3;
-        inTablero[7][7] = 3;
-        inTablero[7][1] = 5;
-        inTablero[7][6] = 5;
-        inTablero[7][2] = 4;
-        inTablero[7][5] = 4;
-        inTablero[7][3] = 2;
-        inTablero[7][4] = 1;
-    }*/
-
-    /*public static void mostrarTablero(int[][] tablero) {
-        StringBuilder t = new StringBuilder();
-        for (int i = 0; i < tablero.length; i++) {
-            for (int j = 0; j < tablero[0].length; j++) {
-                t.append(tablero[i][j]).append(" ");
-            }
-            t.append("\n");
-        }
-        Log.i("Tablero: ", "\n" + t);
-    }*/
 
 
     public boolean comprobarJaque(Casilla[][] copia) {

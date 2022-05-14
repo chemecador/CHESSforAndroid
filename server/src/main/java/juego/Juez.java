@@ -1,6 +1,6 @@
-package servidor;
+package juego;
 
-import casillas.*;
+import juego.casillas.*;
 
 public class Juez {
 
@@ -436,7 +436,7 @@ public class Juez {
         }
 
 
-        //el resto de casillas
+        //el resto de juego.casillas
         return false;
     }
 }

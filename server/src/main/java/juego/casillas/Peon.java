@@ -1,4 +1,4 @@
-package casillas;
+package juego.casillas;
 
 
 public class Peon extends Pieza {

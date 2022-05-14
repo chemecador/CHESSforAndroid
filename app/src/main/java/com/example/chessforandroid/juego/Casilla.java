@@ -1,18 +1,31 @@
-package casillas;
+package com.example.chessforandroid.juego;
 
-public class Casilla {
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+import com.example.chessforandroid.piezas.Alfil;
+import com.example.chessforandroid.piezas.Caballo;
+import com.example.chessforandroid.piezas.Dama;
+import com.example.chessforandroid.piezas.Peon;
+import com.example.chessforandroid.piezas.Pieza;
+import com.example.chessforandroid.piezas.Rey;
+import com.example.chessforandroid.piezas.Torre;
+
+public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
     private int fila;
     private int columna;
     private Pieza pieza;
 
-    public Casilla(int x, int y) {
+    public Casilla(@NonNull Context context, int x, int y) {
+        super(context);
         this.fila = x;
         this.columna= y;
         this.pieza = null;
     }
 
     public Casilla clonarCasilla(){
-        Casilla clon = new Casilla(fila,columna);
+        Casilla clon = new Casilla(getContext(),fila,columna);
         if (this.getPieza() != null) {
             switch (this.getPieza().getTag()) {
                 case "REY":
