@@ -50,8 +50,10 @@ public class Jugador {
         return socket;
     }
 
-    public void setSocket(Socket socket) {
-        this.socket = socket;
+    public void setSocket(Socket soc) throws IOException {
+        this.socket = soc;
+        this.in = new DataInputStream(soc.getInputStream());
+        this.out = new DataOutputStream(soc.getOutputStream());
     }
     public void enviarString(String s) throws IOException {
         out.writeUTF(s);

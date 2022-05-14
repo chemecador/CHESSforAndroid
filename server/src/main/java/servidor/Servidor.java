@@ -5,9 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import juego.Lobby;
 import db.DB;
@@ -16,7 +15,7 @@ import db.DB;
  * Clase Servidor.
  */
 public class Servidor {
-    private static final Logger logger = Logger.getLogger(Servidor.class.getName());
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * ServerSocket que escucha la llegada de nuevos clientes.
@@ -44,7 +43,7 @@ public class Servidor {
         try {
             DB.conectar();
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "No se ha podido conectar con la base de datos.");
+            logger.fatal("No se ha podido conectar con la base de datos.");
             e.printStackTrace();
             System.exit(-1);
         }
@@ -52,7 +51,7 @@ public class Servidor {
         try {
             // se inicializa el serversocket.
             ss = new ServerSocket(5566);
-            logger.log(Level.INFO, "El servidor se ha iniciado. Esperando jugadores...");
+            logger.info("El servidor se ha iniciado. Esperando jugadores...");
 
 
             while (true) {
@@ -64,7 +63,7 @@ public class Servidor {
                 new ClientHandler(ss, cliente).start();
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error al iniciar el servidor.");
+            logger.fatal("Error al iniciar el servidor.");
             e.printStackTrace();
         } finally {
             try {

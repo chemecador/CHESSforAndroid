@@ -1,5 +1,8 @@
 package juego;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import juego.casillas.*;
 import servidor.Servidor;
 import db.DB;
@@ -13,13 +16,12 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Partida {
 
     //conexiones
-    private static final Logger logger = Logger.getLogger(Partida.class.getName());
+    private static final Logger logger = LogManager.getLogger();
     private static final int NUM_FILAS = 8;
     private static final int NUM_COLUMNAS = 8;
     private Jugador[] jugadores; //lista de jugadores
@@ -36,7 +38,7 @@ public class Partida {
 
 
     public Partida(Jugador j1, Jugador j2) {
-        System.out.println("ENTRO EN PARTIDA");
+        logger.info("Comienzo partida entre {} y {}", j1.getUser(), j2.getUser());
         fin = false;
         juez = new Juez();
 
@@ -194,17 +196,17 @@ public class Partida {
             String user2 = jugadores[1].getUser();
             if (user1 == null && user2 == null) {
                 Servidor.jugadores = Servidor.jugadores - 2;
-                logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
+                logger.error("Partida abortada: user1: NULL, user2: NULL");
                 return;
             }
             if (user1 == null) {
                 Servidor.jugadores--;
-                logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
+                logger.error("Partida abortada: user1: {} , user2: {}" , user1, user2);
                 return;
             }
             if (user2 == null) {
                 Servidor.jugadores--;
-                logger.log(Level.SEVERE, "Partida abordada: user1: " + user1 + ", user2: " + user2);
+                logger.error("Partida abortada: user1: {} , user2: {}" , user1, user2);
                 return;
             }
             jugadores[0].enviarString(user1);
@@ -218,11 +220,9 @@ public class Partida {
                 jugadores[1].enviarBool(true);
                 jugadores[0].enviarBool(false);
             }
-            System.out.println("Partida entre " + user1 + " ( " + j1EsBlancas + ") y " + user2 + " ( " + !j1EsBlancas + ") comenzada");
+            logger.info("Todo listo, ¡a jugar! {} vs {}", jugadores[0].getUser(), jugadores[1].getUser());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 }

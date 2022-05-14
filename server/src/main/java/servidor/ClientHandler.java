@@ -1,5 +1,8 @@
 package servidor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,18 +11,16 @@ import java.net.Socket;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import juego.Jugador;
 import juego.Lobby;
-import juego.Partida;
 import db.DB;
 import util.Hash;
 
 public class ClientHandler extends Thread {
 
-    private static final Logger logger = Logger.getLogger(ClientHandler.class.getName());
+
+    private static final Logger logger = LogManager.getLogger();
     private ServerSocket ss;
     private DataOutputStream out;
     private DataInputStream in;
@@ -33,7 +34,7 @@ public class ClientHandler extends Thread {
             out = new DataOutputStream(cliente.getOutputStream());
             in = new DataInputStream(cliente.getInputStream());
             String peticion = in.readUTF();
-            logger.log(Level.INFO, "Peticion de " + peticion + " recibida");
+            logger.info("Peticion de " + peticion + " recibida");
             peticion(peticion);
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,7 +103,7 @@ public class ClientHandler extends Thread {
         System.out.println("Ahora hay " + Servidor.jugadores + " jugadores ");
         if (Servidor.jugadores % 2 != 0) {
             Jugador j1 = new Jugador(socket);
-            Lobby l = new Lobby(j1);
+            Lobby l = new Lobby(ss, j1);
             l.start();
             Servidor.lobbies.add(l);
         } else {
@@ -161,8 +162,8 @@ public class ClientHandler extends Thread {
             newPass = Hash.hashear(newPass);
             return DB.cambiarPass(user, oldPass, newPass);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Se ha producido un error al cambiar la pass.\n" +
-                    "user: " + user + " - oldPass " + oldPass + " - newPass = " + newPass);
+            logger.error("Se ha producido un error al cambiar la pass.\n" +
+                    "user: {} - oldPass {} - newPass = {}", user, oldPass, newPass);
             e.printStackTrace();
         }
         return false;
@@ -195,7 +196,7 @@ public class ClientHandler extends Thread {
         switch (res) {
             case -2:
             case -1:
-                System.err.println("Error de conexi�n con la base de datos");
+                System.err.println("Error de conexion con la base de datos");
                 break;
             case 0:
                 System.out.println("El usuario " + user + "ya existe");

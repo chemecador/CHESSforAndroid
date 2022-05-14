@@ -61,6 +61,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private boolean miTurno;
     private Cliente cliente;
     private Juez juez;
+    private int onResumes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         quieroTablas = false;
         nMovs = 0;
         contadorTablas = 0;
+        onResumes = 0;
         juez = new Juez();
 
         setContentView(R.layout.activity_game);
@@ -188,6 +190,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             miTurno = true;
             tablas.setBackgroundColor(Color.parseColor("#646464"));
             contadorTablas++;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        onResumes++;
+        if(onResumes == 2) {
+            Toast.makeText(this, "Has perdido por abandono", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 

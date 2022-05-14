@@ -1,6 +1,7 @@
 package juego;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -8,10 +9,14 @@ import servidor.Servidor;
 import db.DB;
 
 public class Lobby extends Thread {
+
+    private ServerSocket ss;
     private Jugador[] jugadores; // lista de jugadores
     public static boolean hayRival;
 
-    public Lobby(Jugador j1) {
+    public Lobby(ServerSocket ss, Jugador j1) {
+
+        this.ss = ss;
         jugadores = new Jugador[2];
 
         hayRival = false;
@@ -51,7 +56,16 @@ public class Lobby extends Thread {
             hayRival = true;
             jugadores[0].enviarString("jugar");
             jugadores[1].enviarString("jugar");
-            new Partida(jugadores[0], jugadores[1]);
+            jugadores[0].setSocket(ss.accept());
+            jugadores[1].setSocket(ss.accept());
+            if (!jugadores[0].getSocket().isClosed() && jugadores[0].getSocket().isConnected() &&
+                    !jugadores[1].getSocket().isClosed() && jugadores[1].getSocket().isConnected()) {
+                System.out.println("Nueva partida comenzada entre " + jugadores[0].getUser() + " y " +
+                        jugadores[1].getUser());
+                new Partida(jugadores[0], jugadores[1]);
+            } else {
+                System.out.println("Alguien ha muerto por el camino");
+            }
         } catch (IOException e) {
             System.out.println("Error al introducir el segundo jugador");
             e.printStackTrace();
