@@ -21,16 +21,16 @@
             android:name=".PasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".GameActivity"
-            android:exported="false" />
-        <activity
-            android:name=".OnlineLobbyActivity"
-            android:exported="false" />
-        <activity
-            android:name=".FriendLobbyActivity"
-            android:exported="false" />
-        <activity
             android:name=".OnlineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OnlineWaitingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FriendWaitingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FriendActivity"
             android:exported="false" />
         <activity
             android:name=".AdvancedActivity"

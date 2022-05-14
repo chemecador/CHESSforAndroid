@@ -20,14 +20,15 @@ import com.example.chessforandroid.util.Cliente;
  * temporizador al buscar partida y al realizar movimiento
  *
  * BUGS CONOCIDOS:
- * los sockets no se cierran bien si la app se cierra inesperadamente
+ * los sockets no se cierran bien si la app se cierra inesperadamente o al minimizar
  *
  * IDEAS:
  * pausar partida guardando la posición de las piezas
  *
  * TAREAS EXTRA:
- * ver tabla con usuarios con más nivel
+ * ver tabla con usuarios con más nivel en ajustes
  * cifrado
+ * jugador-mision en la bbdd
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.bMatchmaking:
                 if (user.length() > 0) {
-                    Intent redLocalIntent = new Intent(this, OnlineLobbyActivity.class);
+                    Intent redLocalIntent = new Intent(this, OnlineWaitingActivity.class);
                     redLocalIntent.putExtra("token", token);
                     startActivity(redLocalIntent);
                     break;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             /*case R.id.bPlayFriend:
                 if (user.length() > 0) {
-                    Intent onlineIntent = new Intent(this, OnlineActivity.class);
+                    Intent onlineIntent = new Intent(this, FriendActivity.class);
                     onlineIntent.putExtra("token", token);
                     startActivity(onlineIntent);
                     break;

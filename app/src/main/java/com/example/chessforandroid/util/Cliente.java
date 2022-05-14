@@ -10,10 +10,10 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.chessforandroid.FriendLobbyActivity;
-import com.example.chessforandroid.GameActivity;
+import com.example.chessforandroid.FriendWaitingActivity;
+import com.example.chessforandroid.OnlineActivity;
 import com.example.chessforandroid.MainActivity;
-import com.example.chessforandroid.OnlineLobbyActivity;
+import com.example.chessforandroid.OnlineWaitingActivity;
 import com.example.chessforandroid.ProfileActivity;
 import com.example.chessforandroid.RankingActivity;
 
@@ -109,23 +109,23 @@ public class Cliente {
     }
 
 
-    public void local(Context context, OnlineLobbyActivity lla, String token) {
+    public void local(Context context, OnlineWaitingActivity lla, String token) {
         this.context = context;
         new Online(lla).execute(token);
     }
 
-    public void esperarMov(Context context, GameActivity ga) {
+    public void esperarMov(Context context, OnlineActivity ga) {
         this.context = context;
         new EsperarMov(ga).execute();
     }
 
-    public void enviarMov(Context context, GameActivity ga, String casillas, String movs) {
+    public void enviarMov(Context context, OnlineActivity ga, String casillas, String movs) {
         this.context = context;
         new EnviarMov(ga).execute(casillas, movs);
     }
 
 
-    public void ofrecerTablas(Context context, GameActivity ga) {
+    public void ofrecerTablas(Context context, OnlineActivity ga) {
         this.context = context;
         new EnviarTablas(ga).execute();
     }
@@ -203,9 +203,9 @@ public class Cliente {
     @SuppressLint("StaticFieldLeak")
     public class EnviarTablas extends AsyncTask<Void, Void, Boolean> {
 
-        GameActivity caller;
+        OnlineActivity caller;
 
-        EnviarTablas(GameActivity caller) {
+        EnviarTablas(OnlineActivity caller) {
             this.caller = caller;
         }
 
@@ -230,9 +230,9 @@ public class Cliente {
 
     public class EnviarMov extends AsyncTask<String, Void, Object[]> {
 
-        GameActivity caller;
+        OnlineActivity caller;
 
-        EnviarMov(GameActivity caller) {
+        EnviarMov(OnlineActivity caller) {
             this.caller = caller;
         }
 
@@ -276,9 +276,9 @@ public class Cliente {
 
     public class EsperarMov extends AsyncTask<Void, Void, Object[]> {
 
-        GameActivity caller;
+        OnlineActivity caller;
 
-        EsperarMov(GameActivity caller) {
+        EsperarMov(OnlineActivity caller) {
             this.caller = caller;
         }
 
@@ -358,9 +358,9 @@ public class Cliente {
 
     public class Online extends AsyncTask<String, Void, String> {
 
-        OnlineLobbyActivity lla;
+        OnlineWaitingActivity lla;
 
-        public Online(OnlineLobbyActivity lla) {
+        public Online(OnlineWaitingActivity lla) {
             this.lla = lla;
         }
 
@@ -388,7 +388,7 @@ public class Cliente {
                 Toast.makeText(lla, "No se han encontrado rivales", Toast.LENGTH_SHORT).show();
             }
             if (s.equalsIgnoreCase("jugar")) {
-                Intent localIntent = new Intent(context, GameActivity.class);
+                Intent localIntent = new Intent(context, OnlineActivity.class);
                 localIntent.putExtra("token", token);
                 context.startActivity(localIntent);
             }
@@ -443,7 +443,7 @@ public class Cliente {
         protected void onPostExecute(Integer res) {
             super.onPostExecute(res);
 
-            Intent lobbyIntent = new Intent(context, FriendLobbyActivity.class);
+            Intent lobbyIntent = new Intent(context, FriendWaitingActivity.class);
             lobbyIntent.putExtra("id", res);
             lobbyIntent.putExtra("token", token);
             context.startActivity(lobbyIntent);

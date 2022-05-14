@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".FriendLobbyActivity">
+    tools:context=".OnlineWaitingActivity">
+
 
     <TextView
         android:id="@+id/txt3"
@@ -17,17 +17,9 @@
         android:text="@string/waiting"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <TextView
-        android:id="@+id/txtLobby"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBarOnline"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
 </LinearLayout>

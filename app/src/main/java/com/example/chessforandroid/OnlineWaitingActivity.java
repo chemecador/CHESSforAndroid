@@ -8,12 +8,12 @@ import android.util.Log;
 
 import com.example.chessforandroid.util.Cliente;
 
-public class OnlineLobbyActivity extends AppCompatActivity {
+public class OnlineWaitingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_online_lobby);
+        setContentView(R.layout.activity_online_waiting);
         Intent intent = getIntent();
         String token = intent.getStringExtra("token");
 
