@@ -1,0 +1,76 @@
+package juego;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+
+public class Jugador {
+    private String user;
+    private int id;
+    private Socket socket;
+    private DataInputStream in;
+    private DataOutputStream out;
+
+    public Jugador(int id, Socket socket) throws IOException {
+        this.id = id;
+        this.socket = socket;
+        this.in = new DataInputStream(socket.getInputStream());
+        this.out = new DataOutputStream(socket.getOutputStream());
+    }
+
+    public Jugador(Socket socket) throws IOException {
+        this.socket = socket;
+        this.in = new DataInputStream(socket.getInputStream());
+        this.out = new DataOutputStream(socket.getOutputStream());
+        System.out.println("id antes vale " + id);
+        this.id = db.DB.getIdFromToken(recibirString());
+        System.out.println("id vale " + id);
+    }
+
+    public String getUser() {
+        if (this.user == null) {
+            this.user = db.DB.getUserFromId(this.id);
+        }
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+    public void enviarString(String s) throws IOException {
+        out.writeUTF(s);
+    }
+    public void enviarInt(int x) throws IOException {
+        out.writeInt(x);
+    }
+    public void enviarBool(boolean b) throws IOException {
+        out.writeBoolean(b);
+    }
+    public String recibirString() throws IOException {
+        return in.readUTF();
+    }
+    public int recibirInt() throws IOException {
+        return in.readInt();
+    }
+    public boolean recibirBool() throws IOException {
+        return in.readBoolean();
+    }
+}

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import juego.Jugador;
 import juego.Lobby;
 import juego.Partida;
 import db.DB;
@@ -100,13 +101,14 @@ public class ClientHandler extends Thread {
         Servidor.jugadores++;
         System.out.println("Ahora hay " + Servidor.jugadores + " jugadores ");
         if (Servidor.jugadores % 2 != 0) {
-            Lobby l = new Lobby(socket);
+            Lobby l = new Lobby(new Jugador(socket));
             l.start();
             Servidor.lobbies.add(l);
         } else {
             Lobby lo = Servidor.lobbies.get(Servidor.lobbies.size() - 1);
-            lo.setJugador(socket);
-            new Partida(ss.accept(), ss.accept());
+            lo.setJugador(new Jugador(socket));
+            System.out.println("listo para jugar");
+            //new Partida(ss.accept(), ss.accept());
         }
     }
 
