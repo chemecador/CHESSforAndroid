@@ -70,26 +70,47 @@ public class ClientHandler extends Thread {
                 unirse();
                 cerrarConexion();
                 break;
-            case "ranking":
-                ranking();
+            case "elo":
+                rankingElo();
+                cerrarConexion();
+                break;
+            case "nivel":
+                rankingNivel();
                 cerrarConexion();
                 break;
         }
     }
 
-    private void ranking() throws IOException {
+    private void rankingNivel() throws IOException {
         ArrayList<String> users = DB.getRankingUsers();
-        ArrayList<String> elos = DB.getRankingElos();
-        int numDatos = Math.min(users.size(), elos.size());
-        if (users == null || elos == null){
+        ArrayList<String> niveles = DB.getRankingNiveles();
+        int numDatos = Math.min(users.size(), niveles.size());
+        if (users == null || niveles == null) {
             out.writeInt(0);
             return;
         }
         out.writeInt(numDatos);
-        for (int i = 0; i < numDatos; i++){
+        for (int i = 0; i < numDatos; i++) {
             out.writeUTF(users.get(i));
         }
-        for (int i = 0; i < numDatos; i++){
+        for (int i = 0; i < numDatos; i++) {
+            out.writeUTF(niveles.get(i));
+        }
+    }
+
+    private void rankingElo() throws IOException {
+        ArrayList<String> users = DB.getRankingUsers();
+        ArrayList<String> elos = DB.getRankingElos();
+        int numDatos = Math.min(users.size(), elos.size());
+        if (users == null || elos == null) {
+            out.writeInt(0);
+            return;
+        }
+        out.writeInt(numDatos);
+        for (int i = 0; i < numDatos; i++) {
+            out.writeUTF(users.get(i));
+        }
+        for (int i = 0; i < numDatos; i++) {
             out.writeUTF(elos.get(i));
         }
     }

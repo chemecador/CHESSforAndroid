@@ -138,12 +138,12 @@ public class Cliente {
         enviarMensaje("abandonar");
     }
 
-    public void getRanking(RankingActivity ra) {
-        new Ranking(ra).execute();
+    public void getRanking(RankingActivity ra, String pref) {
+        new Ranking(ra).execute(pref);
     }
 
 
-    public class Ranking extends AsyncTask<Void, Void, ArrayList<RankingItem>> {
+    public class Ranking extends AsyncTask<String, Void, ArrayList<RankingItem>> {
 
         private RankingActivity ra;
 
@@ -152,10 +152,10 @@ public class Cliente {
         }
 
         @Override
-        protected ArrayList<RankingItem> doInBackground(Void... voids) {
+        protected ArrayList<RankingItem> doInBackground(String... strings) {
             ArrayList<RankingItem> datos = new ArrayList<>();
             try {
-                out.writeUTF("ranking");
+                out.writeUTF(strings[0]);
                 int numUsuarios = in.readInt();
                 for (int i = 0; i < numUsuarios; i++) {
                     RankingItem ri = new RankingItem();

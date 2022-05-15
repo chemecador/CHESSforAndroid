@@ -68,4 +68,8 @@
     <string name="position">Posición</string>
     <string name="player">Jugador</string>
     <string name="elo">ELO</string>
+    <string name="order_by_elo">Ordenar por ELO</string>
+    <string name="elo_summary">Ordenar la clasificación por el ELO de los jugadores</string>
+    <string name="order_by_level">Ordenar por NIVEL</string>
+    <string name="level_summary">Ordenar la clasificación por el nivel de cuenta de los jugadores</string>
 </resources>

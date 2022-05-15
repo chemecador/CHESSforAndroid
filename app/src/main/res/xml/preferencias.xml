@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/chess">
+    <PreferenceCategory android:title="@string/ranking">
 
         <CheckBoxPreference
-            android:id="@+id/prefCantidad"
+            android:id="@+id/cbPrefElo"
             android:defaultValue="false"
-            android:key="preferencias_cantidad"
-            android:summary="resumen1"
-            android:title="preferencia1" />
-        <CheckBoxPreference
-            android:id="@+id/prefDescendente"
-            android:defaultValue="false"
-            android:key="preferencias_descendente"
-            android:summary="resumen2"
-            android:title="preferencia2" />
+            android:key="preferencias_elo"
+            android:summary="@string/elo_summary"
+            android:title="@string/order_by_elo" />
     </PreferenceCategory>
 </PreferenceScreen>

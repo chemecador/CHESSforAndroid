@@ -1,7 +1,10 @@
 package com.example.chessforandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -19,6 +22,7 @@ public class RankingActivity extends AppCompatActivity {
     private ListView lvRanking;
     private ProgressBar pb;
     private TextView tvCargando;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +31,17 @@ public class RankingActivity extends AppCompatActivity {
         Cliente cliente = new Cliente();
         lista = new ArrayList<>();
         lvRanking = findViewById(R.id.lvRanking);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this); //Consigo la referencia a las preferencias para poder leerlas y escribirlas
+
 
         tvCargando = findViewById(R.id.txtLoadingData);
         pb = findViewById(R.id.progressBarRanking);
 
-        if (cliente.isConectado()){
-            cliente.getRanking(this);
-        }
+       // if (prefs.getBoolean("preferencias_elo", true)) {
+            if (cliente.isConectado()) {
+                cliente.getRanking(this, "elo");
+            }
+        //}
 
     }
 

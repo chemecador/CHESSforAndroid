@@ -55,8 +55,8 @@ public class Servidor {
         }
         logger.info("Servidor iniciado y listo para recibir conexiones.");
 
-        try {
-            while (true) {
+        while (true) {
+            try {
                 Socket cliente = ss.accept();
 
                 // TODO: comentario
@@ -65,17 +65,23 @@ public class Servidor {
                 // se lanza un hilo de la clase ClientHandler que gestiona la conexion de manera
                 // independiente a esta clase.
                 new ClientHandler(ss, cliente).start();
-            }
-        } catch (Exception e) {
-            logger.error("Se ha producido un error al aceptar una conexion", e);
-        } finally {
-            try {
-                DB.desconectar();
-            } catch (SQLException e) {
-                logger.fatal("Error al cerrar la conexion con la base de datos", e);
+
+            } catch (Exception e) {
+                logger.error("Se ha producido un error al aceptar una conexion", e);
             }
         }
+        /**
+         * TODO: cerrar la conexion con la bbdd
+         *
+         * try {
+         *             DB.desconectar();
+         *         } catch (SQLException e) {
+         *             logger.fatal("Error al cerrar la conexion con la base de datos", e);
+         *         }
+         */
+
     }
+
 
     /**
      * Metodo principal.

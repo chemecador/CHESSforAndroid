@@ -16,6 +16,7 @@ public class Lobby extends Thread {
     private ServerSocket ss; // TODO: 😑
 
     public static boolean hayRival;
+    private final int TIEMPO_ESPERA_RIVAL = 10;
 
     private Jugador anfitrion;
     private Jugador invitado;
@@ -34,17 +35,18 @@ public class Lobby extends Thread {
                 segundos++;
                 if (hayRival)
                     this.cancel();
-                if (segundos == 5) {
+                if (segundos == TIEMPO_ESPERA_RIVAL) {
                     try {
                         anfitrion.enviarString("norivales");
-                        Servidor.lobbies.remove(Lobby.this);
-                        Servidor.jugadores--;
-
-                        logger.info("Hay {} jugadores en cola", Servidor.jugadores);
-                        logger.info("Hay {} lobbies en cola", Servidor.lobbies.size());
                     } catch (IOException e) {
-                        e.printStackTrace(); // TODO: logear, que hacer si pasa?
+                        logger.error("No se ha podido enviar al anfitrion el mensaje \"norivales\"", e);
+                        //TODO: CERRAR LA CONEXION ??
                     }
+                    Servidor.lobbies.remove(Lobby.this);
+                    Servidor.jugadores--;
+
+                    logger.info("Hay {} jugadores en cola", Servidor.jugadores);
+                    logger.info("Hay {} lobbies en cola", Servidor.lobbies.size());
                     this.cancel();
                 }
             }
@@ -63,8 +65,7 @@ public class Lobby extends Thread {
             invitado.enviarString("jugar");
             invitado.setSocket(ss.accept());
         } catch (IOException e) {
-            logger.error("Error al introducir el segundo jugador", e); // TODO: o el primero? mejorar mensaje de error,
-                                                                       // que hacer si pasa?
+            logger.error("Error al recibir confirmacion de alguno de los jugadores", e); // TODO: o el primero? mejorar mensaje de error,
         }
 
         if (!anfitrion.getSocket().isClosed() && anfitrion.getSocket().isConnected()
@@ -72,7 +73,7 @@ public class Lobby extends Thread {
             logger.info("Nueva partida comenzada entre {} y {}", anfitrion.getUser(), invitado.getUser());
             new Partida(anfitrion, invitado);
         } else {
-            logger.info("Alguien ha muerto por el camino"); // TODO: Comentario un poco KEKW, ERROR? WARNING? Que hacer
+            logger.error("Alguien ha muerto por el camino"); // TODO: Comentario un poco KEKW, ERROR? WARNING? Que hacer
                                                             // ahora?
         }
     }

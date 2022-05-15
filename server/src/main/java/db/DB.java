@@ -501,6 +501,30 @@ public class DB {
         return null;
     }
 
+    public static ArrayList<String> getRankingNiveles() {
+        // conecta con la base de datos
+
+        // realiza la consulta de la tabla actual
+        String consulta = "SELECT nivel FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.elo DESC";
+        PreparedStatement sentencia;
+        try {
+            ArrayList<String> datos = new ArrayList<>();
+            // realiza la consulta y la ejecuta
+            sentencia = conn.prepareStatement(consulta);
+            ResultSet res = sentencia.executeQuery();
+
+            while (res.next()) {
+                datos.add(res.getString("user"));
+            }
+            return datos;
+        } catch (SQLException e) {
+            System.err.println("Error al consultar + " + e.toString());
+        }
+
+        // ha habido un error; desconecta y devuelve null.
+        return null;
+    }
+
     public static ArrayList<String> getRankingElos() {
         // conecta con la base de datos
 
