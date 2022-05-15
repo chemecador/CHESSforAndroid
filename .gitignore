@@ -36,3 +36,6 @@ output.json
 #NDK
 obj/
 .externalNativeBuild
+
+# VS Code
+.vscode/ 
