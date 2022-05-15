@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:paddingRight="10dp"
-                android:text="@string/level" />
+                android:text="@string/LEVEL" />
 
             <TextView
                 android:id="@+id/pNivel"

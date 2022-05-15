@@ -17,7 +17,7 @@
     <string name="play_offline">Jugar sin conexión</string>
     <string name="about_us">Acerca de...</string>
     <string name="preferences">Preferencias</string>
-    <string name="level">Nivel:</string>
+    <string name="LEVEL">Nivel:</string>
     <string name="ELO">ELO:</string>
     <string name="history">Historial</string>
     <string name="wins">Victorias:</string>
@@ -68,8 +68,12 @@
     <string name="position">Posición</string>
     <string name="player">Jugador</string>
     <string name="elo">ELO</string>
+    <string name="level">Nivel</string>
     <string name="order_by_elo">Ordenar por ELO</string>
     <string name="elo_summary">Ordenar la clasificación por el ELO de los jugadores</string>
     <string name="order_by_level">Ordenar por NIVEL</string>
     <string name="level_summary">Ordenar la clasificación por el nivel de cuenta de los jugadores</string>
+    <string name="twitter">/@chessforandroid</string>
+    <string name="mail">"chessforandroi@gmail.com"</string>
+
 </resources>

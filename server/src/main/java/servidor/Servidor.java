@@ -6,8 +6,10 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import juego.Lobby;
 import db.DB;
@@ -34,11 +36,13 @@ public class Servidor {
     public static ArrayList<Lobby> lobbies;
 
     public Servidor() {
+        Configurator.setAllLevels(logger.getName(), Level.valueOf("INFO"));
         ServerSocket ss = null;
         int port = 5566;
 
         conexiones = new ArrayList<>();
         lobbies = new ArrayList<>();
+
 
         try {
             DB.conectar();

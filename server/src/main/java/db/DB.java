@@ -505,7 +505,7 @@ public class DB {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
-        String consulta = "SELECT nivel FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.elo DESC";
+        String consulta = "SELECT nivel FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.nivel DESC";
         PreparedStatement sentencia;
         try {
             ArrayList<String> datos = new ArrayList<>();
@@ -514,7 +514,7 @@ public class DB {
             ResultSet res = sentencia.executeQuery();
 
             while (res.next()) {
-                datos.add(res.getString("user"));
+                datos.add(res.getString("nivel"));
             }
             return datos;
         } catch (SQLException e) {

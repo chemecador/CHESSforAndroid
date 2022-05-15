@@ -21,7 +21,7 @@ public class RankingActivity extends AppCompatActivity {
     private RankingAdapter adapter;
     private ListView lvRanking;
     private ProgressBar pb;
-    private TextView tvCargando;
+    private TextView tvCargando, tvElo;
     private SharedPreferences prefs;
 
     @Override
@@ -31,17 +31,24 @@ public class RankingActivity extends AppCompatActivity {
         Cliente cliente = new Cliente();
         lista = new ArrayList<>();
         lvRanking = findViewById(R.id.lvRanking);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this); //Consigo la referencia a las preferencias para poder leerlas y escribirlas
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 
         tvCargando = findViewById(R.id.txtLoadingData);
+        tvElo = findViewById(R.id.txtColElo);
         pb = findViewById(R.id.progressBarRanking);
 
-       // if (prefs.getBoolean("preferencias_elo", true)) {
+        if (prefs.getBoolean("preferencias_elo", true)) {
+            tvElo.setText(R.string.elo);
             if (cliente.isConectado()) {
                 cliente.getRanking(this, "elo");
             }
-        //}
+        } else {
+            tvElo.setText(R.string.level);
+            if (cliente.isConectado()) {
+                cliente.getRanking(this, "nivel");
+            }
+        }
 
     }
 
