@@ -70,9 +70,7 @@
     <string name="elo">ELO</string>
     <string name="level">Nivel</string>
     <string name="order_by_elo">Ordenar por ELO</string>
-    <string name="elo_summary">Ordenar la clasificación por el ELO de los jugadores</string>
-    <string name="order_by_level">Ordenar por NIVEL</string>
-    <string name="level_summary">Ordenar la clasificación por el nivel de cuenta de los jugadores</string>
+    <string name="elo_summary">Si no está seleccionada, la clasificación se ordenará por el nivel de cuenta de los jugadores</string>
     <string name="twitter">/@chessforandroid</string>
     <string name="mail">"chessforandroi@gmail.com"</string>
     <string name="DONE">COMPLETADA ✔️</string>

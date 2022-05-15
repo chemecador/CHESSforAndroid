@@ -58,10 +58,22 @@ public class Lobby extends Thread {
         logger.info("Lobby creado con anfitrion {} e invitado {}",
                 anfitrion.getUser(), invitado.getUser());
 
+        if (anfitrion == null) {
+            Parametros.NUM_JUGADORES = 0;
+            invitado.enviarString("abortada");
+            logger.error("Anfitrion es null, partida abortada");
+        }
+        if (invitado == null) {
+            Parametros.NUM_JUGADORES = 0;
+            anfitrion.enviarString("abortada");
+            logger.error("Invitado es null, partida abortada");
+        }
+
         try {
             anfitrion.enviarString("jugar");
             anfitrion.setSocket(ss.accept());
         } catch (IOException e) {
+            Parametros.NUM_JUGADORES = 0;
             invitado.enviarString("abortada");
             throw new IOException("Error al recibir confirmacion del anfitrion", e);
         }
@@ -70,6 +82,7 @@ public class Lobby extends Thread {
             invitado.setSocket(ss.accept());
         } catch (IOException e) {
             anfitrion.enviarString("abortada");
+            Parametros.NUM_JUGADORES = 0;
             throw new IOException("Error al recibir confirmacion del invitado", e);
         }
 
