@@ -225,7 +225,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void registro() throws Exception, IOException, SQLException, NoSuchAlgorithmException {
+    private void registro() throws Exception{
         String user, pass;
         user = in.readUTF();
         pass = in.readUTF();
@@ -238,7 +238,8 @@ public class ClientHandler extends Thread {
             case -1:
                 throw new Exception("Error de conexion con la base de datos");
             case 0:
-                throw new Exception("El usuario " + user + " ya existe");
+                logger.warn("El usuario {} ya existe", user);
+                break;
             case 1:
                 logger.info("El usuario {} ha sido registrado correctamente", user);
 

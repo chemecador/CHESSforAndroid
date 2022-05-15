@@ -391,7 +391,7 @@ public class Cliente {
                 Toast.makeText(lla, "El servidor está lleno", Toast.LENGTH_SHORT).show();
             }
             if (s.equalsIgnoreCase("abortada")) {
-                Toast.makeText(lla, "Se ha producido un error en el servidor. Vuelve a buscar partida",
+                Toast.makeText(lla, "Error al comenzar la partida. Vuelve a intentarlo",
                         Toast.LENGTH_SHORT).show();
             }
             if (s.equalsIgnoreCase("jugar")) {
