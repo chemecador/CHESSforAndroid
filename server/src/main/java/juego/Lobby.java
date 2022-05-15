@@ -42,11 +42,9 @@ public class Lobby extends Thread {
                         logger.error("No se ha podido enviar al anfitrion el mensaje \"norivales\"", e);
                         //TODO: CERRAR LA CONEXION ??
                     }
-                    Servidor.lobbies.remove(Lobby.this);
-                    Servidor.jugadores--;
+                    Parametros.NUM_JUGADORES--;
 
-                    logger.info("Hay {} jugadores en cola", Servidor.jugadores);
-                    logger.info("Hay {} lobbies en cola", Servidor.lobbies.size());
+                    logger.info("Hay {} jugadores en cola", Parametros.NUM_JUGADORES);
                     this.cancel();
                 }
             }
@@ -54,27 +52,28 @@ public class Lobby extends Thread {
         t.scheduleAtFixedRate(task, 1000, 1000);
     }
 
-    public void setJugador(Jugador invitado) {
+    public void setJugador(Jugador invitado) throws IOException {
         this.invitado = invitado;
         hayRival = true;
+
+        logger.info("Lobby creado con anfitrion {} e invitado {}",
+                anfitrion.getUser(), invitado.getUser());
 
         try {
             anfitrion.enviarString("jugar");
             anfitrion.setSocket(ss.accept());
-
+        } catch (IOException e) {
+            invitado.enviarString("abortada");
+            throw new IOException("Error al recibir confirmacion del anfitrion", e);
+        }
+        try {
             invitado.enviarString("jugar");
             invitado.setSocket(ss.accept());
         } catch (IOException e) {
-            logger.error("Error al recibir confirmacion de alguno de los jugadores", e); // TODO: o el primero? mejorar mensaje de error,
+            anfitrion.enviarString("abortada");
+            throw new IOException("Error al recibir confirmacion del invitado", e);
         }
 
-        if (!anfitrion.getSocket().isClosed() && anfitrion.getSocket().isConnected()
-                && !invitado.getSocket().isClosed() && invitado.getSocket().isConnected()) {
-            logger.info("Nueva partida comenzada entre {} y {}", anfitrion.getUser(), invitado.getUser());
-            new Partida(anfitrion, invitado);
-        } else {
-            logger.error("Alguien ha muerto por el camino"); // TODO: Comentario un poco KEKW, ERROR? WARNING? Que hacer
-                                                            // ahora?
-        }
+        new Partida(anfitrion, invitado);
     }
 }

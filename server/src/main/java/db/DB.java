@@ -1,18 +1,19 @@
 package db;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import servidor.Servidor;
+import juego.Parametros;
 
 public class DB {
-    private static final Logger logger = Logger.getLogger(DB.class.getName());
+    private static final Logger logger = LogManager.getLogger();
     private static Connection conn;
 
 
@@ -30,7 +31,6 @@ public class DB {
             user = "chess4android";
             passw = "ttDfdqxmf3ynnSozTMYSzH7H2ncfwD";
         } else {
-
             user = System.getenv("MYSQL_USER");
             passw = System.getenv("MYSQL_PASSWORD");
             url = "jdbc:mysql://" + host + "/" + System.getenv("MYSQL_DB");
@@ -173,6 +173,7 @@ public class DB {
             return 0;
         } catch (SQLException e) {
             System.err.println("Error al consultar + " + e.toString());
+            System.err.println("Error al consultar + " + e.toString());
         }
 
         // ha habido un error; desconecta y devuelve null.
@@ -266,8 +267,8 @@ public class DB {
             if (sentencia != null) {
                 sentencia.close();
             }
-            Servidor.jugadores = Servidor.jugadores - 2;
-            System.out.println("Ahora hay " + Servidor.jugadores + " jugadores");
+            Parametros.NUM_JUGADORES = Parametros.NUM_JUGADORES - 2;
+            logger.info("Ahora hay {} jugadores", Parametros.NUM_JUGADORES);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -489,7 +490,7 @@ public class DB {
 
     public static boolean sumarIdInvitado(int idInvitado, int codigo) throws SQLException {
         if (conn == null || conn.isClosed()) {
-            logger.log(Level.WARNING, "La conexion es null o esta cerrada");
+            logger.error("La conexion es null o esta cerrada");
             return false;
         }
 
@@ -508,7 +509,7 @@ public class DB {
         // conectar con la base de datos
 
         if (conn == null || conn.isClosed()) {
-            logger.log(Level.WARNING, "La conexion es null o esta cerrada");
+            logger.error("La conexion es null o esta cerrada");
             return false;
         }
         // si no ha habido errores, se crea una consulta

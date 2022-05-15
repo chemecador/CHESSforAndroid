@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import juego.casillas.*;
-import servidor.Servidor;
 import db.DB;
 
 import java.io.IOException;
@@ -22,8 +21,6 @@ public class Partida {
 
     //variables de la partida
     private static boolean haMovido;
-    private int id1;
-    private int id2;
     private boolean fin;
     private boolean j1EsBlancas;
     private Juez juez;
@@ -31,18 +28,12 @@ public class Partida {
 
 
     public Partida(Jugador j1, Jugador j2) {
-        logger.info("Comienzo partida entre {} y {}", j1.getUser(), j2.getUser());
-        fin = false;
-        juez = new Juez();
-
         anfitrion = j1;
         invitado = j2;
-
-        id1 = anfitrion.getId();
-        id2 = invitado.getId();
-
-
-
+        logger.info("Comienzo partida entre {} y {}", anfitrion.getUser(), invitado.getUser());
+        fin = false;
+        juez = new Juez();
+        
         datosIniciales();
 
         jugar();
@@ -69,25 +60,25 @@ public class Partida {
                     s = anfitrion.recibirString();
                     if (s.equalsIgnoreCase("tablas")) {
                         invitado.enviarString(s);
-                        System.out.println(DB.getUserFromId(id1) + "(id1) ofrece tablas");
+                        logger.info(DB.getUserFromId(anfitrion.getId()) + "(anfitrion.getId()) ofrece tablas");
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("aceptadas")) {
-                        System.out.println("Tablas aceptadas");
+                        logger.info("Tablas aceptadas");
                         invitado.enviarBool(true);
-                        DB.gestionarFinal(movs, id1, id2, true);
-                        DB.actualizarJugadores(id1, id2, true);
+                        DB.gestionarFinal(movs, anfitrion.getId(), invitado.getId(), true);
+                        DB.actualizarJugadores(anfitrion.getId(), invitado.getId(), true);
                         break;
                     } else if (s.equalsIgnoreCase("rechazadas")) {
-                        System.out.println("Tablas rechazadas");
+                        logger.info("Tablas rechazadas");
                         invitado.enviarBool(false);
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("rendirse") || s.equalsIgnoreCase("abandonar")) {
-                        System.out.println("Gana " + id2);
+                        logger.info("El jugador {} ha ganado a {}", invitado.getUser(), anfitrion.getUser());
                         fin = true;
                         invitado.enviarString("rendirse");
-                        DB.gestionarFinal(movs, id2, id1, false);
-                        DB.actualizarJugadores(id2, id1, false);
-                        DB.actualizarNivel(id2);
+                        DB.gestionarFinal(movs, invitado.getId(), anfitrion.getId(), false);
+                        DB.actualizarJugadores(invitado.getId(), anfitrion.getId(), false);
+                        DB.actualizarNivel(invitado.getId());
                     } else {
                         juez.tablero = juez.stringToInt(s);
                         juez.intToCasillas(juez.tablero);
@@ -97,14 +88,14 @@ public class Partida {
                         juez.turnoBlancas = !juez.turnoBlancas;
                         //comprobar jaques, etc
                         if (juez.buscarRey(juez.casillas, !j1EsBlancas) == null) {
-                            System.out.println("Gana " + id1);
+                            logger.info("El jugador {} ha ganado a {}", anfitrion.getUser() ,invitado.getUser());
                             //es jaque mate
                             anfitrion.enviarBool(true);
                             invitado.enviarBool(true);
                             fin = true;
-                            DB.gestionarFinal(movs, id1, id2, false);
-                            DB.actualizarJugadores(id1, id2, false);
-                            DB.actualizarNivel(id1);
+                            DB.gestionarFinal(movs, anfitrion.getId(), invitado.getId(), false);
+                            DB.actualizarJugadores(anfitrion.getId(), invitado.getId(), false);
+                            DB.actualizarNivel(anfitrion.getId());
                         } else {
                             //no es jaque mate
                             anfitrion.enviarBool(false);
@@ -123,25 +114,25 @@ public class Partida {
                     s = invitado.recibirString();
                     if (s.equalsIgnoreCase("tablas")) {
                         anfitrion.enviarString(s);
-                        System.out.println(DB.getUserFromId(id2) + "(id2) ofrece tablas");
+                        logger.info(DB.getUserFromId(invitado.getId()) + "(invitado.getId()) ofrece tablas");
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("aceptadas")) {
-                        System.out.println("Tablas aceptadas");
+                        logger.info("Tablas aceptadas");
                         anfitrion.enviarBool(true);
-                        DB.gestionarFinal(movs, id1, id2, true);
-                        DB.actualizarJugadores(id1, id2, true);
+                        DB.gestionarFinal(movs, anfitrion.getId(), invitado.getId(), true);
+                        DB.actualizarJugadores(anfitrion.getId(), invitado.getId(), true);
                         break;
                     } else if (s.equalsIgnoreCase("rechazadas")) {
-                        System.out.println("Tablas rechazadas");
+                        logger.info("Tablas rechazadas");
                         anfitrion.enviarBool(false);
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("rendirse") || s.equalsIgnoreCase("abandonar")) {
-                        System.out.println("Gana " + id1);
+                        logger.info("El jugador {} ha ganado a {}", anfitrion.getUser() ,invitado.getUser());
                         fin = true;
                         anfitrion.enviarString("rendirse");
-                        DB.gestionarFinal(movs, id1, id2, false);
-                        DB.actualizarJugadores(id1, id2, false);
-                        DB.actualizarNivel(id1);
+                        DB.gestionarFinal(movs, anfitrion.getId(), invitado.getId(), false);
+                        DB.actualizarJugadores(anfitrion.getId(), invitado.getId(), false);
+                        DB.actualizarNivel(anfitrion.getId());
                     } else {
                         juez.tablero = juez.stringToInt(s);
                         juez.intToCasillas(juez.tablero);
@@ -152,14 +143,14 @@ public class Partida {
                         juez.turnoBlancas = !juez.turnoBlancas;
                         //comprobar jaques, etc
                         if (juez.buscarRey(juez.casillas, j1EsBlancas) == null) {
-                            System.out.println("Gana " + id2);
+                            logger.info("El jugador {} ha ganado a {}", invitado.getUser(), anfitrion.getUser());
                             //es jaque mate
                             anfitrion.enviarBool(true);
                             invitado.enviarBool(true);
                             fin = true;
-                            DB.gestionarFinal(movs, id2, id1, false);
-                            DB.actualizarJugadores(id2, id1, false);
-                            DB.actualizarNivel(id2);
+                            DB.gestionarFinal(movs, invitado.getId(), anfitrion.getId(), false);
+                            DB.actualizarJugadores(invitado.getId(), anfitrion.getId(), false);
+                            DB.actualizarNivel(invitado.getId());
                         } else {
                             //no es jaque mate
                             anfitrion.enviarBool(false);
@@ -187,27 +178,25 @@ public class Partida {
         try {
             juez.turnoBlancas = true;
             j1EsBlancas = new Random().nextBoolean();
-            String user1 = anfitrion.getUser();
-            String user2 = invitado.getUser();
-            if (user1 == null && user2 == null) {
-                Servidor.jugadores = Servidor.jugadores - 2;
-                logger.error("Partida abortada: user1: NULL, user2: NULL");
+            if (anfitrion.getUser() == null && invitado.getUser() == null) {
+                Parametros.NUM_JUGADORES = Parametros.NUM_JUGADORES - 2;
+                logger.error("Partida abortada: anfitrion.getUser(): NULL, invitado.getUser(): NULL");
                 return;
             }
-            if (user1 == null) {
-                Servidor.jugadores--;
-                logger.error("Partida abortada: user1: {} , user2: {}" , user1, user2);
+            if (anfitrion.getUser() == null) {
+                Parametros.NUM_JUGADORES--;
+                logger.error("Partida abortada: anfitrion.getUser(): {} , invitado.getUser(): {}", anfitrion.getUser(), invitado.getUser());
                 return;
             }
-            if (user2 == null) {
-                Servidor.jugadores--;
-                logger.error("Partida abortada: user1: {} , user2: {}" , user1, user2);
+            if (invitado.getUser() == null) {
+                Parametros.NUM_JUGADORES--;
+                logger.error("Partida abortada: anfitrion.getUser(): {} , invitado.getUser(): {}", anfitrion.getUser(), invitado.getUser());
                 return;
             }
-            anfitrion.enviarString(user1);
-            anfitrion.enviarString(user2);
-            invitado.enviarString(user2);
-            invitado.enviarString(user1);
+            anfitrion.enviarString(anfitrion.getUser());
+            anfitrion.enviarString(invitado.getUser());
+            invitado.enviarString(invitado.getUser());
+            invitado.enviarString(anfitrion.getUser());
             if (j1EsBlancas) {
                 anfitrion.enviarBool(true);
                 invitado.enviarBool(false);
@@ -215,7 +204,6 @@ public class Partida {
                 invitado.enviarBool(true);
                 anfitrion.enviarBool(false);
             }
-            logger.info("Todo listo, ¡a jugar! {} vs {}", anfitrion.getUser(), invitado.getUser());
         } catch (IOException e) {
             e.printStackTrace();
         }

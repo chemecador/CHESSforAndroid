@@ -12,13 +12,6 @@ public class Jugador {
     private DataInputStream in;
     private DataOutputStream out;
 
-    public Jugador(int id, Socket socket) throws IOException {
-        this.id = id;
-        this.socket = socket;
-        this.in = new DataInputStream(socket.getInputStream());
-        this.out = new DataOutputStream(socket.getOutputStream());
-    }
-
     public Jugador(Socket socket) throws IOException {
         this.socket = socket;
         this.in = new DataInputStream(socket.getInputStream());

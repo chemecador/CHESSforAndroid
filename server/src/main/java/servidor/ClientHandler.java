@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
 
+import juego.Parametros;
 import juego.Jugador;
 import juego.Lobby;
 import db.DB;
@@ -31,15 +32,22 @@ public class ClientHandler extends Thread {
     public ClientHandler(ServerSocket ss, Socket cliente) {
         this.socket = cliente;
         this.ss = ss;
+        String peticion = "";
         try {
             out = new DataOutputStream(cliente.getOutputStream());
             in = new DataInputStream(cliente.getInputStream());
-            String peticion = in.readUTF();
-            logger.info("Peticion de " + peticion + " recibida");
+            peticion = in.readUTF();
+        } catch (Exception e) {
+            logger.error("Conexion interrumpida " + e.getMessage());
+        }
+        logger.info("Peticion '{}' recibida de {}:{}", peticion,
+                socket.getInetAddress().getHostAddress(), socket.getPort());
+        try {
             peticion(peticion);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error al procesar la peticion ", e);
         }
+
     }
 
     private void peticion(String peticion) throws SQLException, IOException, NoSuchAlgorithmException {
@@ -121,17 +129,20 @@ public class ClientHandler extends Thread {
 
 
     private void jugarOnline() throws IOException {
-        Servidor.jugadores++;
-        System.out.println("Ahora hay " + Servidor.jugadores + " jugadores ");
-        if (Servidor.jugadores % 2 != 0) {
+        Parametros.NUM_JUGADORES++;
+        logger.info("Ahora hay {} jugadores ", Parametros.NUM_JUGADORES);
+        if (Parametros.NUM_JUGADORES == 1) {
             Jugador j1 = new Jugador(socket);
-            Lobby l = new Lobby(ss, j1);
-            l.start();
-            Servidor.lobbies.add(l);
-        } else {
-            Lobby lo = Servidor.lobbies.get(Servidor.lobbies.size() - 1);
+            Servidor.lobby = new Lobby(ss, j1);
+            Servidor.lobby.start();
+        } else if (Parametros.NUM_JUGADORES == 2) {
+
             Jugador j2 = new Jugador(socket);
-            lo.setJugador(j2);
+            Servidor.lobby.setJugador(j2);
+        } else {
+            Jugador esp = new Jugador(socket);
+            logger.info("El jugador {} ha solicitado jugar, pero esta lleno", esp.getUser());
+            esp.enviarString("lleno");
         }
     }
 
@@ -218,13 +229,13 @@ public class ClientHandler extends Thread {
         switch (res) {
             case -2:
             case -1:
-                System.err.println("Error de conexion con la base de datos");
+                logger.error("Error de conexion con la base de datos");
                 break;
             case 0:
-                System.out.println("El usuario " + user + "ya existe");
+                logger.error("El usuario {} ya existe", user);
                 break;
             case 1:
-                System.out.println("El usuario " + user + " ha sido registrado correctamente.");
+                logger.info("El usuario {} ha sido registrado correctamente", user);
                 out.writeUTF(DB.guardarToken(generarToken(), DB.getIdFromUser(user)));
                 break;
         }

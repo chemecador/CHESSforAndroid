@@ -19,28 +19,19 @@ import db.DB;
  */
 public class Servidor {
     private static final Logger logger = LogManager.getLogger();
-
-    /**
-     * TODO: Comentario, Encapsular?¿
-     */
-    public static int jugadores = 0;
-
     /**
      * TODO: Comentario
      */
     public static ArrayList<Socket> conexiones;
 
-    /**
-     * TODO: Comentario
-     */
-    public static ArrayList<Lobby> lobbies;
+    public static Lobby lobby;
+
 
     public Servidor() {
         ServerSocket ss = null;
         int port = 5566;
 
         conexiones = new ArrayList<>();
-        lobbies = new ArrayList<>();
 
 
         try {

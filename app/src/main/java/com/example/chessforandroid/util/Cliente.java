@@ -387,6 +387,13 @@ public class Cliente {
             if (s.equalsIgnoreCase("norivales")) {
                 Toast.makeText(lla, "No se han encontrado rivales", Toast.LENGTH_SHORT).show();
             }
+            if (s.equalsIgnoreCase("lleno")) {
+                Toast.makeText(lla, "El servidor está lleno", Toast.LENGTH_SHORT).show();
+            }
+            if (s.equalsIgnoreCase("abortada")) {
+                Toast.makeText(lla, "Se ha producido un error en el servidor. Vuelve a buscar partida",
+                        Toast.LENGTH_SHORT).show();
+            }
             if (s.equalsIgnoreCase("jugar")) {
                 Intent localIntent = new Intent(context, OnlineActivity.class);
                 localIntent.putExtra("token", token);
