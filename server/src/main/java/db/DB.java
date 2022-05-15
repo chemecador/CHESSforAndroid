@@ -225,7 +225,7 @@ public class DB {
         return false;
     }
 
-    public static boolean actualizarJugadores(int id1, int id2, boolean tablas) {
+    public static boolean actualizarStats(int id1, int id2, boolean tablas) {
         String consulta;
         PreparedStatement sentencia;
         try {
@@ -276,7 +276,7 @@ public class DB {
         return false;
     }
 
-    public static boolean gestionarFinal(String movs, int id1, int id2, boolean tablas) {
+    public static boolean registrarResultado(String movs, int id1, int id2, boolean tablas) {
         try {
             if (conn == null) {
                 return false;

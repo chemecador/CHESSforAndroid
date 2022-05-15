@@ -4,6 +4,10 @@ import juego.casillas.*;
 
 public class Juez {
 
+    /**
+     * TODO: CREAR CLASE TABLERO ??
+     */
+
     Casilla[][] casillas;
     int[][] tablero;
     final int NUM_FILAS = 8;
@@ -76,7 +80,7 @@ public class Juez {
         }
     }
 
-    public int[][] stringToInt(String s){
+    public int[][] stringToTablero(String s){
         int[][] t = new int[NUM_FILAS][NUM_COLUMNAS];
         int x = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
