@@ -256,6 +256,12 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             miTurno = false;
             return;
         }
+        if (s0 != null && s0.equalsIgnoreCase("tiempo")) {
+
+            gestionarFinal(!soyBlancas);
+            fin = true;
+            return;
+        }
 
         //tablero
         juez.sTablero = s0;
@@ -264,7 +270,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         tvMovs.setText(s1);
         //es jaque mate?
         fin = (boolean) objects[2];
-        System.out.println("fin vale: " + fin);
         if (fin) {
             gestionarFinal(miTurno == soyBlancas);
             return;

@@ -290,7 +290,8 @@ public class Cliente {
                 String s = in.readUTF();
                 objects[0] = s;
                 if (s.equalsIgnoreCase("rendirse") ||
-                        s.equalsIgnoreCase("tablas")) {
+                        s.equalsIgnoreCase("tablas") ||
+                        s.equalsIgnoreCase("tiempo")) {
                     return objects;
                 }
                 //movs

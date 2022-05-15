@@ -16,7 +16,6 @@ public class Lobby extends Thread {
     private ServerSocket ss; // TODO: 😑
 
     public static boolean hayRival;
-    private final int TIEMPO_ESPERA_RIVAL = 10;
 
     private Jugador anfitrion;
     private Jugador invitado;
@@ -35,13 +34,13 @@ public class Lobby extends Thread {
                 segundos++;
                 if (hayRival)
                     this.cancel();
-                if (segundos == TIEMPO_ESPERA_RIVAL) {
+                if (segundos == Parametros.TIEMPO_ESPERA_RIVAL) {
                     try {
                         anfitrion.enviarString("norivales");
                     } catch (IOException e) {
                         logger.error("No se ha podido enviar al anfitrion el mensaje 'norivales'", e);
                     }
-                    Parametros.NUM_JUGADORES--;
+                    Parametros.NUM_JUGADORES = 0;
 
                     logger.info("Hay {} jugadores en cola", Parametros.NUM_JUGADORES);
                     this.cancel();

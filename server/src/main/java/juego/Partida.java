@@ -8,6 +8,11 @@ import db.DB;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Partida {
 
@@ -20,7 +25,8 @@ public class Partida {
 
 
     //variables de la partida
-    private static boolean haMovido;
+    public static boolean haMovido;
+    public static int segundos = 0;
     private boolean fin;
     private boolean anfitrionEsBlancas;
     private Juez juez;
@@ -43,11 +49,19 @@ public class Partida {
 
     private void jugar() throws IOException {
         String mensaje;
+        ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
+        ContadorMov cm = new ContadorMov();
+
         while (!fin) {
+            segundos = 0;
+            haMovido = false;
+            ex.scheduleAtFixedRate(cm, 0, 5, TimeUnit.SECONDS);
             //turno del anfitrion, espero respuesta
-            if (juez.turnoBlancas == anfitrionEsBlancas){
+            if (juez.turnoBlancas == anfitrionEsBlancas) {
+                haMovido = true;
                 mensaje = anfitrion.recibirString();
             } else {
+                haMovido = false;
                 mensaje = invitado.recibirString();
             }
             if (mensaje.equalsIgnoreCase("tablas")) {
@@ -61,7 +75,6 @@ public class Partida {
                 abandonar(juez.turnoBlancas == anfitrionEsBlancas);
                 fin = true;
             } else {
-                logger.debug("a {} le toca mover ", juez.turnoBlancas==anfitrionEsBlancas);
                 enviarMov(juez.turnoBlancas == anfitrionEsBlancas, mensaje);
                 juez.turnoBlancas = !juez.turnoBlancas;
                 //comprobar jaques, etc
@@ -75,7 +88,49 @@ public class Partida {
                 }
             }
         }
+        ex.shutdownNow();
     }
+
+
+    public class ContadorMov implements Runnable {
+        @Override
+        public void run() {
+            segundos++;
+            logger.info("{} segundos", segundos);
+            if (haMovido) {
+                Thread.currentThread().interrupt();
+            }
+            if (segundos == Parametros.TIEMPO_ESPERA_MOV) {
+                try {
+                    if (juez.turnoBlancas == anfitrionEsBlancas) {
+                        invitado.enviarString("rendirse");
+                        if (!anfitrion.getSocket().isClosed()){
+                            anfitrion.enviarString("tiempo");
+                            logger.info("Envio 'tiempo' a {}", anfitrion.getUser());
+                        } else {
+                            logger.info("{} ha muerto", anfitrion.getUser());
+                        }
+                    } else {
+                        anfitrion.enviarString("rendirse");
+                        if (!invitado.getSocket().isClosed()){
+                            invitado.enviarString("tiempo");
+                            logger.info("Envio 'tiempo' a {}", invitado.getUser());
+                        } else {
+                            logger.info("{} ha muerto", invitado.getUser());
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.error("No se ha podido enviar al anfitrion el mensaje 'rendirse'", e);
+                }
+                Parametros.NUM_JUGADORES = 0;
+                logger.info("Hay {} jugadores en cola", Parametros.NUM_JUGADORES);
+
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+
 
     private void noJaqueMate() throws IOException {
         anfitrion.enviarBool(false);
@@ -137,10 +192,10 @@ public class Partida {
 
     private void rechazarTablas(boolean esAnfitrion) throws IOException {
         if (esAnfitrion) {
-            logger.info("{} acepta las tablas", anfitrion.getUser());
+            logger.info("{} rechaza las tablas", anfitrion.getUser());
             invitado.enviarBool(false);
         } else {
-            logger.info("{} acepta las tablas", invitado.getUser());
+            logger.info("{} rechaza las tablas", invitado.getUser());
             anfitrion.enviarBool(false);
         }
         juez.turnoBlancas = !juez.turnoBlancas;
