@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-
 public class Jugador {
     private String user;
     private int id;
@@ -55,21 +54,27 @@ public class Jugador {
         this.in = new DataInputStream(soc.getInputStream());
         this.out = new DataOutputStream(soc.getOutputStream());
     }
+
     public void enviarString(String s) throws IOException {
         out.writeUTF(s);
     }
+
     public void enviarInt(int x) throws IOException {
         out.writeInt(x);
     }
+
     public void enviarBool(boolean b) throws IOException {
         out.writeBoolean(b);
     }
+
     public String recibirString() throws IOException {
         return in.readUTF();
     }
+
     public int recibirInt() throws IOException {
         return in.readInt();
     }
+
     public boolean recibirBool() throws IOException {
         return in.readBoolean();
     }
