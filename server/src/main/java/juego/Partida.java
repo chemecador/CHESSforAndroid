@@ -87,6 +87,7 @@ public class Partida {
                         invitado.enviarString("rendirse");
                         DB.gestionarFinal(movs, id2, id1, false);
                         DB.actualizarJugadores(id2, id1, false);
+                        DB.actualizarNivel(id2);
                     } else {
                         juez.tablero = juez.stringToInt(s);
                         juez.intToCasillas(juez.tablero);
@@ -103,6 +104,7 @@ public class Partida {
                             fin = true;
                             DB.gestionarFinal(movs, id1, id2, false);
                             DB.actualizarJugadores(id1, id2, false);
+                            DB.actualizarNivel(id1);
                         } else {
                             //no es jaque mate
                             anfitrion.enviarBool(false);
@@ -139,6 +141,7 @@ public class Partida {
                         anfitrion.enviarString("rendirse");
                         DB.gestionarFinal(movs, id1, id2, false);
                         DB.actualizarJugadores(id1, id2, false);
+                        DB.actualizarNivel(id1);
                     } else {
                         juez.tablero = juez.stringToInt(s);
                         juez.intToCasillas(juez.tablero);
@@ -156,6 +159,7 @@ public class Partida {
                             fin = true;
                             DB.gestionarFinal(movs, id2, id1, false);
                             DB.actualizarJugadores(id2, id1, false);
+                            DB.actualizarNivel(id2);
                         } else {
                             //no es jaque mate
                             anfitrion.enviarBool(false);

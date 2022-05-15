@@ -36,7 +36,6 @@ public class Servidor {
     public static ArrayList<Lobby> lobbies;
 
     public Servidor() {
-        Configurator.setAllLevels(logger.getName(), Level.valueOf("INFO"));
         ServerSocket ss = null;
         int port = 5566;
 
@@ -93,6 +92,7 @@ public class Servidor {
      * @param args
      */
     public static void main(String[] args) {
+        Configurator.setRootLevel(Level.DEBUG);
         new Servidor();
     }
 }

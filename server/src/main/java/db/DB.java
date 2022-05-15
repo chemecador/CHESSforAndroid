@@ -179,6 +179,51 @@ public class DB {
         return -1;
     }
 
+    public static boolean actualizarNivel(int id) {
+        String consulta;
+        PreparedStatement sentencia;
+        try {
+            if (conn == null) {
+                return false;
+            }
+
+            if (conn.isClosed()) {
+                return false;
+            }
+            consulta = "SELECT victorias FROM jugadores WHERE jugadores.idjugador = ?";
+            sentencia = conn.prepareStatement(consulta);
+            sentencia.setInt(1, id);
+            ResultSet res = sentencia.executeQuery();
+            int numVictorias = -1;
+            while (res.next()) {
+                numVictorias = res.getInt("victorias");
+            }
+            if (numVictorias % 10 != 0) {
+                return true;
+            }
+
+            // si no ha habido errores, se crea una consulta
+            consulta = "UPDATE jugadores SET nivel = nivel + 1 WHERE idjugador = ?";
+            sentencia = conn.prepareStatement(consulta);
+            sentencia.setInt(1, id);
+            // se sustituyen los datos en la consulta y se ejecuta
+            sentencia.executeUpdate();
+
+            if (numVictorias == 10 || numVictorias == 20 || numVictorias == 30) {
+                consulta = "INSERT INTO jugador_logro (idjugador, idlogro) VALUES (?,?)";
+                sentencia = conn.prepareStatement(consulta);
+                sentencia.setInt(1, id);
+                sentencia.setInt(2, numVictorias / 10);
+                // se sustituyen los datos en la consulta y se ejecuta
+                sentencia.executeUpdate();
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static boolean actualizarJugadores(int id1, int id2, boolean tablas) {
         String consulta;
         PreparedStatement sentencia;

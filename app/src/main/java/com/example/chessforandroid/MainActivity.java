@@ -17,18 +17,13 @@ import com.example.chessforandroid.util.Cliente;
  *
  *
  * TAREA ACTUAL:
- * temporizador al buscar partida y al realizar movimiento
  *
  * BUGS CONOCIDOS:
  * los sockets no se cierran bien si la app se cierra inesperadamente o al minimizar
  *
- * IDEAS:
- * pausar partida guardando la posición de las piezas
  *
  * TAREAS EXTRA:
- * ver tabla con usuarios con más nivel en ajustes
- * cifrado
- * jugador-mision en la bbdd
+ * temporizador al buscar partida y al realizar movimiento
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

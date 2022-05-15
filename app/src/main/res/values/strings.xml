@@ -75,5 +75,6 @@
     <string name="level_summary">Ordenar la clasificación por el nivel de cuenta de los jugadores</string>
     <string name="twitter">/@chessforandroid</string>
     <string name="mail">"chessforandroi@gmail.com"</string>
+    <string name="DONE">COMPLETADA ✔️</string>
 
 </resources>
