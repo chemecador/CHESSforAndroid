@@ -27,26 +27,17 @@ public class Partida {
     private String movs;
 
 
-    public Partida(Jugador j1, Jugador j2) {
+    public Partida(Jugador j1, Jugador j2) throws IOException {
         anfitrion = j1;
         invitado = j2;
-        logger.info("Comienzo partida entre {} y {}", anfitrion.getUser(), invitado.getUser());
         fin = false;
         juez = new Juez();
-        
-        datosIniciales();
 
+        logger.info("Comienzo partida entre {} y {}", anfitrion.getUser(), invitado.getUser());
+
+        crearCasillas();
+        enviarDatosIniciales();
         jugar();
-    }
-
-    private void crearCasillas() {
-        juez.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
-        juez.casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                juez.casillas[i][j] = new Casilla(i, j);
-            }
-        }
     }
 
 
@@ -88,7 +79,7 @@ public class Partida {
                         juez.turnoBlancas = !juez.turnoBlancas;
                         //comprobar jaques, etc
                         if (juez.buscarRey(juez.casillas, !j1EsBlancas) == null) {
-                            logger.info("El jugador {} ha ganado a {}", anfitrion.getUser() ,invitado.getUser());
+                            logger.info("El jugador {} ha ganado a {}", anfitrion.getUser(), invitado.getUser());
                             //es jaque mate
                             anfitrion.enviarBool(true);
                             invitado.enviarBool(true);
@@ -127,7 +118,7 @@ public class Partida {
                         anfitrion.enviarBool(false);
                         juez.turnoBlancas = !juez.turnoBlancas;
                     } else if (s.equalsIgnoreCase("rendirse") || s.equalsIgnoreCase("abandonar")) {
-                        logger.info("El jugador {} ha ganado a {}", anfitrion.getUser() ,invitado.getUser());
+                        logger.info("El jugador {} ha ganado a {}", anfitrion.getUser(), invitado.getUser());
                         fin = true;
                         anfitrion.enviarString("rendirse");
                         DB.gestionarFinal(movs, anfitrion.getId(), invitado.getId(), false);
@@ -172,40 +163,32 @@ public class Partida {
         }
     }
 
-    private void datosIniciales() {
 
-        crearCasillas();
-        try {
-            juez.turnoBlancas = true;
-            j1EsBlancas = new Random().nextBoolean();
-            if (anfitrion.getUser() == null && invitado.getUser() == null) {
-                Parametros.NUM_JUGADORES = Parametros.NUM_JUGADORES - 2;
-                logger.error("Partida abortada: anfitrion.getUser(): NULL, invitado.getUser(): NULL");
-                return;
+    private void crearCasillas() {
+        juez.tablero = new int[NUM_FILAS][NUM_COLUMNAS];
+        juez.casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                juez.casillas[i][j] = new Casilla(i, j);
             }
-            if (anfitrion.getUser() == null) {
-                Parametros.NUM_JUGADORES--;
-                logger.error("Partida abortada: anfitrion.getUser(): {} , invitado.getUser(): {}", anfitrion.getUser(), invitado.getUser());
-                return;
-            }
-            if (invitado.getUser() == null) {
-                Parametros.NUM_JUGADORES--;
-                logger.error("Partida abortada: anfitrion.getUser(): {} , invitado.getUser(): {}", anfitrion.getUser(), invitado.getUser());
-                return;
-            }
-            anfitrion.enviarString(anfitrion.getUser());
-            anfitrion.enviarString(invitado.getUser());
-            invitado.enviarString(invitado.getUser());
-            invitado.enviarString(anfitrion.getUser());
-            if (j1EsBlancas) {
-                anfitrion.enviarBool(true);
-                invitado.enviarBool(false);
-            } else {
-                invitado.enviarBool(true);
-                anfitrion.enviarBool(false);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+    }
+
+    private void enviarDatosIniciales() throws IOException {
+
+        anfitrion.enviarString(anfitrion.getUser());
+        anfitrion.enviarString(invitado.getUser());
+        invitado.enviarString(invitado.getUser());
+        invitado.enviarString(anfitrion.getUser());
+
+        juez.turnoBlancas = true;
+        j1EsBlancas = new Random().nextBoolean();
+        if (j1EsBlancas) {
+            anfitrion.enviarBool(true);
+            invitado.enviarBool(false);
+        } else {
+            invitado.enviarBool(true);
+            anfitrion.enviarBool(false);
         }
     }
 }

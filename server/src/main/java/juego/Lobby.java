@@ -39,8 +39,7 @@ public class Lobby extends Thread {
                     try {
                         anfitrion.enviarString("norivales");
                     } catch (IOException e) {
-                        logger.error("No se ha podido enviar al anfitrion el mensaje \"norivales\"", e);
-                        //TODO: CERRAR LA CONEXION ??
+                        logger.error("No se ha podido enviar al anfitrion el mensaje 'norivales'", e);
                     }
                     Parametros.NUM_JUGADORES--;
 
