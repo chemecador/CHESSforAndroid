@@ -1,4 +1,4 @@
-VERSION := $(shell git describe --tags --always --abbrev=0)
+VERSION := $(shell git describe --tags --always --abbrev=8)
 
 build:
 	.\gradlew server:build
@@ -6,9 +6,15 @@ build:
 clean: 
 	.\gradlew server:clean
 
-docker:
-	docker build .
-
 run:
 	.\gradlew server:run
 
+docker: build
+	docker build . -t chessserver:$(VERSION)
+
+docker-release: build
+	docker buildx build . \
+		--platform linux/arm64 \
+		--tag ghcr.io/chemecador/chessserver:$(VERSION) \
+		--tag ghcr.io/chemecador/chessserver:latest \
+		--push
