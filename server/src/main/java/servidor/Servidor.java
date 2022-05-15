@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -18,62 +19,63 @@ public class Servidor {
     private static final Logger logger = LogManager.getLogger();
 
     /**
-     * ServerSocket que escucha la llegada de nuevos clientes.
-     */
-    private ServerSocket ss;
-
-    /**
-     *
+     * TODO: Comentario, Encapsular?¿
      */
     public static int jugadores = 0;
 
     /**
-     *
+     * TODO: Comentario
      */
     public static ArrayList<Socket> conexiones;
 
     /**
-     *
+     * TODO: Comentario
      */
     public static ArrayList<Lobby> lobbies;
 
     public Servidor() {
+        ServerSocket ss = null;
+        int port = 5566;
+
         conexiones = new ArrayList<>();
         lobbies = new ArrayList<>();
+
         try {
             DB.conectar();
         } catch (SQLException e) {
-            logger.fatal("No se ha podido conectar con la base de datos.");
-            e.printStackTrace();
+            logger.fatal("Error al conectarse con la base de datos", e);
             System.exit(-1);
         }
 
         try {
-            // se inicializa el serversocket.
-            ss = new ServerSocket(5566);
-            logger.info("El servidor se ha iniciado. Esperando jugadores...");
+            ss = new ServerSocket(port);
+        } catch (Exception e) {
+            logger.fatal("Error al inicializar el socket de escucha en el puerto '{}'", port, e);
+            System.exit(-1);
+        }
+        logger.info("Servidor iniciado y listo para recibir conexiones.");
 
-
+        try {
             while (true) {
-                // se crea un socket que espera a que llegue un cliente.
                 Socket cliente = ss.accept();
+
+                // TODO: comentario
                 conexiones.add(cliente);
-                // se lanza un hilo de la clase ClientHandler que gestiona la conexi�n de manera
+
+                // se lanza un hilo de la clase ClientHandler que gestiona la conexion de manera
                 // independiente a esta clase.
                 new ClientHandler(ss, cliente).start();
             }
-        } catch (IOException e) {
-            logger.fatal("Error al iniciar el servidor.");
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Se ha producido un error al aceptar una conexion", e);
         } finally {
             try {
                 DB.desconectar();
             } catch (SQLException e) {
-                e.printStackTrace();
+                logger.fatal("Error al cerrar la conexion con la base de datos", e);
             }
         }
     }
-
 
     /**
      * Metodo principal.
