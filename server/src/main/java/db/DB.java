@@ -62,12 +62,10 @@ public class DB {
     public static int registro(String user, String pass) throws SQLException {
         // conectar con la base de datos
 
-        if (conn == null) {
+        if (conn == null || conn.isClosed()) {
             return -1;
         }
-        if (conn.isClosed()) {
-            return -2;
-        }
+
         if (comprobarUnica(user))
             return 0;
         // si no ha habido errores, se crea una consulta
@@ -434,10 +432,7 @@ public class DB {
     public static String guardarToken(String token, int id) throws SQLException {
         // conectar con la base de datos
 
-        if (conn == null) {
-            return null;
-        }
-        if (conn.isClosed()) {
+        if (conn == null || conn.isClosed()) {
             return null;
         }
 
