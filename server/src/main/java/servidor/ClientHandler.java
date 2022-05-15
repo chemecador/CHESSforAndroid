@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void peticion(String peticion) throws SQLException, IOException {
+    private void peticion(String peticion) throws SQLException, IOException, NoSuchAlgorithmException {
         switch (peticion) {
             case "signup":
                 registro();
@@ -169,7 +170,7 @@ public class ClientHandler extends Thread {
         return false;
     }
 
-    private void inicioSesion() throws IOException, SQLException {
+    private void inicioSesion() throws IOException, SQLException, NoSuchAlgorithmException {
         String user, pass;
         int id;
         boolean bool;
@@ -184,7 +185,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void registro() throws IOException, SQLException {
+    private void registro() throws IOException, SQLException, NoSuchAlgorithmException {
         String user, pass;
         user = in.readUTF();
         pass = in.readUTF();
@@ -205,7 +206,6 @@ public class ClientHandler extends Thread {
                 System.out.println("El usuario " + user + " ha sido registrado correctamente.");
                 out.writeUTF(DB.guardarToken(generarToken(), DB.getIdFromUser(user)));
                 break;
-
         }
     }
 
