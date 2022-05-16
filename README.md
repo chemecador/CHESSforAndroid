@@ -14,7 +14,7 @@ winget install cloudflared
 Conectarnos a la base de datos remota y exponerla en _localhost:3306_:
 
 ```shell
-cloudflared access tcp --hostname mysql.paesa.es --url tcp://localhost:3306
+cloudflared access tcp --hostname mysql.paesa.es --url localhost:3306
 ```
 
 <!-- Para trabajar en local: -->
