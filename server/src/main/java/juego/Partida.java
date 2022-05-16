@@ -49,13 +49,8 @@ public class Partida {
 
     private void jugar() throws IOException {
         String mensaje;
-        ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
-        ContadorMov cm = new ContadorMov();
 
         while (!fin) {
-            segundos = 0;
-            haMovido = false;
-            ex.scheduleAtFixedRate(cm, 0, 5, TimeUnit.SECONDS);
             //turno del anfitrion, espero respuesta
             if (juez.turnoBlancas == anfitrionEsBlancas) {
                 haMovido = true;
@@ -88,14 +83,12 @@ public class Partida {
                 }
             }
         }
-        ex.shutdownNow();
     }
 
 
     public class ContadorMov implements Runnable {
         @Override
         public void run() {
-            segundos++;
             logger.info("{} segundos", segundos);
             if (haMovido) {
                 Thread.currentThread().interrupt();

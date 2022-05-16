@@ -353,7 +353,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         }
         //es jaque mate?
         fin = (boolean) objects[0];
-        System.out.println("fin vale: " + fin);
         if (fin) {
             gestionarFinal(miTurno != soyBlancas);
             return;
