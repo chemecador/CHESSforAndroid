@@ -13,6 +13,7 @@ import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
 
+import juego.FriendLobby;
 import juego.Parametros;
 import juego.Jugador;
 import juego.Lobby;
@@ -153,39 +154,40 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private boolean crearSala() throws IOException, SQLException {
-        int idAnfitrion = DB.getIdFromToken(in.readUTF());
+    private boolean crearSala() throws IOException {
         int codigo;
         String caracteres = "0123456789";
         int size = 4;
+        Jugador anfitrion = new Jugador(socket);
+        SecureRandom rnd = new SecureRandom();
+        StringBuilder sb = new StringBuilder(size);
+        for (int i = 0; i < size; i++)
+            sb.append(caracteres.charAt(rnd.nextInt(caracteres.length())));
 
-        do {
-            SecureRandom rnd = new SecureRandom();
-            StringBuilder sb = new StringBuilder(size);
-            for (int i = 0; i < size; i++)
-                sb.append(caracteres.charAt(rnd.nextInt(caracteres.length())));
-
-            codigo = Integer.parseInt(sb.toString());
-        } while (DB.existeCodigo(codigo));
-
-        DB.crearIDAnfitiron(idAnfitrion, codigo);
+        codigo = Integer.parseInt(sb.toString());
+        Parametros.CODIGO_AMIGO = codigo;
+        logger.info("Jugador {} ha creado la sala {}", anfitrion.getUser(), codigo);
         out.writeInt(codigo);
-
+        Parametros.NUM_AMIGOS = 1;
+        Servidor.friendLobby = new FriendLobby(ss, anfitrion.getId());
+        Servidor.friendLobby.start();
         return true;
     }
 
-    // TODO: sysout => logger
-    private boolean unirse() throws IOException, SQLException {
-        int idInvitado = DB.getIdFromToken(in.readUTF());
+    private boolean unirse() throws IOException {
+        Jugador invitado = new Jugador(socket);
         int codigo = in.readInt();
 
-        System.out.println("El idInv es " + idInvitado + " y el codigo " + codigo);
-        if (DB.existeCodigo(codigo)) {
-            System.out.println("existe");
-            return DB.sumarIdInvitado(idInvitado, codigo);
+        //if (DB.existeCodigo(codigo)) {
+        if (Parametros.CODIGO_AMIGO == codigo) {
+            logger.info("El usuario {} se ha unido a la sala {}", invitado.getUser(), codigo);
+            invitado.enviarInt(1);
+            Servidor.friendLobby.setJugador(invitado);
+            Parametros.NUM_AMIGOS = 0;
+            return true;
         } else {
-            System.out.println("no existe");
-            out.writeInt(-1);
+            logger.info("El usuario {} ha intentado unirse a la sala {}, que no existe", invitado.getUser(), codigo);
+            invitado.enviarInt(-1);
         }
         return false;
     }
@@ -225,7 +227,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void registro() throws Exception{
+    private void registro() throws Exception {
         String user, pass;
         user = in.readUTF();
         pass = in.readUTF();

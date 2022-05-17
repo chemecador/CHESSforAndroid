@@ -265,7 +265,8 @@ public class DB {
             if (sentencia != null) {
                 sentencia.close();
             }
-            Parametros.NUM_JUGADORES = Parametros.NUM_JUGADORES - 2;
+            Parametros.NUM_JUGADORES = 0;
+            Parametros.NUM_AMIGOS = 0;
             logger.info("Ahora hay {} jugadores", Parametros.NUM_JUGADORES);
             return true;
         } catch (SQLException e) {
@@ -483,40 +484,6 @@ public class DB {
         return true;
     }
 
-    public static boolean sumarIdInvitado(int idInvitado, int codigo) throws SQLException {
-        if (conn == null || conn.isClosed()) {
-            logger.error("La conexion es null o esta cerrada");
-            return false;
-        }
-
-        // si no ha habido errores, se crea una consulta
-        String consulta = "UPDATE partidas SET idinvitado = ? WHERE codigo = ?";
-        PreparedStatement sentencia = conn.prepareStatement(consulta);
-        sentencia.setInt(1, idInvitado);
-        sentencia.setInt(2, codigo);
-
-        // se sustituyen los datos en la consulta y se ejecuta
-        sentencia.executeUpdate();
-        return true;
-    }
-
-    public static boolean crearIDAnfitiron(int idAnfitrion, int codigo) throws SQLException {
-        // conectar con la base de datos
-
-        if (conn == null || conn.isClosed()) {
-            logger.error("La conexion es null o esta cerrada");
-            return false;
-        }
-        // si no ha habido errores, se crea una consulta
-        String consulta = "INSERT INTO partidas (idanfitrion, codigo) VALUES (?,?)";
-        PreparedStatement sentencia = conn.prepareStatement(consulta);
-        sentencia.setInt(1, idAnfitrion);
-        sentencia.setInt(2, codigo);
-
-        // se sustituyen los datos en la consulta y se ejecuta
-        sentencia.executeUpdate();
-        return true;
-    }
 
     public static ArrayList<String> getRankingUsers() {
         // conecta con la base de datos

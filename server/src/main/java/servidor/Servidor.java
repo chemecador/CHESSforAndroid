@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import juego.FriendLobby;
 import juego.Lobby;
 import db.DB;
 
@@ -25,7 +26,7 @@ public class Servidor {
     public static ArrayList<Socket> conexiones;
 
     public static Lobby lobby;
-
+    public static FriendLobby friendLobby;
 
     public Servidor() {
         ServerSocket ss = null;
@@ -83,7 +84,7 @@ public class Servidor {
      * @param args
      */
     public static void main(String[] args) {
-        Configurator.setRootLevel(Level.DEBUG);
+        Configurator.setRootLevel(Level.INFO);
         new Servidor();
     }
 }

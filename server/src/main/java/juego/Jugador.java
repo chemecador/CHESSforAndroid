@@ -19,6 +19,14 @@ public class Jugador {
         this.id = db.DB.getIdFromToken(recibirString());
     }
 
+    public Jugador(Socket socket, int id) throws IOException {
+        this.socket = socket;
+        this.in = new DataInputStream(socket.getInputStream());
+        this.out = new DataOutputStream(socket.getOutputStream());
+        this.id = id;
+    }
+
+
     public String getUser() {
         if (this.user == null) {
             this.user = db.DB.getUserFromId(this.id);

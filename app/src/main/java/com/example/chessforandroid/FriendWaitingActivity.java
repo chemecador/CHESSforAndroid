@@ -32,8 +32,8 @@ public class FriendWaitingActivity extends AppCompatActivity {
         Cliente c = new Cliente();
         if (!c.isConectado()) {
             Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
-        } /*else {
-            //c.lobby(this, tokenAnf, idPartida);
-        }*/
+        } else {
+            c.esperarRival(this, this);
+        }
     }
 }

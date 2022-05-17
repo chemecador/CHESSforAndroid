@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +47,9 @@ public class FriendActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.bUnirse:
+                if (codigo.getText().toString().length() < 1){
+                    Toast.makeText(this, "Código incorrecto", Toast.LENGTH_SHORT).show();
+                }
                 c = new Cliente();
                 if (c.isConectado()) {
                     c.unirse(this, token, codigo.getText().toString());

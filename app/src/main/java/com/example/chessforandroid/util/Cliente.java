@@ -3,6 +3,8 @@ package com.example.chessforandroid.util;
 import static com.example.chessforandroid.util.Constantes.debug;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -54,7 +56,6 @@ public class Cliente {
                 host = Constantes.ip;
             }
             conn.connect(new InetSocketAddress(host, puerto), 1200);
-            Log.i("*****", "me conecto a " + host);
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
             conectado = true;
@@ -142,6 +143,41 @@ public class Cliente {
         new Ranking(ra).execute(pref);
     }
 
+    public void esperarRival(Context context, FriendWaitingActivity fwa) {
+        this.context = context;
+        new EsperarRival(fwa).execute();
+    }
+
+    public class EsperarRival extends AsyncTask<Void, Void, String> {
+
+        FriendWaitingActivity fwa;
+
+        public EsperarRival(FriendWaitingActivity fwa) {
+            this.fwa = fwa;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                return in.readUTF();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s.equalsIgnoreCase("jugar")) {
+                Intent localIntent = new Intent(context, OnlineActivity.class);
+                context.startActivity(localIntent);
+            } else {
+                Toast.makeText(fwa, "Error inesperado", Toast.LENGTH_SHORT).show();
+            }
+            fwa.finish();
+        }
+    }
 
     public class Ranking extends AsyncTask<String, Void, ArrayList<RankingItem>> {
 
@@ -321,15 +357,12 @@ public class Cliente {
     }
 
 
-    public Object[] getDatosIniciales(Context context, String token) {
+    public Object[] getDatosIniciales(Context context) {
         this.context = context;
-        this.token = token;
         Object[] o = null;
         try {
             o = new DatosIniciales().execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return o;
@@ -396,9 +429,7 @@ public class Cliente {
                         Toast.LENGTH_SHORT).show();
             }
             if (s.equalsIgnoreCase("jugar")) {
-                Intent localIntent = new Intent(context, OnlineActivity.class);
-                localIntent.putExtra("token", token);
-                context.startActivity(localIntent);
+                context.startActivity(new Intent(context, OnlineActivity.class));
             }
             lla.terminar();
             cerrarConexion();
@@ -410,8 +441,6 @@ public class Cliente {
         @Override
         protected Integer doInBackground(String... strings) {
             try {
-                Log.i("**", "entro en unirse. El token vale " + strings[0] +
-                        " y el id " + Integer.parseInt(strings[1]));
                 token = strings[0];
                 out.writeUTF("unirse");
                 out.writeUTF(token);
@@ -426,8 +455,25 @@ public class Cliente {
         @Override
         protected void onPostExecute(Integer res) {
             super.onPostExecute(res);
+            if (res == 1) {
 
-            Toast.makeText(context, "Listo para jugar", Toast.LENGTH_SHORT).show();
+                try {
+                    String jugar = in.readUTF();
+
+                    if (jugar.equalsIgnoreCase("jugar")) {
+                        Intent localIntent = new Intent(context, OnlineActivity.class);
+                        context.startActivity(localIntent);
+                    }
+                } catch (IOException e) {
+                    Toast.makeText(context, "Error al iniciar la partida", Toast.LENGTH_SHORT).show();
+                    ((Activity) context).finish();
+                    e.printStackTrace();
+                }
+            } else if (res == -1) {
+                Toast.makeText(context, "Código incorrecto", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+            }
             cerrarConexion();
         }
     }
@@ -439,6 +485,7 @@ public class Cliente {
             try {
                 token = strings[0];
                 out.writeUTF("crearsala");
+                //mando el token para el ClientHandler
                 out.writeUTF(token);
                 return in.readInt();
             } catch (IOException e) {

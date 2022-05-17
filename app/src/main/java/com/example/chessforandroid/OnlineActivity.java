@@ -55,7 +55,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     //elementos de juego
     private int nMovs;
     private int contadorTablas;
-    private String token;
     private boolean soyBlancas;
     private boolean quieroTablas;
     private boolean miTurno;
@@ -80,10 +79,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         this.oGameBoard = this.findViewById(R.id.gridGameBoardOnline);
         Tablero t = new Tablero();
         t.execute();
-        Intent intent = getIntent();
-        token = intent.getStringExtra("token");
-
-        Log.i("***", "comencemos, " + token);
 
         cliente = new Cliente();
 
@@ -392,7 +387,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
 
         Object[] o = null;
         if (cliente.isConectado()) {
-            o = cliente.getDatosIniciales(this, token);
+            o = cliente.getDatosIniciales(this);
         } else {
             Log.e("************************", "Error al recibir los datos iniciales");
         }
