@@ -18,6 +18,8 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final static String TAG = MainActivity.class.getSimpleName();
+
     private EditText user;
     private EditText pass;
     private int i;
@@ -66,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     c.iniciarSesion(this, user.getText().toString(), pass.getText().toString());
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error al iniciar sesión");
                 }
                 break;
             case R.id.bSignup:

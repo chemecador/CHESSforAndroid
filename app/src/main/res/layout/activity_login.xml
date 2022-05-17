@@ -23,6 +23,7 @@
             android:gravity="center"
             android:text="@string/chess"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textSize="28sp"
             android:textStyle="bold" />
     </LinearLayout>
 

@@ -6,6 +6,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import servidor.Servidor;
+
 public class FriendLobby extends Thread {
     private static final Logger logger = LogManager.getLogger();
 
@@ -32,6 +34,14 @@ public class FriendLobby extends Thread {
         if (anfitrion == null) {
             invitado.enviarString("abortada");
             logger.error("Anfitrion es null, partida abortada");
+            Servidor.friendLobbies.remove(this);
+            return;
+        }
+        if (invitado == null) {
+            anfitrion.enviarString("abortada");
+            logger.error("Invitado es null, partida abortada");
+            Servidor.friendLobbies.remove(this);
+            return;
         }
 
         try {
