@@ -52,8 +52,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void procesarPeticion(String peticion)
-            throws Exception, SQLException, IOException, NoSuchAlgorithmException {
+    private void procesarPeticion(String peticion) throws Exception{
         switch (peticion) {
             case "signup":
                 registro();
@@ -92,7 +91,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void rankingNivel() throws IOException {
+    private void rankingNivel() throws IOException, SQLException {
         ArrayList<String> users = DB.getRankingUsers();
         ArrayList<String> niveles = DB.getRankingNiveles();
 
@@ -112,7 +111,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void rankingElo() throws IOException {
+    private void rankingElo() throws IOException, SQLException {
         ArrayList<String> users = DB.getRankingUsers();
         ArrayList<String> elos = DB.getRankingElos();
 
@@ -136,9 +135,9 @@ public class ClientHandler extends Thread {
         socket.close();
     }
 
-    private void jugarOnline() throws IOException {
+    private void jugarOnline() throws IOException, SQLException {
         Parametros.NUM_JUGADORES++;
-        logger.info("Ahora hay {} jugadores ", Parametros.NUM_JUGADORES);
+        logger.debug("Ahora hay {} jugadores ", Parametros.NUM_JUGADORES);
 
         if (Parametros.NUM_JUGADORES == 1) {
             Jugador j1 = new Jugador(socket);
@@ -147,14 +146,15 @@ public class ClientHandler extends Thread {
         } else if (Parametros.NUM_JUGADORES == 2) {
             Jugador j2 = new Jugador(socket);
             Servidor.lobby.setJugador(j2);
+            Parametros.NUM_JUGADORES = 0;
         } else {
             Jugador esp = new Jugador(socket);
-            logger.info("El jugador {} ha solicitado jugar, pero esta lleno", esp.getUser());
+            logger.error("El jugador {} ha solicitado jugar, pero esta lleno", esp.getUser());
             esp.enviarString("lleno");
         }
     }
 
-    private boolean crearSala() throws IOException {
+    private boolean crearSala() throws IOException, SQLException {
         int codigo;
         String caracteres = "0123456789";
         int size = 4;
@@ -165,50 +165,46 @@ public class ClientHandler extends Thread {
             sb.append(caracteres.charAt(rnd.nextInt(caracteres.length())));
 
         codigo = Integer.parseInt(sb.toString());
-        Parametros.CODIGO_AMIGO = codigo;
-        logger.info("Jugador {} ha creado la sala {}", anfitrion.getUser(), codigo);
+        logger.debug("Jugador {} ha creado la sala {}", anfitrion.getUser(), codigo);
         out.writeInt(codigo);
-        Parametros.NUM_AMIGOS = 1;
-        Servidor.friendLobby = new FriendLobby(ss, anfitrion.getId());
-        Servidor.friendLobby.start();
+        FriendLobby fl = new FriendLobby(ss, anfitrion.getId(), codigo);
+        fl.start();
+        Servidor.friendLobbies.add(fl);
         return true;
     }
 
-    private boolean unirse() throws IOException {
+    private boolean unirse() throws IOException, SQLException {
         Jugador invitado = new Jugador(socket);
         int codigo = in.readInt();
 
-        //if (DB.existeCodigo(codigo)) {
-        if (Parametros.CODIGO_AMIGO == codigo) {
-            logger.info("El usuario {} se ha unido a la sala {}", invitado.getUser(), codigo);
-            invitado.enviarInt(1);
-            Servidor.friendLobby.setJugador(invitado);
-            Parametros.NUM_AMIGOS = 0;
-            return true;
-        } else {
-            logger.info("El usuario {} ha intentado unirse a la sala {}, que no existe", invitado.getUser(), codigo);
-            invitado.enviarInt(-1);
+        for (FriendLobby fl : Servidor.friendLobbies) {
+            if (fl.getCodigo() == codigo) {
+                logger.debug("El usuario {} se ha unido a la sala {}", invitado.getUser(), codigo);
+                invitado.enviarInt(1);
+                fl.setJugador(invitado);
+                return true;
+            }
         }
+
+        logger.debug("El usuario {} ha intentado unirse a la sala {}, que no existe", invitado.getUser(), codigo);
+        invitado.enviarInt(-1);
         return false;
     }
 
     private boolean cambiarPass() throws Exception {
-        String user = null;
-        String oldPass = null;
-        String newPass = null;
 
-        user = in.readUTF();
-        oldPass = in.readUTF();
+        String user = in.readUTF();
+        String oldPass = in.readUTF();
+        String newPass = in.readUTF();
+
+
         oldPass = Hash.hashear(oldPass);
-        newPass = in.readUTF();
         newPass = Hash.hashear(newPass);
 
         try {
             return DB.cambiarPass(user, oldPass, newPass);
         } catch (SQLException e) {
-            throw new Exception(
-                    String.format("Se ha producido un error al cambiar la pass. user: %s - oldPass %s - newPass = %s",
-                            user, oldPass, newPass, e));
+            throw new Exception("Error al cambiar la pass", e);
         }
     }
 
@@ -223,7 +219,10 @@ public class ClientHandler extends Thread {
         boolean bool = id > 0;
         out.writeBoolean(bool);
         if (bool) {
-            out.writeUTF(DB.guardarToken(generarToken(), id)); // TODO: null
+            String token = DB.guardarToken(generarToken(), id);
+            if (token == null)
+                token = "null";
+            out.writeUTF(token);
         }
     }
 
@@ -240,7 +239,7 @@ public class ClientHandler extends Thread {
             case -1:
                 throw new Exception("Error de conexion con la base de datos");
             case 0:
-                logger.warn("El usuario {} ya existe", user);
+                logger.info("El usuario {} ya existe", user);
                 break;
             case 1:
                 logger.info("El usuario {} ha sido registrado correctamente", user);
@@ -254,7 +253,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void pedirDatos() throws IOException {
+    private void pedirDatos() throws IOException, SQLException {
         int[] datos = DB.pedirDatos(in.readUTF());
         out.writeInt(datos[0]);
         out.writeInt(datos[1]);

@@ -20,9 +20,7 @@ public class Hash {
      * @throws NoSuchAlgorithmException Si no es posible utilizar SHA-512
      */
     public static String hashear(String s) throws NoSuchAlgorithmException {
-        MessageDigest md = null;
-
-        md = MessageDigest.getInstance("SHA-512");
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
         md.update(s.getBytes());
         byte[] mb = md.digest();
         return new String(Hex.encodeHex(mb));

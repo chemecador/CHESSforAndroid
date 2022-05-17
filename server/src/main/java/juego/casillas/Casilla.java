@@ -1,8 +1,8 @@
 package juego.casillas;
 
 public class Casilla {
-    private int fila;
-    private int columna;
+    private final int fila;
+    private final int columna;
     private Pieza pieza;
 
     public Casilla(int x, int y) {
@@ -42,16 +42,8 @@ public class Casilla {
         return this.fila;
     }
 
-    public void setFila(int x) {
-        this.fila = x;
-    }
-
     public int getColumna() {
         return this.columna;
-    }
-
-    public void setColumna(int y) {
-        this.columna= y;
     }
 
     public Pieza getPieza() {

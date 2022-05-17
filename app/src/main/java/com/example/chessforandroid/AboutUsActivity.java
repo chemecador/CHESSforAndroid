@@ -4,13 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 public class AboutUsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView tv;
     private int i;
 
     @Override
@@ -18,7 +16,7 @@ public class AboutUsActivity extends AppCompatActivity implements View.OnClickLi
         i = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
-        tv = findViewById(R.id.txtVersion);
+        TextView tv = findViewById(R.id.txtVersion);
         tv.setOnClickListener(this);
     }
 

@@ -41,8 +41,7 @@ public class Lobby extends Thread {
                         logger.error("No se ha podido enviar al anfitrion el mensaje 'norivales'", e);
                     }
                     Parametros.NUM_JUGADORES = 0;
-
-                    logger.info("Hay {} jugadores en cola", Parametros.NUM_JUGADORES);
+                    logger.info("El jugador {} no ha encontrado rivales", anfitrion.getUser());
                     this.cancel();
                 }
             }
@@ -50,11 +49,11 @@ public class Lobby extends Thread {
         t.scheduleAtFixedRate(task, 1000, 1000);
     }
 
-    public void setJugador(Jugador invitado) throws IOException {
-        this.invitado = invitado;
+    public void setJugador(Jugador j2) throws IOException {
+        this.invitado = j2;
         hayRival = true;
 
-        logger.info("Lobby creado con anfitrion {} e invitado {}",
+        logger.debug("Lobby creado con anfitrion {} e invitado {}",
                 anfitrion.getUser(), invitado.getUser());
 
         if (anfitrion == null) {
@@ -85,6 +84,6 @@ public class Lobby extends Thread {
             throw new IOException("Error al recibir confirmacion del invitado", e);
         }
 
-        new Partida(anfitrion, invitado);
+        new Partida(anfitrion, invitado, 0);
     }
 }

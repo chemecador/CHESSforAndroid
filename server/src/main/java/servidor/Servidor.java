@@ -26,13 +26,14 @@ public class Servidor {
     public static ArrayList<Socket> conexiones;
 
     public static Lobby lobby;
-    public static FriendLobby friendLobby;
+    public static ArrayList<FriendLobby> friendLobbies;
 
     public Servidor() {
         ServerSocket ss = null;
         int port = 5566;
 
         conexiones = new ArrayList<>();
+        friendLobbies = new ArrayList<>();
 
 
         try {
@@ -61,7 +62,7 @@ public class Servidor {
                 // independiente a esta clase.
                 new ClientHandler(ss, cliente).start();
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 logger.error("Se ha producido un error al aceptar una conexion", e);
             }
         }

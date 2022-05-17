@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 public class RankingActivity extends AppCompatActivity {
 
-    private ArrayList<RankingItem> lista;
     private RankingAdapter adapter;
     private ListView lvRanking;
     private ProgressBar pb;
@@ -29,7 +28,6 @@ public class RankingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ranking);
         Cliente cliente = new Cliente();
-        lista = new ArrayList<>();
         lvRanking = findViewById(R.id.lvRanking);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 

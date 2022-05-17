@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import juego.Parametros;
 
 public class DB {
     private static final Logger logger = LogManager.getLogger();
@@ -21,9 +20,9 @@ public class DB {
      * Metodo que conecta con la base de datos.
      */
     public static void conectar() throws SQLException {
-        String url = null;
-        String user = null;
-        String passw = null;
+        String url;
+        String user;
+        String passw;
 
         String host = System.getenv("MYSQL_HOST");
         if (host == null) {
@@ -57,7 +56,7 @@ public class DB {
      * @param user Nombre de usuario
      * @param pass Contrase�a (ya hasheada previamente)
      * @return int
-     * @throws SQLException
+     * @throws SQLException SQLException
      */
     public static int registro(String user, String pass) throws SQLException {
         // conectar con la base de datos
@@ -75,103 +74,73 @@ public class DB {
         sentencia.setString(2, pass);
 
         // se sustituyen los datos en la consulta y se ejecuta
-        int numReg = sentencia.executeUpdate();
-        if (sentencia != null) {
-            sentencia.close();
-        }
+        return sentencia.executeUpdate();
 
-        // se desconecta de la base de datos y se devuelve el n�mero de registros
-        // afectados
-        return numReg;
     }
 
-    public static int inicioSesion(String user, String pass) {
+    public static int inicioSesion(String user, String pass) throws SQLException {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT * FROM jugadores WHERE user = ? AND pass = ?";
         PreparedStatement sentencia;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setString(1, user);
-            sentencia.setString(2, pass);
-            ResultSet res = sentencia.executeQuery();
-            if (res.next()) {
-                return res.getInt("idjugador");
-            }
-            return 0;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setString(1, user);
+        sentencia.setString(2, pass);
+        ResultSet res = sentencia.executeQuery();
+        if (res.next()) {
+            return res.getInt("idjugador");
         }
-
         // ha habido un error; desconecta y devuelve null.
         return -1;
     }
 
-    public static int getIdFromToken(String token) {
+    public static int getIdFromToken(String token) throws SQLException {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT idjugador FROM auth_tokens WHERE token = ?";
         PreparedStatement sentencia;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setString(1, token);
-            ResultSet res = sentencia.executeQuery();
-            if (res.next()) {
-                return res.getInt("idjugador");
-            }
-            return 0;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setString(1, token);
+        ResultSet res = sentencia.executeQuery();
+        if (res.next()) {
+            return res.getInt("idjugador");
         }
-
-        // ha habido un error; desconecta y devuelve null.
         return -1;
     }
 
-    public static String getUserFromId(int id) {
+    public static String getUserFromId(int id) throws SQLException {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT user FROM jugadores WHERE idjugador = ?";
         PreparedStatement sentencia;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setInt(1, id);
-            ResultSet res = sentencia.executeQuery();
-            if (res.next()) {
-                return res.getString("user");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setInt(1, id);
+        ResultSet res = sentencia.executeQuery();
+        if (res.next()) {
+            return res.getString("user");
         }
-
         // ha habido un error; desconecta y devuelve null.
         return null;
     }
 
-    public static int getIdFromUser(String user) {
+    public static int getIdFromUser(String user) throws SQLException {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT idjugador FROM jugadores WHERE user = ?";
         PreparedStatement sentencia;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setString(1, user);
-            ResultSet res = sentencia.executeQuery();
-            if (res.next()) {
-                return res.getInt("idjugador");
-            }
-            return 0;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
-            System.err.println("Error al consultar + " + e.toString());
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setString(1, user);
+        ResultSet res = sentencia.executeQuery();
+        if (res.next()) {
+            return res.getInt("idjugador");
         }
 
         // ha habido un error; desconecta y devuelve null.
@@ -244,9 +213,6 @@ public class DB {
                 sentencia.executeUpdate();
 
                 consulta = "UPDATE jugadores SET tablas = tablas + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
-                sentencia = conn.prepareStatement(consulta);
-                sentencia.setInt(1, id2);
-                sentencia.executeUpdate();
             } else {
                 // si no ha habido errores, se crea una consulta
                 consulta = "UPDATE jugadores SET elo = elo + 10, victorias = victorias + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
@@ -257,17 +223,11 @@ public class DB {
 
 
                 consulta = "UPDATE jugadores SET elo = elo - 10, derrotas = derrotas + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
-                sentencia = conn.prepareStatement(consulta);
-                sentencia.setInt(1, id2);
                 // se sustituyen los datos en la consulta y se ejecuta
-                sentencia.executeUpdate();
             }
-            if (sentencia != null) {
-                sentencia.close();
-            }
-            Parametros.NUM_JUGADORES = 0;
-            Parametros.NUM_AMIGOS = 0;
-            logger.info("Ahora hay {} jugadores", Parametros.NUM_JUGADORES);
+            sentencia = conn.prepareStatement(consulta);
+            sentencia.setInt(1, id2);
+            sentencia.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -299,134 +259,77 @@ public class DB {
                 sentencia.setInt(5, id2);
             }
             // se sustituyen los datos en la consulta y se ejecuta
-            int numReg = sentencia.executeUpdate();
-
-
-            if (sentencia != null) {
-                sentencia.close();
-            }
+            sentencia.executeUpdate();
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Error al registrar el resultado", e);
         }
         return false;
     }
 
-    public static boolean comprobarUnica(String user) {
+    public static boolean comprobarUnica(String user) throws SQLException {
 
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT * FROM jugadores WHERE user = ?";
         PreparedStatement sentencia;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setString(1, user);
-            ResultSet res = sentencia.executeQuery();
-            return res.next();
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
-        }
-
-        // ha habido un error; desconecta y devuelve null.
-        return false;
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setString(1, user);
+        ResultSet res = sentencia.executeQuery();
+        return res.next();
     }
 
-
-    public static boolean existeCodigo(int codigo) {
-
-        // realiza la consulta de la tabla actual
-        String consulta = "SELECT codigo FROM partidas WHERE codigo = ?";
-        PreparedStatement sentencia;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setInt(1, codigo);
-            ResultSet res = sentencia.executeQuery();
-            if (res.next()) {
-                return res.getInt("codigo") > 0;
-            }
-            return false;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + ");
-            e.printStackTrace();
-        }
-
-        // ha habido un error; desconecta y devuelve null.
-        return false;
-    }
-
-    public static boolean existeToken(int id) {
+    public static boolean existeToken(int id) throws SQLException {
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT token FROM auth_tokens WHERE idjugador = ?";
         PreparedStatement sentencia;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setInt(1, id);
-            ResultSet res = sentencia.executeQuery();
-            if (res.next()) {
-                return res.getString("token").length() > 0;
-            }
-            return false;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setInt(1, id);
+        ResultSet res = sentencia.executeQuery();
+        if (res.next()) {
+            return res.getString("token").length() > 0;
         }
-
-        // ha habido un error; desconecta y devuelve null.
         return false;
     }
 
-    public static boolean borrarToken(int id) {
+    public static boolean borrarToken(int id) throws SQLException {
 
         // realiza la consulta de la tabla actual
         String consulta = "DELETE FROM auth_tokens WHERE idjugador = ?";
         PreparedStatement sentencia;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setInt(1, id);
-            sentencia.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
-        }
-
-        // ha habido un error; desconecta y devuelve null.
-        return false;
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setInt(1, id);
+        sentencia.executeUpdate();
+        return true;
     }
 
 
-    public static int[] pedirDatos(String user) {
+    public static int[] pedirDatos(String user) throws SQLException {
         int[] datos = new int[6];
 
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT * FROM jugadores WHERE user = ?";
-        PreparedStatement sentencia = null;
-        try {
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setString(1, user);
-            ResultSet res = sentencia.executeQuery();
-            if (res.next()) {
-                datos[0] = res.getInt("nivel");
-                datos[1] = res.getInt("elo");
-                datos[2] = res.getInt("jugadas");
-                datos[3] = res.getInt("victorias");
-                datos[4] = res.getInt("derrotas");
-                datos[5] = res.getInt("tablas");
-            }
-            sentencia.close();
-
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
+        PreparedStatement sentencia;
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setString(1, user);
+        ResultSet res = sentencia.executeQuery();
+        if (res.next()) {
+            datos[0] = res.getInt("nivel");
+            datos[1] = res.getInt("elo");
+            datos[2] = res.getInt("jugadas");
+            datos[3] = res.getInt("victorias");
+            datos[4] = res.getInt("derrotas");
+            datos[5] = res.getInt("tablas");
         }
-
-        // ha habido un error; desconecta y devuelve null.
+        sentencia.close();
         return datos;
     }
 
@@ -448,9 +351,6 @@ public class DB {
 
         // se sustituyen los datos en la consulta y se ejecuta
         int numReg = sentencia.executeUpdate();
-        if (sentencia != null) {
-            sentencia.close();
-        }
 
         if (numReg > 0)
             return token;
@@ -477,83 +377,60 @@ public class DB {
         sentencia.setInt(2, id);
         // se sustituyen los datos en la consulta y se ejecuta
         sentencia.executeUpdate();
-        if (sentencia != null) {
-            sentencia.close();
-        }
+        sentencia.close();
 
         return true;
     }
 
 
-    public static ArrayList<String> getRankingUsers() {
+    public static ArrayList<String> getRankingUsers() throws SQLException {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT user FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.elo DESC";
         PreparedStatement sentencia;
-        try {
-            ArrayList<String> datos = new ArrayList<>();
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            ResultSet res = sentencia.executeQuery();
+        ArrayList<String> datos = new ArrayList<>();
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        ResultSet res = sentencia.executeQuery();
 
-            while (res.next()) {
-                datos.add(res.getString("user"));
-            }
-            return datos;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
+        while (res.next()) {
+            datos.add(res.getString("user"));
         }
-
-        // ha habido un error; desconecta y devuelve null.
-        return null;
+        return datos;
     }
 
-    public static ArrayList<String> getRankingNiveles() {
+    public static ArrayList<String> getRankingNiveles() throws SQLException {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT nivel FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.nivel DESC";
         PreparedStatement sentencia;
-        try {
-            ArrayList<String> datos = new ArrayList<>();
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            ResultSet res = sentencia.executeQuery();
+        ArrayList<String> datos = new ArrayList<>();
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        ResultSet res = sentencia.executeQuery();
 
-            while (res.next()) {
-                datos.add(res.getString("nivel"));
-            }
-            return datos;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
+        while (res.next()) {
+            datos.add(res.getString("nivel"));
         }
-
-        // ha habido un error; desconecta y devuelve null.
-        return null;
+        return datos;
     }
 
-    public static ArrayList<String> getRankingElos() {
+    public static ArrayList<String> getRankingElos() throws SQLException {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT elo FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.elo DESC";
         PreparedStatement sentencia;
-        try {
-            ArrayList<String> datos = new ArrayList<>();
-            // realiza la consulta y la ejecuta
-            sentencia = conn.prepareStatement(consulta);
-            ResultSet res = sentencia.executeQuery();
+        ArrayList<String> datos = new ArrayList<>();
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        ResultSet res = sentencia.executeQuery();
 
-            while (res.next()) {
-                datos.add(String.valueOf(res.getInt("elo")));
-            }
-            return datos;
-        } catch (SQLException e) {
-            System.err.println("Error al consultar + " + e.toString());
+        while (res.next()) {
+            datos.add(String.valueOf(res.getInt("elo")));
         }
-
-        // ha habido un error; desconecta y devuelve null.
-        return null;
+        return datos;
     }
 }

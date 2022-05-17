@@ -5,41 +5,39 @@ import org.apache.logging.log4j.Logger;
 
 import juego.casillas.*;
 import db.DB;
+import servidor.Servidor;
 
 import java.io.IOException;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Partida {
 
-    //conexiones
     private static final Logger logger = LogManager.getLogger();
     private static final int NUM_FILAS = 8;
     private static final int NUM_COLUMNAS = 8;
     private Jugador anfitrion;
     private Jugador invitado;
+    private int codigo;
 
 
     //variables de la partida
     public static boolean haMovido;
-    public static int segundos = 0;
-    private boolean fin;
     private boolean anfitrionEsBlancas;
     private Juez juez;
     private String movs;
 
 
-    public Partida(Jugador j1, Jugador j2) throws IOException {
+    public Partida(Jugador j1, Jugador j2, int codigo) throws IOException {
+        this.codigo = codigo;
         anfitrion = j1;
         invitado = j2;
-        fin = false;
         juez = new Juez();
 
-        logger.info("Comienzo partida entre {} y {}", anfitrion.getUser(), invitado.getUser());
+        if (this.codigo == 0) {
+            logger.info("Comienzo partida online entre {} y {}", anfitrion.getUser(), invitado.getUser());
+        } else {
+            logger.info("Comienzo partida amistosa entre {} y {}", anfitrion.getUser(), invitado.getUser());
+        }
 
         crearCasillas();
         enviarDatosIniciales();
@@ -50,7 +48,7 @@ public class Partida {
     private void jugar() throws IOException {
         String mensaje;
 
-        while (!fin) {
+        while (true) {
             //turno del anfitrion, espero respuesta
             if (juez.turnoBlancas == anfitrionEsBlancas) {
                 haMovido = true;
@@ -63,12 +61,12 @@ public class Partida {
                 ofrecerTablas(juez.turnoBlancas == anfitrionEsBlancas);
             } else if (mensaje.equalsIgnoreCase("aceptadas")) {
                 aceptarTablas(juez.turnoBlancas == anfitrionEsBlancas);
-                fin = true;
+                break;
             } else if (mensaje.equalsIgnoreCase("rechazadas")) {
                 rechazarTablas(juez.turnoBlancas == anfitrionEsBlancas);
             } else if (mensaje.equalsIgnoreCase("rendirse") || mensaje.equalsIgnoreCase("abandonar")) {
                 abandonar(juez.turnoBlancas == anfitrionEsBlancas);
-                fin = true;
+                break;
             } else {
                 enviarMov(juez.turnoBlancas == anfitrionEsBlancas, mensaje);
                 juez.turnoBlancas = !juez.turnoBlancas;
@@ -76,54 +74,19 @@ public class Partida {
                 if (juez.buscarRey(juez.casillas, !anfitrionEsBlancas) == null) {
                     //es jaque mate
                     jaqueMate(juez.turnoBlancas == anfitrionEsBlancas);
-                    fin = true;
+                    break;
                 } else {
                     //no es jaque mate
                     noJaqueMate();
                 }
             }
         }
-    }
-
-
-    public class ContadorMov implements Runnable {
-        @Override
-        public void run() {
-            logger.info("{} segundos", segundos);
-            if (haMovido) {
-                Thread.currentThread().interrupt();
-            }
-            if (segundos == Parametros.TIEMPO_ESPERA_MOV) {
-                try {
-                    if (juez.turnoBlancas == anfitrionEsBlancas) {
-                        invitado.enviarString("rendirse");
-                        if (!anfitrion.getSocket().isClosed()){
-                            anfitrion.enviarString("tiempo");
-                            logger.info("Envio 'tiempo' a {}", anfitrion.getUser());
-                        } else {
-                            logger.info("{} ha muerto", anfitrion.getUser());
-                        }
-                    } else {
-                        anfitrion.enviarString("rendirse");
-                        if (!invitado.getSocket().isClosed()){
-                            invitado.enviarString("tiempo");
-                            logger.info("Envio 'tiempo' a {}", invitado.getUser());
-                        } else {
-                            logger.info("{} ha muerto", invitado.getUser());
-                        }
-                    }
-                } catch (IOException e) {
-                    logger.error("No se ha podido enviar al anfitrion el mensaje 'rendirse'", e);
-                }
-                Parametros.NUM_JUGADORES = 0;
-                logger.info("Hay {} jugadores en cola", Parametros.NUM_JUGADORES);
-
-                Thread.currentThread().interrupt();
-            }
+        if (codigo != 0) {
+            Servidor.friendLobbies.removeIf(fl -> fl.getCodigo() == codigo);
+            logger.info("La partida con el codigo {} ha sido eliminada. Quedan {} partidas",
+                    codigo, Servidor.friendLobbies.size());
         }
     }
-
-
 
     private void noJaqueMate() throws IOException {
         anfitrion.enviarBool(false);
@@ -141,12 +104,12 @@ public class Partida {
         anfitrion.enviarBool(true);
         invitado.enviarBool(true);
         if (esAnfitrion) {
-            logger.info("El jugador {} ha ganado a {}", anfitrion.getUser(), invitado.getUser());
+            logger.info("El jugador {} ha ganado a {} por jaque mate", anfitrion.getUser(), invitado.getUser());
             DB.registrarResultado(movs, anfitrion.getId(), invitado.getId(), false);
             DB.actualizarStats(anfitrion.getId(), invitado.getId(), false);
             DB.actualizarNivel(anfitrion.getId());
         } else {
-            logger.info("El jugador {} ha ganado a {}", invitado.getUser(), anfitrion.getUser());
+            logger.info("El jugador {} ha ganado a {} por jaque mate", invitado.getUser(), anfitrion.getUser());
             DB.registrarResultado(movs, invitado.getId(), anfitrion.getId(), false);
             DB.actualizarStats(invitado.getId(), anfitrion.getId(), false);
             DB.actualizarNivel(invitado.getId());
@@ -169,13 +132,13 @@ public class Partida {
 
     private void abandonar(boolean esAnfitrion) throws IOException {
         if (esAnfitrion) {
-            logger.info("El jugador {} ha ganado a {}", invitado.getUser(), anfitrion.getUser());
+            logger.info("El jugador {} ha ganado a {} por abandono del rival", invitado.getUser(), anfitrion.getUser());
             invitado.enviarString("rendirse");
             DB.registrarResultado(movs, invitado.getId(), anfitrion.getId(), false);
             DB.actualizarStats(invitado.getId(), anfitrion.getId(), false);
             DB.actualizarNivel(invitado.getId());
         } else {
-            logger.info("El jugador {} ha ganado a {}", anfitrion.getUser(), invitado.getUser());
+            logger.info("El jugador {} ha ganado a {} por abandono del rival", anfitrion.getUser(), invitado.getUser());
             anfitrion.enviarString("rendirse");
             DB.registrarResultado(movs, anfitrion.getId(), invitado.getId(), false);
             DB.actualizarStats(anfitrion.getId(), invitado.getId(), false);

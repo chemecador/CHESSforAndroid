@@ -24,7 +24,4 @@ public class OnlineWaitingActivity extends AppCompatActivity {
             Log.i ("************************", "error");
         }
     }
-    public void terminar(){
-        finish();
-    }
 }

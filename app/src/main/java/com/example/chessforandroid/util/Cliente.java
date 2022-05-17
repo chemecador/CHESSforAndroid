@@ -161,6 +161,8 @@ public class Cliente {
             try {
                 return in.readUTF();
             } catch (IOException e) {
+                Toast.makeText(fwa, "Error al esperar rival", Toast.LENGTH_SHORT).show();
+                fwa.finish();
                 e.printStackTrace();
             }
             return null;
@@ -205,6 +207,8 @@ public class Cliente {
                 }
                 return datos;
             } catch (IOException e) {
+                Toast.makeText(ra, "Error al mostrar el ranking", Toast.LENGTH_SHORT).show();
+                ra.finish();
                 e.printStackTrace();
             }
             return null;
@@ -230,9 +234,6 @@ public class Cliente {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (s.equalsIgnoreCase("abandonar")) {
-                //cerrarConexion();
-            }
         }
     }
 
@@ -251,6 +252,8 @@ public class Cliente {
                 out.writeUTF("tablas");
                 return in.readBoolean();
             } catch (IOException e) {
+                Toast.makeText(caller, "Error al ofrecer tablas", Toast.LENGTH_SHORT).show();
+                caller.finish();
                 e.printStackTrace();
             }
             return null;
@@ -343,6 +346,8 @@ public class Cliente {
                 //puede mover?
                 objects[4] = in.readBoolean();
             } catch (IOException e) {
+                Toast.makeText(caller, "Error de conexión", Toast.LENGTH_SHORT).show();
+                ((Activity) context).finish();
                 e.printStackTrace();
             }
             return objects;
@@ -383,6 +388,8 @@ public class Cliente {
                 // recibo si es mi turno
                 o[2] = in.readBoolean();
             } catch (IOException e) {
+                Toast.makeText(context, "Error al iniciar la partida", Toast.LENGTH_SHORT).show();
+                ((Activity) context).finish();
                 e.printStackTrace();
             }
             return o;
@@ -406,6 +413,8 @@ public class Cliente {
                 out.writeUTF(token);
                 return in.readUTF();
             } catch (IOException e) {
+                Toast.makeText(lla, "Error al buscar partida", Toast.LENGTH_SHORT).show();
+                ((Activity) context).finish();
                 e.printStackTrace();
             }
             return null;
@@ -431,7 +440,7 @@ public class Cliente {
             if (s.equalsIgnoreCase("jugar")) {
                 context.startActivity(new Intent(context, OnlineActivity.class));
             }
-            lla.terminar();
+            lla.finish();
             cerrarConexion();
         }
     }
@@ -447,6 +456,8 @@ public class Cliente {
                 out.writeInt(Integer.parseInt(strings[1]));
                 return in.readInt();
             } catch (IOException e) {
+                Toast.makeText(context, "Error al unirse a la partida", Toast.LENGTH_SHORT).show();
+                ((Activity) context).finish();
                 e.printStackTrace();
             }
             return -3;
@@ -489,6 +500,8 @@ public class Cliente {
                 out.writeUTF(token);
                 return in.readInt();
             } catch (IOException e) {
+                Toast.makeText(context, "Error al crear sala", Toast.LENGTH_SHORT).show();
+                ((Activity) context).finish();
                 e.printStackTrace();
             }
             return -3;
@@ -518,6 +531,7 @@ public class Cliente {
                 out.writeUTF(strings[1]);
                 return in.readInt();
             } catch (IOException e) {
+                Toast.makeText(context, "Error al registrarse", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             return -3;
@@ -538,6 +552,7 @@ public class Cliente {
                         mainIntentSignup.putExtra("token", in.readUTF());
                         context.startActivity(mainIntentSignup);
                     } catch (IOException e) {
+                        Toast.makeText(context, "Error al registrarse", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                     break;
@@ -564,6 +579,7 @@ public class Cliente {
                 out.writeUTF(strings[2]);
                 return in.readBoolean();
             } catch (IOException e) {
+                Toast.makeText(context, "Error al cambiar la contraseña", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             return null;
@@ -595,6 +611,7 @@ public class Cliente {
                 }
                 return null;
             } catch (IOException e) {
+                Toast.makeText(context, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             return null;
@@ -638,6 +655,7 @@ public class Cliente {
                 res[5] = in.readInt();
                 return res;
             } catch (IOException e) {
+                Toast.makeText(context, "Error al consultar los datos", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             return null;

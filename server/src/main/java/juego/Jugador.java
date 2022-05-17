@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class Jugador {
     private String user;
@@ -12,7 +13,7 @@ public class Jugador {
     private DataInputStream in;
     private DataOutputStream out;
 
-    public Jugador(Socket socket) throws IOException {
+    public Jugador(Socket socket) throws IOException, SQLException {
         this.socket = socket;
         this.in = new DataInputStream(socket.getInputStream());
         this.out = new DataOutputStream(socket.getOutputStream());
@@ -29,7 +30,11 @@ public class Jugador {
 
     public String getUser() {
         if (this.user == null) {
-            this.user = db.DB.getUserFromId(this.id);
+            try {
+                this.user = db.DB.getUserFromId(this.id);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return user;
     }

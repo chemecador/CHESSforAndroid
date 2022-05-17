@@ -13,8 +13,8 @@ import com.example.chessforandroid.piezas.Rey;
 import com.example.chessforandroid.piezas.Torre;
 
 public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
-    private int fila;
-    private int columna;
+    private final int fila;
+    private final int columna;
     private Pieza pieza;
 
     public Casilla(@NonNull Context context, int x, int y) {
@@ -55,17 +55,10 @@ public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
         return this.fila;
     }
 
-    public void setFila(int x) {
-        this.fila = x;
-    }
-
     public int getColumna() {
         return this.columna;
     }
 
-    public void setColumna(int y) {
-        this.columna= y;
-    }
 
     public Pieza getPieza() {
         return pieza;

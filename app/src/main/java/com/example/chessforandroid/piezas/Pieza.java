@@ -26,7 +26,4 @@ public abstract class Pieza {
         return tag;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
 }

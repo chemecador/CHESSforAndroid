@@ -17,8 +17,6 @@ public class Juez {
     boolean jaque;
     boolean jaqueMate;
     boolean puedeMover;
-    int nMovs;
-    StringBuilder movs;
 
     public Juez(){
         casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
@@ -29,7 +27,7 @@ public class Juez {
         captura = false;
     }
 
-    public void intToCasillas(int t[][]){
+    public void intToCasillas(int[][] t){
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 switch (t[i][j]){
@@ -85,7 +83,7 @@ public class Juez {
         int x = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-                if (s.substring(x, x + 1).equals("-")) {
+                if (s.charAt(x) == '-') {
                     t[i][j] = Integer.parseInt(s.substring(x, x + 2));
                     x = x+2;
                 } else {
@@ -95,49 +93,6 @@ public class Juez {
             }
         }
         return t;
-    }
-
-    public String casillasToString() {
-        StringBuilder sbResult = new StringBuilder();
-
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                if (casillas[i][j].getPieza() == null) {
-                    sbResult.append(0);
-                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("REY")) {
-                    if (casillas[i][j].getPieza().isBlancas())
-                        sbResult.append(1);
-                    else
-                        sbResult.append(-1);
-                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("DAMA")) {
-                    if (casillas[i][j].getPieza().isBlancas())
-                        sbResult.append(2);
-                    else
-                        sbResult.append(-2);
-                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("TORRE")) {
-                    if (casillas[i][j].getPieza().isBlancas())
-                        sbResult.append(3);
-                    else
-                        sbResult.append(-3);
-                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("ALFIL")) {
-                    if (casillas[i][j].getPieza().isBlancas())
-                        sbResult.append(4);
-                    else
-                        sbResult.append(-4);
-                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("CABALLO")) {
-                    if (casillas[i][j].getPieza().isBlancas())
-                        sbResult.append(5);
-                    else
-                        sbResult.append(-5);
-                } else if (casillas[i][j].getPieza().getTag().equalsIgnoreCase("PEON")) {
-                    if (casillas[i][j].getPieza().isBlancas())
-                        sbResult.append(6);
-                    else
-                        sbResult.append(-6);
-                }
-            }
-        }
-        return sbResult.toString();
     }
 
     public boolean comprobarJaque(Casilla[][] copia) {

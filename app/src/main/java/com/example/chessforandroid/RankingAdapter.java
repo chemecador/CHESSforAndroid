@@ -58,9 +58,9 @@ public class RankingAdapter extends BaseAdapter {
         if (convertView == null) {//Si convertView es nulo, será la primera vez que
             convertView = inflater.inflate(R.layout.fila_ranking, null);
             holder = new ViewHolder();
-            holder.position = (TextView) convertView.findViewById(R.id.txtPosition);
-            holder.user = (TextView) convertView.findViewById(R.id.txtUserRanking);
-            holder.elo = (TextView) convertView.findViewById(R.id.txtEloRanking);
+            holder.position = convertView.findViewById(R.id.txtPosition);
+            holder.user = convertView.findViewById(R.id.txtUserRanking);
+            holder.elo = convertView.findViewById(R.id.txtEloRanking);
             convertView.setTag(holder);//añado el holder a la convertView, para tenerlos siempre disponible
         } else {
             holder = (ViewHolder) convertView.getTag();//Si no es la primera vez, cogeré el holder que ya había creado

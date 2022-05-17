@@ -22,7 +22,7 @@ public class AchievementsActivity extends AppCompatActivity {
         win20 = findViewById(R.id.txtWin20);
         win30 = findViewById(R.id.txtWin30);
 
-        String s = "";
+        String s;
 
         if (victorias >= 10){
             win10.setText(R.string.DONE);
