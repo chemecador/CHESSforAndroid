@@ -12,6 +12,7 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.chessforandroid.AchievementsActivity;
 import com.example.chessforandroid.FriendWaitingActivity;
 import com.example.chessforandroid.OnlineActivity;
 import com.example.chessforandroid.MainActivity;
@@ -94,9 +95,17 @@ public class Cliente {
         new CambiarPass().execute(user, oldPass, newPass);
     }
 
-    public void pedirDatos(Context context, String user) {
+    public void pedirDatos(Context context, String user, String token) {
         this.context = context;
-        new PedirDatos().execute(user);
+        this.user = user;
+        this.token = token;
+        new PedirDatos().execute(token);
+    }
+
+    public void consultarLogros(Context context, AchievementsActivity aa, String token) {
+        this.context = context;
+        this.token = token;
+        new ConsultarLogros(aa).execute(token);
     }
 
     public void crearSala(Context context, String token) {
@@ -633,6 +642,46 @@ public class Cliente {
         }
     }
 
+    public class ConsultarLogros extends AsyncTask<String, Void, Boolean[]> {
+
+        AchievementsActivity aa;
+
+        public ConsultarLogros(AchievementsActivity aa) {
+            this.aa = aa;
+        }
+
+        @Override
+        protected Boolean[] doInBackground(String... strings) {
+
+            Boolean[] logros = new Boolean[7];
+            try {
+                user = strings[0];
+                out.writeUTF("consultarlogros");
+                out.writeUTF(token);
+
+                logros[0] = in.readBoolean();
+                logros[1] = in.readBoolean();
+                logros[2] = in.readBoolean();
+                logros[3] = in.readBoolean();
+                logros[4] = in.readBoolean();
+                logros[5] = in.readBoolean();
+                logros[6] = in.readBoolean();
+                return logros;
+            } catch (IOException e) {
+                Toast.makeText(context, "Error al consultar los datos", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean[] logros) {
+            super.onPostExecute(logros);
+            aa.alTerminarConsulta(logros);
+        }
+    }
+
+
     public class PedirDatos extends AsyncTask<String, Void, Integer[]> {
 
         @Override
@@ -643,9 +692,9 @@ public class Cliente {
                 res[i] = 0;
             }
             try {
-                user = strings[0];
+                token = strings[0];
                 out.writeUTF("pedirdatos");
-                out.writeUTF(user);
+                out.writeUTF(token);
 
                 res[0] = in.readInt();
                 res[1] = in.readInt();
@@ -670,6 +719,7 @@ public class Cliente {
             }
             Intent i = new Intent(context, ProfileActivity.class);
             i.putExtra("user", user);
+            i.putExtra("token", token);
             i.putExtra("datos", datos);
             cerrarConexion();
             context.startActivity(i);

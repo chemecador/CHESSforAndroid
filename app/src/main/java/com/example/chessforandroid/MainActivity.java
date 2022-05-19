@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,13 +18,13 @@ import com.example.chessforandroid.util.Cliente;
  *
  *
  * TAREA ACTUAL:
+ * todas las misiones completadas, ¿que ocurre?
  *
  * BUGS CONOCIDOS:
- * los sockets no se cierran bien si la app se cierra inesperadamente o al minimizar
+ * no se pueden multiples partidas simultaneas
  *
  *
  * TAREAS EXTRA:
- * temporizador al buscar partida y al realizar movimiento
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (user.length() > 0) {
                     Cliente cliente = new Cliente();
                     if (cliente.isConectado()) {
-                        cliente.pedirDatos(this, user);
+                        cliente.pedirDatos(this, user, token);
                     }
                     return true;
                 }

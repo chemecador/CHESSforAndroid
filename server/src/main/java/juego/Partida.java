@@ -51,7 +51,6 @@ public class Partida {
 
         while (true) {
             nMovs++;
-            //turno del anfitrion, espero respuesta
             if (juez.turnoBlancas == anfitrionEsBlancas) {
                 haMovido = true;
                 mensaje = anfitrion.recibirString();
@@ -73,9 +72,9 @@ public class Partida {
                 enviarMov(juez.turnoBlancas == anfitrionEsBlancas, mensaje);
                 juez.turnoBlancas = !juez.turnoBlancas;
                 //comprobar jaques, etc
-                if (juez.buscarRey(juez.casillas, !anfitrionEsBlancas) == null) {
+                if (juez.buscarRey(juez.casillas, juez.turnoBlancas == anfitrionEsBlancas) == null) {
                     //es jaque mate
-                    jaqueMate(juez.turnoBlancas == anfitrionEsBlancas);
+                    jaqueMate(juez.turnoBlancas != anfitrionEsBlancas);
                     break;
                 } else {
                     //no es jaque mate
@@ -93,7 +92,7 @@ public class Partida {
     private void noJaqueMate() throws IOException {
         anfitrion.enviarBool(false);
         invitado.enviarBool(false);
-        juez.puedeMover = juez.puedeMover(juez.casillas, !anfitrionEsBlancas);
+        juez.puedeMover = juez.puedeMover(juez.casillas, juez.turnoBlancas == anfitrionEsBlancas);
         juez.jaque = juez.comprobarJaque(juez.casillas);
         //envio a cada jugador si es jaque y si esta ahogado
         anfitrion.enviarBool(juez.jaque);
@@ -106,27 +105,37 @@ public class Partida {
         anfitrion.enviarBool(true);
         invitado.enviarBool(true);
         if (esAnfitrion) {
-            logger.info("El jugador {} ha ganado a {} por jaque mate", anfitrion.getUser(), invitado.getUser());
+            logger.info("El jugador {} ha ganado a {} por jaque mate en {} movimientos",
+                    anfitrion.getUser(), invitado.getUser(), nMovs);
             DB.registrarResultado(movs, anfitrion.getId(), invitado.getId(), false);
             DB.actualizarStats(anfitrion.getId(), invitado.getId(), false);
             DB.actualizarNivel(anfitrion.getId());
-            if (nMovs < 10){
-                DB.logroDesbloqueado(invitado.getId(), 4);
+            if (nMovs < 10) {
+                if (!DB.logroCompletado(anfitrion.getId(), 4)) {
+                    DB.completarLogro(anfitrion.getId(), 4);
+                }
             }
-            if (nMovs > 40){
-                DB.logroDesbloqueado(invitado.getId(), 5);
+            if (nMovs > 40) {
+                if (!DB.logroCompletado(anfitrion.getId(), 5)) {
+                    DB.completarLogro(anfitrion.getId(), 5);
+                }
             }
 
         } else {
-            logger.info("El jugador {} ha ganado a {} por jaque mate", invitado.getUser(), anfitrion.getUser());
+            logger.info("El jugador {} ha ganado a {} por jaque mate en {} movimientos",
+                    invitado.getUser(), anfitrion.getUser(), nMovs);
             DB.registrarResultado(movs, invitado.getId(), anfitrion.getId(), false);
             DB.actualizarStats(invitado.getId(), anfitrion.getId(), false);
             DB.actualizarNivel(invitado.getId());
-            if (nMovs < 10){
-                DB.logroDesbloqueado(invitado.getId(), 4);
+            if (nMovs < 10) {
+                if (!DB.logroCompletado(invitado.getId(), 4)) {
+                    DB.completarLogro(invitado.getId(), 4);
+                }
             }
-            if (nMovs > 40){
-                DB.logroDesbloqueado(invitado.getId(), 5);
+            if (nMovs > 40) {
+                if (!DB.logroCompletado(invitado.getId(), 5)) {
+                    DB.completarLogro(invitado.getId(), 5);
+                }
             }
         }
     }
@@ -147,22 +156,28 @@ public class Partida {
 
     private void abandonar(boolean esAnfitrion) throws IOException {
         if (esAnfitrion) {
-            logger.info("El jugador {} ha ganado a {} por abandono del rival", invitado.getUser(), anfitrion.getUser());
+            logger.info("El jugador {} ha ganado a {} por abandono del rival tras {} movimientos",
+                    invitado.getUser(), anfitrion.getUser(), nMovs);
             invitado.enviarString("rendirse");
             DB.registrarResultado(movs, invitado.getId(), anfitrion.getId(), false);
             DB.actualizarStats(invitado.getId(), anfitrion.getId(), false);
             DB.actualizarNivel(invitado.getId());
-            if (nMovs > 40){
-                DB.logroDesbloqueado(invitado.getId(), 5);
+            if (nMovs > 40) {
+                if (!DB.logroCompletado(invitado.getId(), 5)) {
+                    DB.completarLogro(invitado.getId(), 5);
+                }
             }
         } else {
-            logger.info("El jugador {} ha ganado a {} por abandono del rival", anfitrion.getUser(), invitado.getUser());
+            logger.info("El jugador {} ha ganado a {} por abandono del rival tras {} movimientos",
+                    anfitrion.getUser(), invitado.getUser(), nMovs);
             anfitrion.enviarString("rendirse");
             DB.registrarResultado(movs, anfitrion.getId(), invitado.getId(), false);
             DB.actualizarStats(anfitrion.getId(), invitado.getId(), false);
             DB.actualizarNivel(anfitrion.getId());
-            if (nMovs > 40){
-                DB.logroDesbloqueado(invitado.getId(), 5);
+            if (nMovs > 40) {
+                if (!DB.logroCompletado(anfitrion.getId(), 5)) {
+                    DB.completarLogro(anfitrion.getId(), 5);
+                }
             }
         }
     }

@@ -124,7 +124,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/ibMisiones"
+                    android:id="@+id/ibLogros"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"

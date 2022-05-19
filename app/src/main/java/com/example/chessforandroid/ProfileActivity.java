@@ -14,6 +14,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private TextView victorias;
     private String user;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
 
         Intent intent = getIntent();
+        token = intent.getStringExtra("token");
         user = intent.getStringExtra("user");
         int[] datos = intent.getIntArrayExtra("datos");
 
@@ -51,7 +53,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         cerrarSesion = findViewById(R.id.bCerrarSesion);
         cerrarSesion.setOnClickListener(this);
 
-        ibMisiones = findViewById(R.id.ibMisiones);
+        ibMisiones = findViewById(R.id.ibLogros);
         ibMisiones.setOnClickListener(this);
     }
 
@@ -67,9 +69,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             Toast.makeText(ProfileActivity.this, "cerrando sesión...", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, LoginActivity.class));
         }
-        if (view.getId() == R.id.ibMisiones){
+        if (view.getId() == R.id.ibLogros){
             Intent i = new Intent(this, AchievementsActivity.class);
-            i.putExtra("user", user);
+            i.putExtra("token", token);
             i.putExtra("victorias", victorias.getText().toString());
             startActivity(i);
         }

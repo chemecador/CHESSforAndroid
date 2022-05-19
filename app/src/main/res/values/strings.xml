@@ -60,7 +60,7 @@
     <string name="win_20">Gana 20 partidas</string>
     <string name="win_30">Gana 30 partidas</string>
     <string name="movs_10">Gana una partida en menos de 10 movimientos</string>
-    <string name="movs_40">Gana una partida en menos de 40 movimientos</string>
+    <string name="movs_40">Gana una partida de más de 40 movimientos</string>
     <string name="level_5">Alcanza el nivel 5</string>
     <string name="level_10">Alcanza el nivel 10</string>
     <string name="game_over">Completa todos los logros</string>
@@ -79,5 +79,7 @@
     <string name="twitter">/@chessforandroid</string>
     <string name="mail">"chessforandroi@gmail.com"</string>
     <string name="DONE">COMPLETADO ✔️</string>
+    <string name="NOT_DONE"> ❌</string>
+    <string name="total_achievements">Logros completados:</string>
 
 </resources>

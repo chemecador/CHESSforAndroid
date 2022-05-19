@@ -147,6 +147,64 @@ public class DB {
         return -1;
     }
 
+    public static boolean logroCompletado(int idJugador, int idLogro) {
+        String consulta;
+        PreparedStatement sentencia;
+        try {
+            if (conn == null) {
+                return false;
+            }
+
+            if (conn.isClosed()) {
+                return false;
+            }
+            // si no ha habido errores, se crea una consulta
+            consulta = "SELECT * FROM jugador_logro WHERE idjugador = ?";
+            sentencia = conn.prepareStatement(consulta);
+            // se sustituyen los datos en la consulta y se ejecuta
+            sentencia.setInt(1, idJugador);
+            ResultSet res = sentencia.executeQuery();
+            while (res.next()) {
+                if (res.getInt("idlogro") == idLogro) {
+                    return true;
+                }
+            }
+            return false;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean juegoCompletado(int id) {
+        String consulta;
+        PreparedStatement sentencia;
+        try {
+            if (conn == null) {
+                return false;
+            }
+
+            if (conn.isClosed()) {
+                return false;
+            }
+            // si no ha habido errores, se crea una consulta
+            consulta = "SELECT COUNT(*) FROM jugador_logro WHERE idjugador = 2;";
+            sentencia = conn.prepareStatement(consulta);
+            // se sustituyen los datos en la consulta y se ejecuta
+            ResultSet res = sentencia.executeQuery();
+            if (res.next()) {
+                int numLogros = res.getInt(1);
+                logger.debug("El usuario con id {} ha completado {} logros", id, numLogros);
+                return numLogros == 8;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static boolean actualizarNivel(int id) {
         String consulta;
         PreparedStatement sentencia;
@@ -158,18 +216,29 @@ public class DB {
             if (conn.isClosed()) {
                 return false;
             }
-            consulta = "SELECT victorias FROM jugadores WHERE jugadores.idjugador = ?";
+            consulta = "SELECT * FROM jugadores WHERE jugadores.idjugador = ?";
             sentencia = conn.prepareStatement(consulta);
             sentencia.setInt(1, id);
             ResultSet res = sentencia.executeQuery();
             int numVictorias = -1;
-            while (res.next()) {
+            int nivel = -1;
+            if (res.next()) {
                 numVictorias = res.getInt("victorias");
             }
             if (numVictorias % 10 != 0) {
                 return true;
             }
 
+            if (numVictorias == 10 || numVictorias == 20 || numVictorias == 30) {
+                if (!DB.logroCompletado(id, numVictorias / 10)) {
+                    completarLogro(id, numVictorias / 10);
+                }
+            }
+
+            res = sentencia.executeQuery();
+            if (res.next()) {
+                nivel = res.getInt("nivel");
+            }
             // si no ha habido errores, se crea una consulta
             consulta = "UPDATE jugadores SET nivel = nivel + 1 WHERE idjugador = ?";
             sentencia = conn.prepareStatement(consulta);
@@ -177,14 +246,43 @@ public class DB {
             // se sustituyen los datos en la consulta y se ejecuta
             sentencia.executeUpdate();
 
-            if (numVictorias == 10 || numVictorias == 20 || numVictorias == 30) {
-                consulta = "INSERT INTO jugador_logro (idjugador, idlogro) VALUES (?,?)";
-                sentencia = conn.prepareStatement(consulta);
-                sentencia.setInt(1, id);
-                sentencia.setInt(2, numVictorias / 10);
-                // se sustituyen los datos en la consulta y se ejecuta
-                sentencia.executeUpdate();
+            if (nivel == 5) {
+                if (!DB.logroCompletado(id, 6)) {
+                    completarLogro(id, 6);
+                }
             }
+            if (nivel == 10) {
+                if (!DB.logroCompletado(id, 7)) {
+                    completarLogro(id, 7);
+                }
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean completarLogro(int idJugador, int idLogro) {
+        String consulta;
+        PreparedStatement sentencia;
+        try {
+            if (conn == null) {
+                return false;
+            }
+
+            if (conn.isClosed()) {
+                return false;
+            }
+
+
+            // si no ha habido errores, se crea una consulta
+            consulta = "INSERT INTO jugador_logro (idjugador, idlogro) VALUES (?,?)";
+            sentencia = conn.prepareStatement(consulta);
+            sentencia.setInt(1, idJugador);
+            sentencia.setInt(2, idLogro);
+            // se sustituyen los datos en la consulta y se ejecuta
+            sentencia.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -308,18 +406,55 @@ public class DB {
         return true;
     }
 
-
-    public static int[] pedirDatos(String user) throws SQLException {
-        int[] datos = new int[6];
-
-        // conecta con la base de datos
+    public static Boolean[] consultarLogros(int idJugador) throws SQLException {
+        Boolean[] logros = new Boolean[7];
+        for (int i = 0; i < logros.length; i++) {
+            logros[i] = false;
+        }
 
         // realiza la consulta de la tabla actual
-        String consulta = "SELECT * FROM jugadores WHERE user = ?";
+        String consulta = "SELECT * FROM jugador_logro WHERE idjugador = ?";
         PreparedStatement sentencia;
         // realiza la consulta y la ejecuta
         sentencia = conn.prepareStatement(consulta);
-        sentencia.setString(1, user);
+        sentencia.setInt(1, idJugador);
+        ResultSet res = sentencia.executeQuery();
+        while (res.next()) {
+            if (res.getInt("idlogro") == 1) {
+                logros[0] = true;
+            }
+            if (res.getInt("idlogro") == 2) {
+                logros[1] = true;
+            }
+            if (res.getInt("idlogro") == 3) {
+                logros[2] = true;
+            }
+            if (res.getInt("idlogro") == 4) {
+                logros[3] = true;
+            }
+            if (res.getInt("idlogro") == 5) {
+                logros[4] = true;
+            }
+            if (res.getInt("idlogro") == 6) {
+                logros[5] = true;
+            }
+            if (res.getInt("idlogro") == 7) {
+                logros[6] = true;
+            }
+        }
+        sentencia.close();
+        return logros;
+    }
+
+    public static int[] pedirDatos(int idJugador) throws SQLException {
+        int[] datos = new int[6];
+
+        // realiza la consulta de la tabla actual
+        String consulta = "SELECT * FROM jugadores WHERE idjugador = ?";
+        PreparedStatement sentencia;
+        // realiza la consulta y la ejecuta
+        sentencia = conn.prepareStatement(consulta);
+        sentencia.setInt(1, idJugador);
         ResultSet res = sentencia.executeQuery();
         if (res.next()) {
             datos[0] = res.getInt("nivel");
@@ -433,4 +568,6 @@ public class DB {
         }
         return datos;
     }
+
+
 }

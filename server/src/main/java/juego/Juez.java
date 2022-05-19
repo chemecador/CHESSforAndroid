@@ -100,7 +100,6 @@ public class Juez {
         for (Casilla[] fila : copia) {
             for (int j = 0; j < copia.length; j++) {
                 if (fila[j].getPieza() != null) {
-                    assert casRey != null;
                     if (casRey.getPieza().isBlancas() != fila[j].getPieza().isBlancas()) {
                         if (esValido(copia, fila[j], casRey)) {
                             jaque = true;

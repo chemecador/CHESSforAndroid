@@ -52,7 +52,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void procesarPeticion(String peticion) throws Exception{
+    private void procesarPeticion(String peticion) throws Exception {
         switch (peticion) {
             case "signup":
                 registro();
@@ -88,7 +88,23 @@ public class ClientHandler extends Thread {
                 rankingNivel();
                 cerrarConexion();
                 break;
+            case "consultarlogros":
+                consultarLogros();
+                cerrarConexion();
+                break;
         }
+    }
+
+    private void consultarLogros() throws IOException, SQLException {
+        //se recibe un token, el token se transforma a id y se envia como parametro
+        Boolean[] datos = DB.consultarLogros(DB.getIdFromToken(in.readUTF()));
+        out.writeBoolean(datos[0]);
+        out.writeBoolean(datos[1]);
+        out.writeBoolean(datos[2]);
+        out.writeBoolean(datos[3]);
+        out.writeBoolean(datos[4]);
+        out.writeBoolean(datos[5]);
+        out.writeBoolean(datos[6]);
     }
 
     private void rankingNivel() throws IOException, SQLException {
@@ -254,7 +270,8 @@ public class ClientHandler extends Thread {
     }
 
     private void pedirDatos() throws IOException, SQLException {
-        int[] datos = DB.pedirDatos(in.readUTF());
+        //se recibe un token, el token se transforma a id y se envia como parametro
+        int[] datos = DB.pedirDatos(DB.getIdFromToken(in.readUTF()));
         out.writeInt(datos[0]);
         out.writeInt(datos[1]);
         out.writeInt(datos[2]);
