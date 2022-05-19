@@ -4,7 +4,8 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="5dp"
+    android:background="#E6D6AE"
+    android:padding="5dp"
     android:orientation="vertical"
     tools:context=".OnlineActivity">
 

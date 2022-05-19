@@ -149,7 +149,7 @@ public class ClientHandler extends Thread {
             Parametros.NUM_JUGADORES = 0;
         } else {
             Jugador esp = new Jugador(socket);
-            logger.error("El jugador {} ha solicitado jugar, pero esta lleno", esp.getUser());
+            logger.error("El jugador {} ha solicitado jugar, pero hay {} jugadores", esp.getUser(), Parametros.NUM_JUGADORES);
             esp.enviarString("lleno");
         }
     }

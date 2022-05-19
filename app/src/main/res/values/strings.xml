@@ -59,6 +59,11 @@
     <string name="win_10">Gana 10 partidas</string>
     <string name="win_20">Gana 20 partidas</string>
     <string name="win_30">Gana 30 partidas</string>
+    <string name="movs_10">Gana una partida en menos de 10 movimientos</string>
+    <string name="movs_40">Gana una partida en menos de 40 movimientos</string>
+    <string name="level_5">Alcanza el nivel 5</string>
+    <string name="level_10">Alcanza el nivel 10</string>
+    <string name="game_over">Completa todos los logros</string>
     <string name="developer_mode">Modo desarrollador</string>
     <string name="play_friend">Jugar con un amigo</string>
     <string name="play">Jugar</string>

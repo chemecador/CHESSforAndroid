@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp"
+    android:background="#E6D6AE"
     android:orientation="vertical"
+    android:padding="15dp"
     tools:context=".LoginActivity">
 
     <LinearLayout
@@ -48,12 +49,13 @@
                 android:text="@string/username" />
 
             <EditText
-                android:id="@+id/loginUser"
+                android:id="@+id/txtLoginUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:minHeight="48dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -70,7 +72,7 @@
                 android:text="@string/password" />
 
             <EditText
-                android:id="@+id/loginPass"
+                android:id="@+id/txtLoginPass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

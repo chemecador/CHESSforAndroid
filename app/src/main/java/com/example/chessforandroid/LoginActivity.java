@@ -31,10 +31,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
 
-        user = findViewById(R.id.loginUser);
+        user = findViewById(R.id.txtLoginUser);
         user.setOnClickListener(this);
 
-        pass = findViewById(R.id.loginPass);
+        pass = findViewById(R.id.txtLoginPass);
         pass.setOnClickListener(this);
 
         Button login = findViewById(R.id.bLogin);

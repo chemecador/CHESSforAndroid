@@ -25,6 +25,7 @@ public class Partida {
     private boolean anfitrionEsBlancas;
     private Juez juez;
     private String movs;
+    private int nMovs;
 
 
     public Partida(Jugador j1, Jugador j2, int codigo) throws IOException {
@@ -49,6 +50,7 @@ public class Partida {
         String mensaje;
 
         while (true) {
+            nMovs++;
             //turno del anfitrion, espero respuesta
             if (juez.turnoBlancas == anfitrionEsBlancas) {
                 haMovido = true;
@@ -108,11 +110,24 @@ public class Partida {
             DB.registrarResultado(movs, anfitrion.getId(), invitado.getId(), false);
             DB.actualizarStats(anfitrion.getId(), invitado.getId(), false);
             DB.actualizarNivel(anfitrion.getId());
+            if (nMovs < 10){
+                DB.logroDesbloqueado(invitado.getId(), 4);
+            }
+            if (nMovs > 40){
+                DB.logroDesbloqueado(invitado.getId(), 5);
+            }
+
         } else {
             logger.info("El jugador {} ha ganado a {} por jaque mate", invitado.getUser(), anfitrion.getUser());
             DB.registrarResultado(movs, invitado.getId(), anfitrion.getId(), false);
             DB.actualizarStats(invitado.getId(), anfitrion.getId(), false);
             DB.actualizarNivel(invitado.getId());
+            if (nMovs < 10){
+                DB.logroDesbloqueado(invitado.getId(), 4);
+            }
+            if (nMovs > 40){
+                DB.logroDesbloqueado(invitado.getId(), 5);
+            }
         }
     }
 
@@ -137,12 +152,18 @@ public class Partida {
             DB.registrarResultado(movs, invitado.getId(), anfitrion.getId(), false);
             DB.actualizarStats(invitado.getId(), anfitrion.getId(), false);
             DB.actualizarNivel(invitado.getId());
+            if (nMovs > 40){
+                DB.logroDesbloqueado(invitado.getId(), 5);
+            }
         } else {
             logger.info("El jugador {} ha ganado a {} por abandono del rival", anfitrion.getUser(), invitado.getUser());
             anfitrion.enviarString("rendirse");
             DB.registrarResultado(movs, anfitrion.getId(), invitado.getId(), false);
             DB.actualizarStats(anfitrion.getId(), invitado.getId(), false);
             DB.actualizarNivel(anfitrion.getId());
+            if (nMovs > 40){
+                DB.logroDesbloqueado(invitado.getId(), 5);
+            }
         }
     }
 
