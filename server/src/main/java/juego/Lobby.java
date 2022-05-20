@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 
 import servidor.Servidor;
 
-public class Lobby extends Thread {
+public class Lobby {
     private static final Logger logger = LogManager.getLogger();
 
     private ServerSocket ss; // TODO: 😑

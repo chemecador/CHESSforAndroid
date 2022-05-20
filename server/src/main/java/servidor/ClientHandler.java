@@ -158,7 +158,6 @@ public class ClientHandler extends Thread {
         if (Parametros.NUM_JUGADORES == 1) {
             Jugador j1 = new Jugador(socket);
             Servidor.lobby = new Lobby(ss, j1);
-            Servidor.lobby.start();
         } else if (Parametros.NUM_JUGADORES == 2) {
             Jugador j2 = new Jugador(socket);
             Servidor.lobby.setJugador(j2);
@@ -184,7 +183,6 @@ public class ClientHandler extends Thread {
         logger.debug("Jugador {} ha creado la sala {}", anfitrion.getUser(), codigo);
         out.writeInt(codigo);
         FriendLobby fl = new FriendLobby(ss, anfitrion.getId(), codigo);
-        fl.start();
         Servidor.friendLobbies.add(fl);
         return true;
     }
