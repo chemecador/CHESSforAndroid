@@ -37,7 +37,10 @@ public class ClientHandler extends Thread {
             logger.error("Conexion interrumpida " + e.getMessage());
             return;
         }
+    }
 
+    @Override
+    public void run() {
         try {
             String peticion = in.readUTF();
 
@@ -157,9 +160,9 @@ public class ClientHandler extends Thread {
             Jugador j1 = new Jugador(socket);
             Servidor.lobby = new Lobby(j1);
         } else if (Parametros.NUM_JUGADORES == 2) {
+            Parametros.NUM_JUGADORES = 0;
             Jugador j2 = new Jugador(socket);
             Servidor.lobby.setJugador(j2);
-            Parametros.NUM_JUGADORES = 0;
         } else {
             Jugador esp = new Jugador(socket);
             logger.error("El jugador {} ha solicitado jugar, pero hay {} jugadores", esp.getUser(), Parametros.NUM_JUGADORES);
