@@ -108,7 +108,7 @@ public class ClientHandler extends Thread {
     }
 
     private void rankingNivel() throws IOException, SQLException {
-        ArrayList<String> users = DB.getRankingUsersByNivel();
+        ArrayList<String> users = DB.getRankingUsers();
         ArrayList<String> niveles = DB.getRankingNiveles();
 
         if (users == null || niveles == null) {
@@ -128,7 +128,7 @@ public class ClientHandler extends Thread {
     }
 
     private void rankingElo() throws IOException, SQLException {
-        ArrayList<String> users = DB.getRankingUsersByELO();
+        ArrayList<String> users = DB.getRankingUsers();
         ArrayList<String> elos = DB.getRankingElos();
 
         if (users == null || elos == null) {

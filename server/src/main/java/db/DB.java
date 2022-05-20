@@ -518,24 +518,7 @@ public class DB {
     }
 
 
-    public static ArrayList<String> getRankingUsersByNivel() throws SQLException {
-        // conecta con la base de datos
-
-        // realiza la consulta de la tabla actual
-        String consulta = "SELECT user FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.nivel DESC";
-        PreparedStatement sentencia;
-        ArrayList<String> datos = new ArrayList<>();
-        // realiza la consulta y la ejecuta
-        sentencia = conn.prepareStatement(consulta);
-        ResultSet res = sentencia.executeQuery();
-
-        while (res.next()) {
-            datos.add(res.getString("user"));
-        }
-        return datos;
-    }
-
-    public static ArrayList<String> getRankingUsersByELO() throws SQLException {
+    public static ArrayList<String> getRankingUsers() throws SQLException {
         // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
