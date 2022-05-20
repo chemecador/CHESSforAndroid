@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 
 import servidor.Servidor;
 
-public class FriendLobby {
+public class FriendLobby extends Thread {
     private static final Logger logger = LogManager.getLogger();
 
     private ServerSocket ss;
