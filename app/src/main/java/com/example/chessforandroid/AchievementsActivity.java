@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.chessforandroid.util.Cliente;
 
 public class AchievementsActivity extends AppCompatActivity {
+    private final static String TAG = AchievementsActivity.class.getSimpleName();
     private String token;
     private TextView cantidadLogros, win10, win20, win30,
             movs10, movs40, level5, level10, gameOver;
@@ -34,9 +35,8 @@ public class AchievementsActivity extends AppCompatActivity {
         gameOver = findViewById(R.id.txtGameOver);
         gameOver.setVisibility(View.INVISIBLE);
 
-        Cliente c = new Cliente();
-        if (c.isConectado()) {
-            c.consultarLogros(this, this, token);
+        if (Cliente.isConectado()) {
+            Cliente.consultarLogros(this, this, token);
         } else {
             Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
         }

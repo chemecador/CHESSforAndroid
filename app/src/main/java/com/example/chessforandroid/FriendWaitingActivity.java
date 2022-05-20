@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.chessforandroid.util.Cliente;
 
 public class FriendWaitingActivity extends AppCompatActivity {
+    private final static String TAG = FriendWaitingActivity.class.getSimpleName();
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -29,11 +30,10 @@ public class FriendWaitingActivity extends AppCompatActivity {
             Toast.makeText(this, "Ha habido un error en la creación de la sala", Toast.LENGTH_SHORT).show();
             finish();
         }
-        Cliente c = new Cliente();
-        if (!c.isConectado()) {
-            Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+        if (Cliente.isConectado()) {
+            Cliente.esperarRival(this, this);
         } else {
-            c.esperarRival(this, this);
+            Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.chessforandroid.util.Constantes;
 
 public class AdvancedActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = AdvancedActivity.class.getSimpleName();
     private EditText ip, puerto;
     private Button cancelar, confirmar;
     private CheckBox cbDeveloper;

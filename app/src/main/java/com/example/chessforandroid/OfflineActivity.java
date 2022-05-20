@@ -32,6 +32,7 @@ import com.example.chessforandroid.util.Juez;
 
 
 public class OfflineActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = OfflineActivity.class.getSimpleName();
 
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;

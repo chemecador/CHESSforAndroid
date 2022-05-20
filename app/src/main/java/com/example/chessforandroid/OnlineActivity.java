@@ -34,6 +34,7 @@ import com.example.chessforandroid.util.Juez;
 
 
 public class OnlineActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = OnlineActivity.class.getSimpleName();
 
     //layout
     private GridLayout oGameBoard;
@@ -57,7 +58,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     private boolean soyBlancas;
     private boolean quieroTablas;
     private boolean miTurno;
-    private Cliente cliente;
     private Juez juez;
     private int onResumes;
 
@@ -78,8 +78,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         this.oGameBoard = this.findViewById(R.id.gridGameBoardOnline);
         Tablero t = new Tablero();
         t.execute();
-
-        cliente = new Cliente();
 
     }
 
@@ -109,8 +107,8 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             quieroTablas = true;
             tablas.setBackgroundColor(Color.GREEN);
             Toast.makeText(this, "Tablas ofrecidas al rival", Toast.LENGTH_SHORT).show();
-            if (cliente.isConectado()) {
-                cliente.ofrecerTablas(this, this);
+            if (Cliente.isConectado()) {
+                Cliente.ofrecerTablas(this, this);
                 miTurno = false;
             }
             return;
@@ -118,8 +116,8 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         if (view.getId() == R.id.bRendirseOnline) {
 
 
-            if (cliente.isConectado()) {
-                cliente.enviarMov(this, this, "rendirse", movs.toString());
+            if (Cliente.isConectado()) {
+                Cliente.enviarMov(this, this, "rendirse", movs.toString());
                 miTurno = false;
             }
             fin = true;
@@ -156,8 +154,8 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
                 nMovs++;
                 actualizarTxt(casSelec.getFila(), casSelec.getColumna());
                 juez.sTablero = juez.casillasToString();
-                if (cliente.isConectado()) {
-                    cliente.enviarMov(this, this, juez.casillasToString(), movs.toString());
+                if (Cliente.isConectado()) {
+                    Cliente.enviarMov(this, this, juez.casillasToString(), movs.toString());
                     miTurno = false;
                     actualizarTurno();
                 }
@@ -202,9 +200,9 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onPause() {
         super.onPause();
-        if (cliente.isConectado()) {
+        if (Cliente.isConectado()) {
             Log.i("**", "socket cerrado en onPause()");
-            cliente.abandonar();
+            Cliente.abandonar();
         } else {
             Log.i("**", "cliente ya no conectado en onPause()");
         }
@@ -213,9 +211,9 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (cliente.isConectado()) {
+        if (Cliente.isConectado()) {
             Log.i("**", "socket cerrado en onDestroy()");
-            cliente.abandonar();
+            Cliente.abandonar();
         } else {
             Log.i("**", "cliente ya no conectado en onDestroy()");
         }
@@ -225,9 +223,9 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onStop() {
         super.onStop();
-        if (cliente.isConectado()) {
+        if (Cliente.isConectado()) {
             Log.i("**", "socket cerrado en onStop()");
-            cliente.abandonar();
+            Cliente.abandonar();
         } else {
             Log.i("**", "cliente ya no conectado en onStop()");
         }
@@ -322,16 +320,16 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.draw_offered);
         builder.setPositiveButton(R.string.accept, (dialogInterface, i) -> {
-            if (cliente.isConectado()) {
-                cliente.enviarMensaje("aceptadas");
+            if (Cliente.isConectado()) {
+                Cliente.enviarMensaje("aceptadas");
                 //Toast.makeText(OnlineActivity.this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
                 fin = true;
                 gestionarFinal(null);
             }
         });
         builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
-            if (cliente.isConectado()) {
-                cliente.enviarMensaje("rechazadas");
+            if (Cliente.isConectado()) {
+                Cliente.enviarMensaje("rechazadas");
                 Toast.makeText(OnlineActivity.this, "Tablas rechazadas", Toast.LENGTH_SHORT).show();
             }
             esperarMov();
@@ -368,8 +366,8 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     private void esperarMov() {
         if (fin)
             return;
-        if (cliente.isConectado()) {
-            cliente.esperarMov(this, this);
+        if (Cliente.isConectado()) {
+            Cliente.esperarMov(this, this);
         } else {
             Log.e("************************", "Error al esperar movimiento");
         }
@@ -385,8 +383,8 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
 
         Object[] o = null;
-        if (cliente.isConectado()) {
-            o = cliente.getDatosIniciales(this);
+        if (Cliente.isConectado()) {
+            o = Cliente.getDatosIniciales(this);
         } else {
             Log.e("************************", "Error al recibir los datos iniciales");
         }

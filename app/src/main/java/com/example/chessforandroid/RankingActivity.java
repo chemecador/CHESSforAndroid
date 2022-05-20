@@ -16,6 +16,7 @@ import com.example.chessforandroid.util.RankingItem;
 import java.util.ArrayList;
 
 public class RankingActivity extends AppCompatActivity {
+    private final static String TAG = RankingActivity.class.getSimpleName();
 
     private RankingAdapter adapter;
     private ListView lvRanking;
@@ -27,7 +28,6 @@ public class RankingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ranking);
-        Cliente cliente = new Cliente();
         lvRanking = findViewById(R.id.lvRanking);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -38,13 +38,13 @@ public class RankingActivity extends AppCompatActivity {
 
         if (prefs.getBoolean("preferencias_elo", true)) {
             tvElo.setText(R.string.elo);
-            if (cliente.isConectado()) {
-                cliente.getRanking(this, "elo");
+            if (Cliente.isConectado()) {
+                Cliente.getRanking(this, "elo");
             }
         } else {
             tvElo.setText(R.string.level);
-            if (cliente.isConectado()) {
-                cliente.getRanking(this, "nivel");
+            if (Cliente.isConectado()) {
+                Cliente.getRanking(this, "nivel");
             }
         }
 

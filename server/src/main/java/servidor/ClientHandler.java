@@ -23,15 +23,12 @@ import util.Hash;
 public class ClientHandler extends Thread {
     private static final Logger logger = LogManager.getLogger();
 
-    private ServerSocket ss;
     private DataOutputStream out;
     private DataInputStream in;
     private Socket socket;
 
-    public ClientHandler(ServerSocket ss, Socket cliente) {
+    public ClientHandler(Socket cliente) {
         this.socket = cliente;
-        this.ss = ss;
-
         try {
             out = new DataOutputStream(cliente.getOutputStream());
             in = new DataInputStream(cliente.getInputStream());
@@ -39,14 +36,22 @@ public class ClientHandler extends Thread {
             logger.error("Conexion interrumpida " + e.getMessage());
             return;
         }
+    }
 
+    @Override
+    public void run() {
+
+        String peticion = "";
         try {
-            String peticion = in.readUTF();
+            while (!peticion.equalsIgnoreCase("salir")) {
+                peticion = in.readUTF();
 
-            logger.info("Peticion '{}' recibida de {}:{}", peticion,
-                    socket.getInetAddress().getHostAddress(), socket.getPort());
+                logger.info("Peticion '{}' recibida de {}:{}", peticion,
+                        socket.getInetAddress().getHostAddress(), socket.getPort());
 
-            procesarPeticion(peticion);
+                procesarPeticion(peticion);
+            }
+            cerrarConexion();
         } catch (Exception e) {
             logger.error("Error al procesar la peticion ", e);
         }
@@ -56,19 +61,15 @@ public class ClientHandler extends Thread {
         switch (peticion) {
             case "signup":
                 registro();
-                cerrarConexion();
                 break;
             case "login":
                 inicioSesion();
-                cerrarConexion();
                 break;
             case "cambiarpass":
                 out.writeBoolean(cambiarPass());
-                cerrarConexion();
                 break;
             case "pedirdatos":
                 pedirDatos();
-                cerrarConexion();
                 break;
             case "online":
                 jugarOnline();
@@ -78,19 +79,15 @@ public class ClientHandler extends Thread {
                 break;
             case "unirse":
                 unirse();
-                cerrarConexion();
                 break;
             case "elo":
                 rankingElo();
-                cerrarConexion();
                 break;
             case "nivel":
                 rankingNivel();
-                cerrarConexion();
                 break;
             case "consultarlogros":
                 consultarLogros();
-                cerrarConexion();
                 break;
         }
     }
@@ -157,8 +154,7 @@ public class ClientHandler extends Thread {
 
         if (Parametros.NUM_JUGADORES == 1) {
             Jugador j1 = new Jugador(socket);
-            Servidor.lobby = new Lobby(ss, j1);
-            Servidor.lobby.start();
+            Servidor.lobby = new Lobby(j1);
         } else if (Parametros.NUM_JUGADORES == 2) {
             Jugador j2 = new Jugador(socket);
             Servidor.lobby.setJugador(j2);
@@ -183,8 +179,7 @@ public class ClientHandler extends Thread {
         codigo = Integer.parseInt(sb.toString());
         logger.debug("Jugador {} ha creado la sala {}", anfitrion.getUser(), codigo);
         out.writeInt(codigo);
-        FriendLobby fl = new FriendLobby(ss, anfitrion.getId(), codigo);
-        fl.start();
+        FriendLobby fl = new FriendLobby(anfitrion, codigo);
         Servidor.friendLobbies.add(fl);
         return true;
     }

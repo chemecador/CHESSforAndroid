@@ -54,13 +54,15 @@ public class Servidor {
         while (true) {
             try {
                 Socket cliente = ss.accept();
+                logger.debug("Nuevo cliente recibido: {}:{}",
+                        cliente.getInetAddress().getHostAddress(), cliente.getPort());
 
                 // TODO: comentario
                 conexiones.add(cliente);
 
                 // se lanza un hilo de la clase ClientHandler que gestiona la conexion de manera
                 // independiente a esta clase.
-                new ClientHandler(ss, cliente).start();
+                new ClientHandler(cliente).start();
 
             } catch (IOException e) {
                 logger.error("Se ha producido un error al aceptar una conexion", e);
@@ -85,7 +87,7 @@ public class Servidor {
      * @param args
      */
     public static void main(String[] args) {
-        Configurator.setRootLevel(Level.INFO);
+        Configurator.setRootLevel(Level.DEBUG);
         new Servidor();
     }
 }

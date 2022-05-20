@@ -8,18 +8,14 @@ import java.net.ServerSocket;
 
 import servidor.Servidor;
 
-public class FriendLobby extends Thread {
+public class FriendLobby {
     private static final Logger logger = LogManager.getLogger();
-
-    private ServerSocket ss;
 
     private Jugador anfitrion;
     private Jugador invitado;
     private int codigo;
 
-    public FriendLobby(ServerSocket ss, int idAnfitrion, int codigo) throws IOException {
-        this.ss = ss;
-        this.anfitrion = new Jugador(ss.accept(), idAnfitrion);
+    public FriendLobby(Jugador anfitrion, int codigo) throws IOException {
         this.codigo = codigo;
         logger.debug("El anfitrion {} se encuentra esperando en el lobby", anfitrion.getUser());
     }
@@ -46,7 +42,6 @@ public class FriendLobby extends Thread {
 
         try {
             anfitrion.enviarString("jugar");
-            anfitrion.setSocket(ss.accept());
             logger.debug("enviado jugar a {}", anfitrion.getUser());
         } catch (IOException e) {
             invitado.enviarString("abortada");
@@ -54,7 +49,6 @@ public class FriendLobby extends Thread {
         }
         try {
             invitado.enviarString("jugar");
-            invitado.setSocket(ss.accept());
             logger.debug("enviado jugar a {}", invitado.getUser());
         } catch (IOException e) {
             anfitrion.enviarString("abortada");

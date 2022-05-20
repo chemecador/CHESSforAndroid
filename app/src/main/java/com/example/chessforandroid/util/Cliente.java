@@ -30,20 +30,24 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class Cliente {
+    private final static String TAG = Cliente.class.getSimpleName();
 
-    private Socket conn; // socket con la conexión
-    private DataInputStream in; // flujo de entrada
-    private DataOutputStream out; // flujo de salida
+    private static DataInputStream in; // flujo de entrada
+    private static DataOutputStream out; // flujo de salida
     private static String host = Constantes.ip; // dirección IP (local)
     private static int puerto = Constantes.puerto; // puerto que se utilizará
-    private boolean conectado;
-    private String user;
-    private String token;
-    private Context context;
+    private static boolean conectado;
+    private static String user;
+    private static String token;
+    private static Context context;
+
+    private static Socket conn;
+
+
 
 
     // constructor
-    public Cliente() {
+    public static void conectar() {
 
         StrictMode.ThreadPolicy policy = new
                 StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -60,16 +64,25 @@ public class Cliente {
             in = new DataInputStream(conn.getInputStream());
             out = new DataOutputStream(conn.getOutputStream());
             conectado = true;
-
+            Log.i(TAG, "Cliente conectado");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             conectado = false;
+            Log.i(TAG, "Cliente no conectado, entro al catch");
             e.printStackTrace();
         }
     }
 
-    public void cerrarConexion() {
+    public static synchronized Socket getSocket(){
+        return conn;
+    }
+
+    public static synchronized void setSocket(Socket socket){
+        Cliente.conn = socket;
+    }
+
+    public static void cerrarConexion() {
         try {
             conn.close();
             in.close();
@@ -80,84 +93,86 @@ public class Cliente {
     }
 
 
-    public void registrarse(Context context, String user, String pass) {
-        this.context = context;
+    public static void registrarse(Context context, String user, String pass) {
+        Cliente.context = context;
         new Registro().execute(user, pass);
     }
 
-    public void iniciarSesion(Context context, String user, String pass) {
-        this.context = context;
+    public static void iniciarSesion(Context context, String user, String pass) {
+        Cliente.context = context;
+        Log.i(TAG, "socket " + Cliente.getSocket().isClosed());
+        Log.i(TAG, "cliente " + Cliente.isConectado());
         new InicioSesion().execute(user, pass);
     }
 
-    public void cambiarPass(Context context, String user, String oldPass, String newPass) {
-        this.context = context;
+    public static void cambiarPass(Context context, String user, String oldPass, String newPass) {
+        Cliente.context = context;
         new CambiarPass().execute(user, oldPass, newPass);
     }
 
-    public void pedirDatos(Context context, String user, String token) {
-        this.context = context;
-        this.user = user;
-        this.token = token;
+    public static void pedirDatos(Context context, String user, String token) {
+        Cliente.context = context;
+        Cliente.user = user;
+        Cliente.token = token;
         new PedirDatos().execute(token);
     }
 
-    public void consultarLogros(Context context, AchievementsActivity aa, String token) {
-        this.context = context;
-        this.token = token;
+    public static void consultarLogros(Context context, AchievementsActivity aa, String token) {
+        Cliente.context = context;
+        Cliente.token = token;
         new ConsultarLogros(aa).execute(token);
     }
 
-    public void crearSala(Context context, String token) {
-        this.context = context;
+    public static void crearSala(Context context, String token) {
+        Cliente.context = context;
         new CrearSala().execute(token);
     }
 
-    public void unirse(Context context, String token, String codigo) {
-        this.context = context;
+    public static void unirse(Context context, String token, String codigo) {
+        Cliente.context = context;
         new Unirse().execute(token, codigo);
     }
 
 
-    public void local(Context context, OnlineWaitingActivity lla, String token) {
-        this.context = context;
+    public static void local(Context context, OnlineWaitingActivity lla, String token) {
+        Cliente.context = context;
         new Online(lla).execute(token);
     }
 
-    public void esperarMov(Context context, OnlineActivity ga) {
-        this.context = context;
+    public static void esperarMov(Context context, OnlineActivity ga) {
+        Cliente.context = context;
         new EsperarMov(ga).execute();
     }
 
-    public void enviarMov(Context context, OnlineActivity ga, String casillas, String movs) {
-        this.context = context;
+    public static void enviarMov(Context context, OnlineActivity ga, String casillas, String movs) {
+        Cliente.context = context;
         new EnviarMov(ga).execute(casillas, movs);
     }
 
 
-    public void ofrecerTablas(Context context, OnlineActivity ga) {
-        this.context = context;
+    public static void ofrecerTablas(Context context, OnlineActivity ga) {
+        Cliente.context = context;
         new EnviarTablas(ga).execute();
     }
 
-    public void enviarMensaje(String... s) {
+    public static void enviarMensaje(String... s) {
         new EnviarMensaje().execute(s);
     }
 
-    public void abandonar() {
+    public static void abandonar() {
         enviarMensaje("abandonar");
     }
 
-    public void getRanking(RankingActivity ra, String pref) {
+    public static void getRanking(RankingActivity ra, String pref) {
         new Ranking(ra).execute(pref);
     }
 
-    public void esperarRival(Context context, FriendWaitingActivity fwa) {
-        this.context = context;
+    public static void esperarRival(Context context, FriendWaitingActivity fwa) {
+        Cliente.context = context;
         new EsperarRival(fwa).execute();
     }
 
-    public class EsperarRival extends AsyncTask<Void, Void, String> {
+    public static class EsperarRival extends AsyncTask<Void, Void, String> {
 
         FriendWaitingActivity fwa;
 
@@ -190,7 +205,7 @@ public class Cliente {
         }
     }
 
-    public class Ranking extends AsyncTask<String, Void, ArrayList<RankingItem>> {
+    public static class Ranking extends AsyncTask<String, Void, ArrayList<RankingItem>> {
 
         private RankingActivity ra;
 
@@ -229,7 +244,7 @@ public class Cliente {
         }
     }
 
-    public class EnviarMensaje extends AsyncTask<String, Void, String> {
+    public static class EnviarMensaje extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -247,7 +262,7 @@ public class Cliente {
     }
 
     @SuppressLint("StaticFieldLeak")
-    public class EnviarTablas extends AsyncTask<Void, Void, Boolean> {
+    public static class EnviarTablas extends AsyncTask<Void, Void, Boolean> {
 
         OnlineActivity caller;
 
@@ -276,7 +291,7 @@ public class Cliente {
     }
 
 
-    public class EnviarMov extends AsyncTask<String, Void, Object[]> {
+    public static class EnviarMov extends AsyncTask<String, Void, Object[]> {
 
         OnlineActivity caller;
 
@@ -322,7 +337,7 @@ public class Cliente {
     }
 
 
-    public class EsperarMov extends AsyncTask<Void, Void, Object[]> {
+    public static class EsperarMov extends AsyncTask<Void, Void, Object[]> {
 
         OnlineActivity caller;
 
@@ -371,8 +386,8 @@ public class Cliente {
     }
 
 
-    public Object[] getDatosIniciales(Context context) {
-        this.context = context;
+    public static Object[] getDatosIniciales(Context context) {
+        Cliente.context = context;
         Object[] o = null;
         try {
             o = new DatosIniciales().execute().get();
@@ -382,7 +397,7 @@ public class Cliente {
         return o;
     }
 
-    public class DatosIniciales extends AsyncTask<Object, Void, Object[]> {
+    public static class DatosIniciales extends AsyncTask<Object, Void, Object[]> {
 
 
         protected Object[] doInBackground(Object... params) {
@@ -406,7 +421,7 @@ public class Cliente {
     }
 
 
-    public class Online extends AsyncTask<String, Void, String> {
+    public static class Online extends AsyncTask<String, Void, String> {
 
         OnlineWaitingActivity lla;
 
@@ -450,11 +465,10 @@ public class Cliente {
                 context.startActivity(new Intent(context, OnlineActivity.class));
             }
             lla.finish();
-            cerrarConexion();
         }
     }
 
-    public class Unirse extends AsyncTask<String, Void, Integer> {
+    public static class Unirse extends AsyncTask<String, Void, Integer> {
 
         @Override
         protected Integer doInBackground(String... strings) {
@@ -494,11 +508,10 @@ public class Cliente {
             } else {
                 Toast.makeText(context, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
             }
-            cerrarConexion();
         }
     }
 
-    public class CrearSala extends AsyncTask<String, Void, Integer> {
+    public static class CrearSala extends AsyncTask<String, Void, Integer> {
 
         @Override
         protected Integer doInBackground(String... strings) {
@@ -524,12 +537,11 @@ public class Cliente {
             lobbyIntent.putExtra("id", res);
             lobbyIntent.putExtra("token", token);
             context.startActivity(lobbyIntent);
-            cerrarConexion();
         }
     }
 
 
-    public class Registro extends AsyncTask<String, Void, Integer> {
+    public static class Registro extends AsyncTask<String, Void, Integer> {
 
         @Override
         protected Integer doInBackground(String... strings) {
@@ -569,11 +581,10 @@ public class Cliente {
                     Log.e("**", "Error de conexión con la base de datos");
                     break;
             }
-            cerrarConexion();
         }
     }
 
-    public class CambiarPass extends AsyncTask<String, Void, Boolean> {
+    public static class CambiarPass extends AsyncTask<String, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(String... strings) {
@@ -602,20 +613,22 @@ public class Cliente {
             } else {
                 Toast.makeText(context, "Nombre de usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
             }
-            cerrarConexion();
         }
     }
 
-    public class InicioSesion extends AsyncTask<String, Void, String> {
+    public static class InicioSesion extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... strings) {
             try {
                 user = strings[0];
+                Log.i(TAG,"Voy a enviar login");
                 out.writeUTF("login");
                 out.writeUTF(strings[0]);
                 out.writeUTF(strings[1]);
+                Log.i(TAG,"Login enviado");
                 if (in.readBoolean()) {
+                    Log.i(TAG,"Booleano recibido");
                     return in.readUTF();
                 }
                 return null;
@@ -633,16 +646,14 @@ public class Cliente {
                 Intent mainIntentSignup = new Intent(context, MainActivity.class);
                 mainIntentSignup.putExtra("user", user);
                 mainIntentSignup.putExtra("token", s);
-                cerrarConexion();
                 context.startActivity(mainIntentSignup);
             } else {
                 Toast.makeText(context, "Nombre de usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
             }
-            cerrarConexion();
         }
     }
 
-    public class ConsultarLogros extends AsyncTask<String, Void, Boolean[]> {
+    public static class ConsultarLogros extends AsyncTask<String, Void, Boolean[]> {
 
         AchievementsActivity aa;
 
@@ -682,7 +693,7 @@ public class Cliente {
     }
 
 
-    public class PedirDatos extends AsyncTask<String, Void, Integer[]> {
+    public static class PedirDatos extends AsyncTask<String, Void, Integer[]> {
 
         @Override
         protected Integer[] doInBackground(String... strings) {
@@ -692,6 +703,9 @@ public class Cliente {
                 res[i] = 0;
             }
             try {
+                Log.i(TAG, "lanzo pedir datos");
+                Log.i(TAG, "socket cerrado: " + Cliente.getSocket().isClosed());
+                Log.i(TAG, "cliente " + Cliente.isConectado());
                 token = strings[0];
                 out.writeUTF("pedirdatos");
                 out.writeUTF(token);
@@ -721,12 +735,11 @@ public class Cliente {
             i.putExtra("user", user);
             i.putExtra("token", token);
             i.putExtra("datos", datos);
-            cerrarConexion();
             context.startActivity(i);
         }
     }
 
-    public boolean isConectado() {
+    public static boolean isConectado() {
         return conectado;
     }
 }

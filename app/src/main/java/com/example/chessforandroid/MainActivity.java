@@ -28,6 +28,7 @@ import com.example.chessforandroid.util.Cliente;
  *
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = MainActivity.class.getSimpleName();
 
     private String user;
     private String token;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         friend.setOnClickListener(this);
         mm.setOnClickListener(this);
         ranking.setOnClickListener(this);
+
+        Log.i(TAG, "socket " + Cliente.getSocket().isClosed());
+        Log.i(TAG, "cliente " + Cliente.isConectado());
     }
 
     @Override
@@ -69,9 +73,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
             case R.id.menu_perfil:
                 if (user.length() > 0) {
-                    Cliente cliente = new Cliente();
-                    if (cliente.isConectado()) {
-                        cliente.pedirDatos(this, user, token);
+
+                    Log.i(TAG, "socket " + Cliente.getSocket().isClosed());
+                    Log.i(TAG, "cliente " + Cliente.isConectado());
+                    if (Cliente.isConectado()) {
+                        Log.i(TAG, "lanzo pedir datos");
+                        Cliente.pedirDatos(this, user, token);
                     }
                     return true;
                 }

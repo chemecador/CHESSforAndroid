@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.chessforandroid.util.Cliente;
 
 public class FriendActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = FriendActivity.class.getSimpleName();
 
     private EditText codigo;
     private String token;
@@ -37,9 +38,8 @@ public class FriendActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bCrearPartida:
-                Cliente c = new Cliente();
-                if (c.isConectado()) {
-                    c.crearSala(this, token);
+                if (Cliente.isConectado()) {
+                    Cliente.crearSala(this, token);
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }
@@ -49,9 +49,8 @@ public class FriendActivity extends AppCompatActivity implements View.OnClickLis
                 if (codigo.getText().toString().length() < 1){
                     Toast.makeText(this, "Código incorrecto", Toast.LENGTH_SHORT).show();
                 }
-                c = new Cliente();
-                if (c.isConectado()) {
-                    c.unirse(this, token, codigo.getText().toString());
+                if (Cliente.isConectado()) {
+                    Cliente.unirse(this, token, codigo.getText().toString());
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }

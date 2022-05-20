@@ -14,6 +14,7 @@ import com.example.chessforandroid.util.RankingItem;
 import java.util.ArrayList;
 
 public class RankingAdapter extends BaseAdapter {
+    private final static String TAG = RankingAdapter.class.getSimpleName();
     private Context context; //El contexto será la activity en la que se esté usando
     private ArrayList<RankingItem> lista; //La lista de elementos
     private LayoutInflater inflater;//El encargado de distribuir/pintar los elementos en la interfaz

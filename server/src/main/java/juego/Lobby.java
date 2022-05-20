@@ -10,20 +10,18 @@ import org.apache.logging.log4j.LogManager;
 
 import servidor.Servidor;
 
-public class Lobby extends Thread {
+public class Lobby {
     private static final Logger logger = LogManager.getLogger();
-
-    private ServerSocket ss; // TODO: 😑
 
     public static boolean hayRival;
 
     private Jugador anfitrion;
     private Jugador invitado;
 
-    public Lobby(ServerSocket ss, Jugador anfitrion) {
-        this.ss = ss;
+    public Lobby(Jugador anfitrion) {
         this.anfitrion = anfitrion;
-        hayRival = false;
+        this.hayRival = false;
+
 
         Timer t = new Timer();
         TimerTask task = new TimerTask() {
@@ -47,6 +45,7 @@ public class Lobby extends Thread {
             }
         };
         t.scheduleAtFixedRate(task, 1000, 1000);
+
     }
 
     public void setJugador(Jugador j2) throws IOException {
@@ -69,7 +68,6 @@ public class Lobby extends Thread {
 
         try {
             anfitrion.enviarString("jugar");
-            anfitrion.setSocket(ss.accept());
         } catch (IOException e) {
             Parametros.NUM_JUGADORES = 0;
             invitado.enviarString("abortada");
@@ -77,7 +75,6 @@ public class Lobby extends Thread {
         }
         try {
             invitado.enviarString("jugar");
-            invitado.setSocket(ss.accept());
         } catch (IOException e) {
             anfitrion.enviarString("abortada");
             Parametros.NUM_JUGADORES = 0;

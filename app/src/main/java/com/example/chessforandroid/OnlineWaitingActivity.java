@@ -9,6 +9,7 @@ import android.util.Log;
 import com.example.chessforandroid.util.Cliente;
 
 public class OnlineWaitingActivity extends AppCompatActivity {
+    private final static String TAG = OnlineWaitingActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

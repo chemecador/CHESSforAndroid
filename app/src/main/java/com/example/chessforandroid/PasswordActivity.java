@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.chessforandroid.util.Cliente;
 
 public class PasswordActivity extends AppCompatActivity implements View.OnClickListener{
+    private final static String TAG = PasswordActivity.class.getSimpleName();
 
     private EditText oldPass;
     private EditText newPass;
@@ -37,9 +38,8 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
 
         if(view.getId() == R.id.bOk){
-            Cliente c = new Cliente();
-            if (c.isConectado()) {
-                c.cambiarPass(this, user, oldPass.getText().toString(), newPass.getText().toString());
+            if (Cliente.isConectado()) {
+                Cliente.cambiarPass(this, user, oldPass.getText().toString(), newPass.getText().toString());
             } else {
                 Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
             }

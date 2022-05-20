@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = ProfileActivity.class.getSimpleName();
 
     private TextView victorias;
     private String user;

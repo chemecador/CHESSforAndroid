@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 public class AboutUsActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = MainActivity.class.getSimpleName();
 
     private int i;
 

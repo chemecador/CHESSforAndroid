@@ -14,22 +14,22 @@ import android.widget.Toast;
 
 import com.example.chessforandroid.util.Cliente;
 
+import java.net.Socket;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String TAG = LoginActivity.class.getSimpleName();
 
     private EditText user;
     private EditText pass;
     private int i;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_login);
 
+        Cliente.conectar();
 
         user = findViewById(R.id.txtLoginUser);
         user.setOnClickListener(this);
@@ -62,12 +62,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     break;
                 }
 
-                Cliente c = new Cliente();
-                if (c.isConectado()) {
-                    Log.i("**", "user: " + user.getText().toString());
-                    c.iniciarSesion(this, user.getText().toString(), pass.getText().toString());
+                if (Cliente.isConectado()) {
+                    Log.i(TAG, "user: " + user.getText().toString());
+                    Log.i(TAG, "socket " + Cliente.getSocket().isClosed());
+                    Log.i(TAG, "cliente " + Cliente.isConectado());
+                    Cliente.iniciarSesion(this, user.getText().toString(), pass.getText().toString());
                 } else {
-                    Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Error al iniciar sesión");
                 }
                 break;
@@ -76,9 +77,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(this, "Rellena los campos de usuario y contraseña", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                c = new Cliente();
-                if (c.isConectado()) {
-                    c.registrarse(this, user.getText().toString(), pass.getText().toString());
+                if (Cliente.isConectado()) {
+                    Cliente.registrarse(this, user.getText().toString(), pass.getText().toString());
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }
