@@ -13,8 +13,6 @@ import servidor.Servidor;
 public class Lobby {
     private static final Logger logger = LogManager.getLogger();
 
-    private ServerSocket ss; // TODO: 😑
-
     public static boolean hayRival;
 
     private Jugador anfitrion;
@@ -68,7 +66,6 @@ public class Lobby {
 
         try {
             anfitrion.enviarString("jugar");
-            anfitrion.setSocket(ss.accept());
         } catch (IOException e) {
             Parametros.NUM_JUGADORES = 0;
             invitado.enviarString("abortada");
@@ -76,7 +73,6 @@ public class Lobby {
         }
         try {
             invitado.enviarString("jugar");
-            invitado.setSocket(ss.accept());
         } catch (IOException e) {
             anfitrion.enviarString("abortada");
             Parametros.NUM_JUGADORES = 0;

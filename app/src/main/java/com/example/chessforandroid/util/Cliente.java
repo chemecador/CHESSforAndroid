@@ -42,6 +42,34 @@ public class Cliente {
     private Context context;
 
 
+
+    // constructor
+    public Cliente(int puerto) {
+
+        StrictMode.ThreadPolicy policy = new
+                StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try {
+            // inicializamos el socket, dis y dos
+            conn = new Socket();
+            if (debug) {
+                host = Constantes.ipLocal;
+            } else {
+                host = Constantes.ip;
+            }
+            conn.connect(new InetSocketAddress(host, puerto), 1200);
+            in = new DataInputStream(conn.getInputStream());
+            out = new DataOutputStream(conn.getOutputStream());
+            conectado = true;
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            conectado = false;
+            e.printStackTrace();
+        }
+    }
+
     // constructor
     public Cliente() {
 
@@ -110,17 +138,20 @@ public class Cliente {
 
     public void crearSala(Context context, String token) {
         this.context = context;
+        this.token = token;
         new CrearSala().execute(token);
     }
 
     public void unirse(Context context, String token, String codigo) {
         this.context = context;
+        this.token = token;
         new Unirse().execute(token, codigo);
     }
 
 
-    public void local(Context context, OnlineWaitingActivity lla, String token) {
+    public void online(Context context, OnlineWaitingActivity lla, String token) {
         this.context = context;
+        this.token = token;
         new Online(lla).execute(token);
     }
 
@@ -182,6 +213,7 @@ public class Cliente {
             super.onPostExecute(s);
             if (s.equalsIgnoreCase("jugar")) {
                 Intent localIntent = new Intent(context, OnlineActivity.class);
+                localIntent.putExtra("token", token);
                 context.startActivity(localIntent);
             } else {
                 Toast.makeText(fwa, "Error inesperado", Toast.LENGTH_SHORT).show();
@@ -371,8 +403,9 @@ public class Cliente {
     }
 
 
-    public Object[] getDatosIniciales(Context context) {
+    public Object[] getDatosIniciales(Context context, String token) {
         this.context = context;
+        this.token = token;
         Object[] o = null;
         try {
             o = new DatosIniciales().execute().get();
@@ -388,8 +421,9 @@ public class Cliente {
         protected Object[] doInBackground(Object... params) {
 
             Object[] o = new Object[3];
-            String s = "ok";
             try {
+                out.writeUTF(token);
+
                 // recibo mi nombre
                 o[0] = in.readUTF();
                 // recibo el nombre del rival
@@ -447,7 +481,9 @@ public class Cliente {
                         Toast.LENGTH_SHORT).show();
             }
             if (s.equalsIgnoreCase("jugar")) {
-                context.startActivity(new Intent(context, OnlineActivity.class));
+                Intent onlineIntent = new Intent(context, OnlineActivity.class);
+                onlineIntent.putExtra("token", token);
+                context.startActivity(onlineIntent);
             }
             lla.finish();
             cerrarConexion();
@@ -482,6 +518,7 @@ public class Cliente {
 
                     if (jugar.equalsIgnoreCase("jugar")) {
                         Intent localIntent = new Intent(context, OnlineActivity.class);
+                        localIntent.putExtra("token", token);
                         context.startActivity(localIntent);
                     }
                 } catch (IOException e) {

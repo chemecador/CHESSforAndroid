@@ -10,6 +10,7 @@ import servidor.SocketHandler;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.Random;
 
 public class Partida {
@@ -35,9 +36,20 @@ public class Partida {
         anfitrion = j1;
         invitado = j2;
         juez = new Juez();
+
         j1.setSocket(SocketHandler.getSocket());
         j2.setSocket(SocketHandler.getSocket());
-        if (!j1.recibirString().equalsIgnoreCase(j1.getUser())){
+
+        String user1 = null;
+        try {
+            user1 = DB.getUserFromId(DB.getIdFromToken(j1.recibirString()));
+        } catch (SQLException e) {
+            logger.error("No he podido leer el usuario desde el token", e);
+        }
+
+        j2.recibirString();
+
+        if (!user1.equalsIgnoreCase(j1.getUser())){
             Socket alt = j1.getSocket();
             j1.setSocket(j2.getSocket());
             j2.setSocket(alt);

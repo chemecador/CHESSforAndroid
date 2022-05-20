@@ -5,6 +5,7 @@ import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -45,6 +46,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     public String tag;
     public String rival;
     public String yo;
+    public String token;
 
     //tablero
     private boolean haySeleccionada;
@@ -71,6 +73,8 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         onResumes = 0;
         juez = new Juez();
 
+        Intent i = getIntent();
+        token = i.getStringExtra("token");
         setContentView(R.layout.activity_friend);
         crearCasillas();
 
@@ -79,7 +83,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         Tablero t = new Tablero();
         t.execute();
 
-        cliente = new Cliente();
+        cliente = new Cliente(5567);
 
     }
 
@@ -386,7 +390,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
 
         Object[] o = null;
         if (cliente.isConectado()) {
-            o = cliente.getDatosIniciales(this);
+            o = cliente.getDatosIniciales(this, token);
         } else {
             Log.e("************************", "Error al recibir los datos iniciales");
         }
