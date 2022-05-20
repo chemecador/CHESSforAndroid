@@ -23,14 +23,12 @@ import util.Hash;
 public class ClientHandler extends Thread {
     private static final Logger logger = LogManager.getLogger();
 
-    private ServerSocket ss;
     private DataOutputStream out;
     private DataInputStream in;
     private Socket socket;
 
-    public ClientHandler(ServerSocket ss, Socket cliente) {
+    public ClientHandler(Socket cliente) {
         this.socket = cliente;
-        this.ss = ss;
 
         try {
             out = new DataOutputStream(cliente.getOutputStream());
@@ -157,7 +155,7 @@ public class ClientHandler extends Thread {
 
         if (Parametros.NUM_JUGADORES == 1) {
             Jugador j1 = new Jugador(socket);
-            Servidor.lobby = new Lobby(ss, j1);
+            Servidor.lobby = new Lobby(j1);
         } else if (Parametros.NUM_JUGADORES == 2) {
             Jugador j2 = new Jugador(socket);
             Servidor.lobby.setJugador(j2);
@@ -182,7 +180,7 @@ public class ClientHandler extends Thread {
         codigo = Integer.parseInt(sb.toString());
         logger.debug("Jugador {} ha creado la sala {}", anfitrion.getUser(), codigo);
         out.writeInt(codigo);
-        FriendLobby fl = new FriendLobby(ss, anfitrion.getId(), codigo);
+        FriendLobby fl = new FriendLobby(anfitrion, codigo);
         Servidor.friendLobbies.add(fl);
         return true;
     }

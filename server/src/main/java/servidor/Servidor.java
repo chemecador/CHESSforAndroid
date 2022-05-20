@@ -45,6 +45,7 @@ public class Servidor {
 
         try {
             ss = new ServerSocket(port);
+            new SocketHandler();
         } catch (Exception e) {
             logger.fatal("Error al inicializar el socket de escucha en el puerto '{}'", port, e);
             System.exit(-1);
@@ -60,7 +61,7 @@ public class Servidor {
 
                 // se lanza un hilo de la clase ClientHandler que gestiona la conexion de manera
                 // independiente a esta clase.
-                new ClientHandler(ss, cliente).start();
+                new ClientHandler(cliente).start();
 
             } catch (IOException e) {
                 logger.error("Se ha producido un error al aceptar una conexion", e);

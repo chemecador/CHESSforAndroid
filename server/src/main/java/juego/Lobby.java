@@ -20,8 +20,7 @@ public class Lobby {
     private Jugador anfitrion;
     private Jugador invitado;
 
-    public Lobby(ServerSocket ss, Jugador anfitrion) {
-        this.ss = ss;
+    public Lobby(Jugador anfitrion) {
         this.anfitrion = anfitrion;
         hayRival = false;
 
