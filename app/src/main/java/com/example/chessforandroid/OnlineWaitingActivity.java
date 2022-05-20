@@ -19,7 +19,7 @@ public class OnlineWaitingActivity extends AppCompatActivity {
 
         Cliente c = new Cliente();
         if (c.isConectado()){
-            c.local(this, this, token);
+            c.online(this, this, token);
         } else {
             Log.i ("************************", "error");
         }

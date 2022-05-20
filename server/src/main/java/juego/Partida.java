@@ -6,8 +6,11 @@ import org.apache.logging.log4j.Logger;
 import juego.casillas.*;
 import db.DB;
 import servidor.Servidor;
+import servidor.SocketHandler;
 
 import java.io.IOException;
+import java.net.Socket;
+import java.sql.SQLException;
 import java.util.Random;
 
 public class Partida {
@@ -33,6 +36,24 @@ public class Partida {
         anfitrion = j1;
         invitado = j2;
         juez = new Juez();
+
+        j1.setSocket(SocketHandler.getSocket());
+        j2.setSocket(SocketHandler.getSocket());
+
+        String user1 = null;
+        try {
+            user1 = DB.getUserFromId(DB.getIdFromToken(j1.recibirString()));
+        } catch (SQLException e) {
+            logger.error("No he podido leer el usuario desde el token", e);
+        }
+
+        j2.recibirString();
+
+        if (!user1.equalsIgnoreCase(j1.getUser())){
+            Socket alt = j1.getSocket();
+            j1.setSocket(j2.getSocket());
+            j2.setSocket(alt);
+        }
 
         if (this.codigo == 0) {
             logger.info("Comienzo partida online entre {} y {}", anfitrion.getUser(), invitado.getUser());
