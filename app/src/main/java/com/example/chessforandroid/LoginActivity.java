@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String TAG = LoginActivity.class.getSimpleName();
 
     private EditText user;
     private EditText pass;

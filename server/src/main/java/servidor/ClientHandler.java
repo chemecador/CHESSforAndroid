@@ -183,6 +183,7 @@ public class ClientHandler extends Thread {
         codigo = Integer.parseInt(sb.toString());
         logger.debug("Jugador {} ha creado la sala {}", anfitrion.getUser(), codigo);
         out.writeInt(codigo);
+        anfitrion.setSocket(SocketHandler.getSocket());
         FriendLobby fl = new FriendLobby(anfitrion, codigo);
         Servidor.friendLobbies.add(fl);
         return true;

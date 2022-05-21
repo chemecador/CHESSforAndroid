@@ -15,7 +15,7 @@ public class FriendLobby {
     private Jugador invitado;
     private int codigo;
 
-    public FriendLobby(Jugador anfitrion, int codigo) throws IOException {
+    public FriendLobby(Jugador anfitrion, int codigo) {
         this.anfitrion = anfitrion;
         this.codigo = codigo;
         logger.debug("El anfitrion {} se encuentra esperando en el lobby", anfitrion.getUser());

@@ -35,6 +35,7 @@ import com.example.chessforandroid.util.Juez;
 
 
 public class OnlineActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = MainActivity.class.getSimpleName();
 
     //layout
     private GridLayout oGameBoard;
@@ -72,7 +73,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         contadorTablas = 0;
         onResumes = 0;
         juez = new Juez();
-
         Intent i = getIntent();
         token = i.getStringExtra("token");
         setContentView(R.layout.activity_friend);
@@ -387,7 +387,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         TextView vs = findViewById(R.id.txtVs);
         tvMovs = findViewById(R.id.txtMovsOnline);
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
-
+        
         Object[] o = null;
         if (cliente.isConectado()) {
             o = cliente.getDatosIniciales(this, token);

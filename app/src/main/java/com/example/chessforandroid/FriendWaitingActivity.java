@@ -20,6 +20,7 @@ public class FriendWaitingActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
+        String token = intent.getStringExtra("token");
         int idPartida = intent.getIntExtra("id", -1);
 
         TextView txt = findViewById(R.id.txtLobby);
@@ -29,11 +30,11 @@ public class FriendWaitingActivity extends AppCompatActivity {
             Toast.makeText(this, "Ha habido un error en la creación de la sala", Toast.LENGTH_SHORT).show();
             finish();
         }
-        Cliente c = new Cliente();
-        if (!c.isConectado()) {
-            Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+        Cliente c = new Cliente(5567);
+        if (c.isConectado()) {
+            c.esperarRival(this, token);
         } else {
-            c.esperarRival(this, this);
+            Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
         }
     }
 }

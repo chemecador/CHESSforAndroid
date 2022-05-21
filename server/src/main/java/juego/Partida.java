@@ -93,7 +93,7 @@ public class Partida {
                 enviarMov(juez.turnoBlancas == anfitrionEsBlancas, mensaje);
                 juez.turnoBlancas = !juez.turnoBlancas;
                 //comprobar jaques, etc
-                if (juez.buscarRey(juez.casillas, juez.turnoBlancas == anfitrionEsBlancas) == null) {
+                if (juez.buscarRey(juez.casillas, juez.turnoBlancas) == null) {
                     //es jaque mate
                     jaqueMate(juez.turnoBlancas != anfitrionEsBlancas);
                     break;

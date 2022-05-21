@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class Cliente {
+    private final static String TAG = Cliente.class.getSimpleName();
 
     private Socket conn; // socket con la conexión
     private DataInputStream in; // flujo de entrada
@@ -40,7 +41,6 @@ public class Cliente {
     private String user;
     private String token;
     private Context context;
-
 
 
     // constructor
@@ -183,26 +183,22 @@ public class Cliente {
         new Ranking(ra).execute(pref);
     }
 
-    public void esperarRival(Context context, FriendWaitingActivity fwa) {
+    public void esperarRival(Context context, String token) {
         this.context = context;
-        new EsperarRival(fwa).execute();
+        this.token = token;
+        new EsperarRival().execute();
     }
 
     public class EsperarRival extends AsyncTask<Void, Void, String> {
 
-        FriendWaitingActivity fwa;
-
-        public EsperarRival(FriendWaitingActivity fwa) {
-            this.fwa = fwa;
-        }
 
         @Override
         protected String doInBackground(Void... voids) {
             try {
                 return in.readUTF();
             } catch (IOException e) {
-                Toast.makeText(fwa, "Error al esperar rival", Toast.LENGTH_SHORT).show();
-                fwa.finish();
+                Toast.makeText(context, "Error al esperar rival", Toast.LENGTH_SHORT).show();
+                ((Activity) context).finish();
                 e.printStackTrace();
             }
             return null;
@@ -216,9 +212,9 @@ public class Cliente {
                 localIntent.putExtra("token", token);
                 context.startActivity(localIntent);
             } else {
-                Toast.makeText(fwa, "Error inesperado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error inesperado", Toast.LENGTH_SHORT).show();
             }
-            fwa.finish();
+            ((Activity) context).finish();
         }
     }
 
@@ -422,8 +418,8 @@ public class Cliente {
 
             Object[] o = new Object[3];
             try {
-                out.writeUTF(token);
 
+                out.writeUTF(token);
                 // recibo mi nombre
                 o[0] = in.readUTF();
                 // recibo el nombre del rival
@@ -468,7 +464,7 @@ public class Cliente {
             super.onPostExecute(s);
 
             if (s == null) {
-                Log.e("**********", "Clase Online recibe null en onPostExecute");
+                Log.e(TAG, "La clase Online ha devuelto null");
             }
             if (s.equalsIgnoreCase("norivales")) {
                 Toast.makeText(lla, "No se han encontrado rivales", Toast.LENGTH_SHORT).show();
@@ -556,12 +552,10 @@ public class Cliente {
         @Override
         protected void onPostExecute(Integer res) {
             super.onPostExecute(res);
-
             Intent lobbyIntent = new Intent(context, FriendWaitingActivity.class);
             lobbyIntent.putExtra("id", res);
             lobbyIntent.putExtra("token", token);
             context.startActivity(lobbyIntent);
-            cerrarConexion();
         }
     }
 
@@ -603,7 +597,7 @@ public class Cliente {
                     }
                     break;
                 default:
-                    Log.e("**", "Error de conexión con la base de datos");
+                    Log.e(TAG, "Error de conexión con la base de datos");
                     break;
             }
             cerrarConexion();
