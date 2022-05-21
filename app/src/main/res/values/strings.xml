@@ -50,6 +50,7 @@
     <string name="black_move">Mueven las negras</string>
     <string name="winner">El ganador es </string>
     <string name="draw_offered">El rival ofrece tablas</string>
+    <string name="draw_declined">"El rival rechaza las tablas"</string>
     <string name="draw_accepted">Tablas por mutuo acuerdo</string>
     <string name="change_pass">Cambiar contraseña</string>
     <string name="old_pass">Contraseña antigua:</string>

@@ -10,6 +10,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * ProfileActivity. Muestra la informacion de la cuenta de un usuario.
+ */
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView victorias;
@@ -29,15 +32,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         Intent intent = getIntent();
         token = intent.getStringExtra("token");
         user = intent.getStringExtra("user");
+
+        // se recogen los datos del intent
         int[] datos = intent.getIntArrayExtra("datos");
 
-        username =  findViewById(R.id.pUser);
-        nivel =  findViewById(R.id.pNivel);
-        elo =  findViewById(R.id.pElo);
-        jugadas =  findViewById(R.id.pJugadas);
-        victorias =  findViewById(R.id.pGanadas);
-        derrotas =  findViewById(R.id.pDerrotas);
-        tablas =  findViewById(R.id.pTablas);
+        username = findViewById(R.id.pUser);
+        nivel = findViewById(R.id.pNivel);
+        elo = findViewById(R.id.pElo);
+        jugadas = findViewById(R.id.pJugadas);
+        victorias = findViewById(R.id.pGanadas);
+        derrotas = findViewById(R.id.pDerrotas);
+        tablas = findViewById(R.id.pTablas);
 
         username.setText(user);
         nivel.setText(String.valueOf(datos[0]));
@@ -60,16 +65,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
 
-        if (view.getId() == R.id.bCambiarPass){
+        if (view.getId() == R.id.bCambiarPass) {
             Intent i = new Intent(this, PasswordActivity.class);
             i.putExtra("user", user);
             startActivity(i);
         }
-        if (view.getId() == R.id.bCerrarSesion){
+
+        if (view.getId() == R.id.bCerrarSesion) {
             Toast.makeText(ProfileActivity.this, "cerrando sesión...", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, LoginActivity.class));
         }
-        if (view.getId() == R.id.ibLogros){
+
+        if (view.getId() == R.id.ibLogros) {
             Intent i = new Intent(this, AchievementsActivity.class);
             i.putExtra("token", token);
             i.putExtra("victorias", victorias.getText().toString());

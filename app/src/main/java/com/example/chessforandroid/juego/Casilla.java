@@ -4,15 +4,13 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.example.chessforandroid.piezas.Alfil;
-import com.example.chessforandroid.piezas.Caballo;
-import com.example.chessforandroid.piezas.Dama;
-import com.example.chessforandroid.piezas.Peon;
-import com.example.chessforandroid.piezas.Pieza;
-import com.example.chessforandroid.piezas.Rey;
-import com.example.chessforandroid.piezas.Torre;
+import com.example.chessforandroid.piezas.*;
 
+/**
+ * Clase Casilla. Contiene los elementos propios de una casilla.
+ */
 public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
+
     private final int fila;
     private final int columna;
     private Pieza pieza;
@@ -24,6 +22,10 @@ public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
         this.pieza = null;
     }
 
+    /**
+     * Crea y devuelve una copia de esta casilla.
+     * @return Casilla
+     */
     public Casilla clonarCasilla(){
         Casilla clon = new Casilla(getContext(),fila,columna);
         if (this.getPieza() != null) {

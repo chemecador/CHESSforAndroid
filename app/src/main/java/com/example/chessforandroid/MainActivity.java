@@ -14,22 +14,31 @@ import android.widget.Button;
 
 import com.example.chessforandroid.util.Cliente;
 
-/***
- *
+/**
  *
  * TAREA ACTUAL:
  * todas las misiones completadas, ¿que ocurre?
  *
  * BUGS CONOCIDOS:
- * no se pueden multiples partidas simultaneas
- *
  *
  * TAREAS EXTRA:
+ * poder seleccionar el idioma
  *
+ */
+
+/**
+ * MainActivity. Activity principal donde el usuario decide lo que quiere hacer en la app.
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    /**
+     * Nombre del usuario que esta usando la aplicacion
+     */
     private String user;
+
+    /**
+     * Token identificativo del usuario que esta usando la aplicacion
+     */
     private String token;
 
     @Override
@@ -54,19 +63,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /*Método que se ejecuta cuando se va a crear la barra de menú
-         * de la activity (la barra superior)
-         */
-        getMenuInflater().inflate(R.menu.main_menu, menu);//le digo al inflater correspondiente cual es el menú que debe 'inflar'
+
+        // el inflater pinta el menu introducido como parametro
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
         return true;
     }
 
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        /*Método que se ejecuta cuando el usuario selecciona un elemento
-         * de la barra de menú de la aplicación*/
-        switch (item.getItemId()) {/*Según la opción seleccionada ejecutaré un código u otro*/
+
+        switch (item.getItemId()) {
+
             case R.id.menu_perfil:
                 if (user.length() > 0) {
                     Cliente cliente = new Cliente();
@@ -77,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 startActivity(new Intent(this, LoginActivity.class));
                 return true;
+
             case R.id.menu_ajustes:
                 startActivity(new Intent(this, PreferencesActivity.class));
                 break;
@@ -84,18 +94,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.menu_acercade:
                 startActivity(new Intent(this, AboutUsActivity.class));
                 break;
-
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()) {
+
             case R.id.bOffline:
                 Intent offlineIntent = new Intent(this, OfflineActivity.class);
                 startActivity(offlineIntent);
                 break;
+
             case R.id.bMatchmaking:
                 if (user.length() > 0) {
                     Intent redLocalIntent = new Intent(this, OnlineWaitingActivity.class);
@@ -113,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 }
                 startActivity(new Intent(this, LoginActivity.class));
+
             case R.id.bRanking:
                 if (user.length() > 0) {
                     Intent rankingIntent = new Intent(this, RankingActivity.class);

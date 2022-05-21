@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.example.chessforandroid.util.Cliente;
 
+/**
+ * PasswordActivity. Activity encargado de gestionar el cambio de contraseña
+ */
 public class PasswordActivity extends AppCompatActivity implements View.OnClickListener{
 
     private EditText oldPass;

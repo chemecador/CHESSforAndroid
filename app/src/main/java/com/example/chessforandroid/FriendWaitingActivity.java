@@ -9,7 +9,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chessforandroid.util.Cliente;
+import com.example.chessforandroid.util.Constantes;
 
+/**
+ * Activity que se lanza cuando un usuario ha creado sala y esta esperando a su amigo.
+ */
 public class FriendWaitingActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
@@ -30,7 +34,9 @@ public class FriendWaitingActivity extends AppCompatActivity {
             Toast.makeText(this, "Ha habido un error en la creación de la sala", Toast.LENGTH_SHORT).show();
             finish();
         }
-        Cliente c = new Cliente(5567);
+
+        Cliente c = new Cliente(Constantes.puertoPartida);
+
         if (c.isConectado()) {
             c.esperarRival(this, token);
         } else {

@@ -12,9 +12,19 @@ import android.widget.Toast;
 
 import com.example.chessforandroid.util.Cliente;
 
+/**
+ * FriendActivity. Activity que se lanza cuando el usuario ha elegido jugar con un amigo.
+ */
 public class FriendActivity extends AppCompatActivity implements View.OnClickListener {
 
+    /**
+     * Codigo de la sala a la que el usuario se quiere unir
+     */
     private EditText codigo;
+
+    /**
+     * Token identificativo de cada usuario
+     */
     private String token;
 
     @Override

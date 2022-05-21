@@ -2,6 +2,9 @@ package com.example.chessforandroid.piezas;
 
 import com.example.chessforandroid.R;
 
+/**
+ * Clase Peon.
+ */
 public class Peon extends Pieza {
 
     public boolean pasable;

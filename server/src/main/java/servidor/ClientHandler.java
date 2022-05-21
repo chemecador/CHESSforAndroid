@@ -55,7 +55,7 @@ public class ClientHandler extends Thread {
 
     private void procesarPeticion(String peticion) throws Exception {
         switch (peticion) {
-            case "signup":
+            case "registro":
                 registro();
                 cerrarConexion();
                 break;
@@ -270,13 +270,26 @@ public class ClientHandler extends Thread {
     }
 
     private void pedirDatos() throws IOException, SQLException {
-        //se recibe un token, el token se transforma a id y se envia como parametro
+        // se recibe un token, el token se transforma a id y se envia como parametro
         int[] datos = DB.pedirDatos(DB.getIdFromToken(in.readUTF()));
+
+
+        // nivel del jugador
         out.writeInt(datos[0]);
+
+        // elo
         out.writeInt(datos[1]);
+
+        // total de partidas jugadas
         out.writeInt(datos[2]);
+
+        // total de victorias
         out.writeInt(datos[3]);
+
+        // total de derrotas
         out.writeInt(datos[4]);
+
+        // total de tablas
         out.writeInt(datos[5]);
     }
 

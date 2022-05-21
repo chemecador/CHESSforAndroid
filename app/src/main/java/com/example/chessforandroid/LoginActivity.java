@@ -16,13 +16,27 @@ import com.example.chessforandroid.util.Cliente;
 
 import java.util.Objects;
 
+/**
+ * LoginActivity. Activity que se encarga de gestionar el inicio de sesion de un usuario.
+ */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final static String TAG = LoginActivity.class.getSimpleName();
 
+    /**
+     * Nombre de usuario escrito por el jugador.
+     */
     private EditText user;
+
+    /**
+     * Clave escrita por el jugador.
+     */
     private EditText pass;
-    private int i;
+
+    /**
+     * Contador de veces que se ha pulsado sobre el TextView con el nombre de la app.
+     */
+    private int contador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +63,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         TextView tvChess = findViewById(R.id.txtChessLogin);
         tvChess.setOnClickListener(this);
 
-        i = 0;
+        contador = 0;
     }
 
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+
             case R.id.bLogin:
                 if (user.getText().length() < 1 || pass.getText().length() < 1) {
                     Toast.makeText(this, "Rellena los campos de usuario y contraseña", Toast.LENGTH_SHORT).show();
@@ -71,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.e(TAG, "Error al iniciar sesión");
                 }
                 break;
+
             case R.id.bSignup:
                 if (user.getText().length() < 1 || pass.getText().length() < 1) {
                     Toast.makeText(this, "Rellena los campos de usuario y contraseña", Toast.LENGTH_SHORT).show();
@@ -83,15 +99,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
                 }
                 break;
+
             case R.id.bInvitado:
                 Intent mainIntentOffline = new Intent(this, MainActivity.class);
                 mainIntentOffline.putExtra("user", "");
                 startActivity(mainIntentOffline);
                 finish();
                 break;
+
             case R.id.txtChessLogin:
-                i++;
-                if (i > 7) {
+                contador++;
+                if (contador > 7) {
                     startActivity(new Intent(this, AdvancedActivity.class));
                 }
                 break;

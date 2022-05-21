@@ -31,19 +31,26 @@ import com.example.chessforandroid.juego.Casilla;
 import com.example.chessforandroid.util.Juez;
 
 
+/**
+ * Clase OfflineActivity. Gestiona la partida local entre dos jugadores.
+ */
 public class OfflineActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // atributos de layout
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;
+
+    // atributos de interfaz
+    public static TextView tvMovs;
+    private TextView mueven;
+    public static StringBuilder movs;
+
+    // atributos de la partida
     private boolean haySeleccionada;
     private boolean fin;
     private Casilla quieroMover;
     public static String tag;
     private int nMovs;
-    @SuppressLint("StaticFieldLeak")
-    public static TextView tvMovs;
-    private TextView mueven;
-    public static StringBuilder movs;
     private Juez juez;
 
     @Override
@@ -76,6 +83,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
         if (view.getId() == R.id.bTablasOffline) {
 
+            // se lanza un AlertDialog mostrando el resultado de tablas
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Tablas");
             builder.setMessage("Tablas de mutuo acuerdo");
@@ -85,8 +93,10 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
             fin = true;
             return;
         }
+
         if (view.getId() == R.id.bRendirseOffline) {
 
+            // gana el jugador que no era su turno
             if (juez.turno) {
                 Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
             } else {
@@ -96,13 +106,20 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
             return;
         }
 
-
+        // la casilla que se acaba de tocar
         Casilla casSelec = (Casilla) view;
 
         if (!haySeleccionada) {
-            if (casSelec.getPieza() == null)
+            // si no hay ninguna casilla seleccionada...
+
+            if (casSelec.getPieza() == null){
+                // si la casilla seleccionada no contiene ninguna pieza, no devuelve nada
                 return;
+            }
+
+
             if (casSelec.getPieza().isBlancas() != juez.turno) {
+                // si contiene una pieza pero es del rival, se notifica y no devuelve nada
                 if (juez.turno)
                     Toast.makeText(this, "Mueven las blancas", Toast.LENGTH_SHORT).show();
                 else
@@ -110,25 +127,48 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 return;
             }
 
+            // se colorea la casilla seleccionada para identificarla mejor
             casSelec.setBackgroundColor(Color.parseColor("#459CCD"));
+
+            // se guarda la casilla en una variable
             quieroMover = casSelec;
             quieroMover.setPieza(casSelec.getPieza());
         } else {
+            // si ya habia casilla seleccionada...
+
+            // se pinta el fondo para borrar la casilla coloreada
             pintarFondo();
+
+            // se comprueba si el movimiento es valido
             if (juez.esValido(juez.casillas, quieroMover, casSelec)) {
+
                 if (juez.turno) {
                     if (nMovs % 3 == 0) {
+                        // cada 3 movimientos de los dos jugadores, se produce un salto de linea
                         movs.append("\n");
                     }
                     nMovs++;
                 }
+
+                // se guarda en una variable si se va a producir una captura
                 juez.captura = casSelec.getPieza() != null;
+
+                // se guarda el nombre de la pieza que se quiere mover
                 tag = quieroMover.getPieza().getTag();
+
+                // se realiza el movmimiento
                 juez.mover(quieroMover, casSelec);
+
+                // se iluminan las dos casillas implicadas en el movimiento para una mayor claridad
                 quieroMover.setBackgroundColor(Color.parseColor("#AECDDF"));
                 casSelec.setBackgroundColor(Color.parseColor("#8DC5E5"));
+
+                // se cambia el turno
                 juez.turno = !juez.turno;
+
+                // si se han comido el rey, (jaque mate)...
                 if (juez.buscarRey(juez.casillas, juez.turno) == null) {
+                    // se notifica quien ha ganado
                     if (juez.turno)
                         Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
                     else
@@ -137,18 +177,37 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                     fin = true;
                     return;
                 }
+
+                // se guarda en una variable si hay movimiento posible
                 juez.puedeMover = juez.puedeMover(juez.casillas, juez.turno);
+
+                // se guarda en una variable si está en jaque
                 juez.jaque = juez.comprobarJaque(juez.casillas);
+
+                // se actualizan los movimientos
                 actualizarTxt(casSelec.getFila(), casSelec.getColumna());
+
                 if (juez.jaque) {
-                    Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
+                    // si hay jaque, se ilumina la casilla y se muestra por pantalla
+                    Toast.makeText(this, "Jaque", Toast.LENGTH_SHORT).show();
                     juez.buscarRey(juez.casillas, juez.turno).setBackgroundColor(Color.RED);
                 } else {
                     if (!juez.puedeMover) {
-                        Toast.makeText(this, "REY AHOGADO " + juez.turno, Toast.LENGTH_SHORT).show();
+                        // no hay jaque y no puede mover, rey ahogado
+                        Toast.makeText(this, "REY AHOGADO" + juez.turno, Toast.LENGTH_SHORT).show();
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("Tablas");
+                        builder.setMessage("Tablas por ahogado");
+                        builder.setPositiveButton(R.string.accept, null);
+                        Dialog dialog = builder.create();
+                        dialog.show();
+                        fin = true;
+                        return;
                     }
                 }
             }
+            // se notifica el cambio de turno
             if (juez.turno)
                 mueven.setText("Mueven las blancas");
             else
@@ -158,6 +217,11 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         haySeleccionada = !haySeleccionada;
     }
 
+    /**
+     * Metodo que actualiza el texto con los movimientos
+     * @param fila Fila del movimiento
+     * @param col Columna del movimiento
+     */
     private void actualizarTxt(int fila, int col) {
 
         char[] cs = juez.coorToChar(fila, col);
@@ -203,7 +267,9 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         tvMovs.setText(movs);
     }
 
-
+    /**
+     * Metodo que ajusta los listeners
+     */
     private void addListeners() {
         pintarFondo();
         movs = new StringBuilder();
@@ -291,6 +357,9 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    /**
+     * Metodo que pinta las casillas blancas y negras
+     */
     private void pintarFondo() {
         boolean cambiar = false;
         int x = 0;
@@ -312,6 +381,9 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    /**
+     * Metodo que crea las casillas
+     */
     public void crearCasillas() {
         boolean cambiar = false;
         int x = 0;

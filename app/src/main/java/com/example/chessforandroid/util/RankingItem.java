@@ -1,17 +1,30 @@
 package com.example.chessforandroid.util;
 
+/**
+ * Clase RankingItem. Contiene la informacion de cada fila que aparecera en el ranking
+ */
 public class RankingItem {
+    /**
+     * Posicion en la clasificacion
+     */
     private int position;
+
+    /**
+     * Nombre del usuario
+     */
     private String user;
+
+    /**
+     * ELO del usuario
+     */
     private String elo;
+
+    public RankingItem(){}
 
     public RankingItem(int position, String user, String elo) {
         this.position = position;
         this.user = user;
         this.elo = elo;
-    }
-
-    public RankingItem() {
     }
 
     public int getPosition() {

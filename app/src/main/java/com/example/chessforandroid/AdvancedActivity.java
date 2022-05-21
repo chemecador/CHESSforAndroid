@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.example.chessforandroid.util.Constantes;
 
+/**
+ * AdvancedActivity. Muestra las opciones avanzadas para cambiar la IP.
+ */
 public class AdvancedActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText ip, puerto;
     private Button cancelar, confirmar;
@@ -51,6 +54,9 @@ public class AdvancedActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * Metodo que oculta todos los botones de la interfaz.
+     */
     private void ocultar() {
         ip.setVisibility(View.INVISIBLE);
         puerto.setVisibility(View.INVISIBLE);
@@ -60,6 +66,9 @@ public class AdvancedActivity extends AppCompatActivity implements View.OnClickL
         tvPuerto.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Metodo que muestra todos los botones de la interfaz.
+     */
     private void mostrar() {
         ip.setVisibility(View.VISIBLE);
         puerto.setVisibility(View.VISIBLE);
@@ -71,6 +80,7 @@ public class AdvancedActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
+
         if (view.getId() == R.id.bCancelar) {
             finish();
         }

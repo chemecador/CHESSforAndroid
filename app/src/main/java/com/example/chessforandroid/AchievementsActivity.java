@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 import com.example.chessforandroid.util.Cliente;
 
+/**
+ * AchievementsActivity. Solicita al servidor y muestra los logros conseguidos por cada usuario
+ */
 public class AchievementsActivity extends AppCompatActivity {
     private String token;
     private TextView cantidadLogros, win10, win20, win30,
@@ -43,6 +46,11 @@ public class AchievementsActivity extends AppCompatActivity {
 
 
     }
+
+    /**
+     * Metodo que se invoca cuando ha terminado la consulta al servidor
+     * @param logros Vector de booleanos que informa si se ha completado cada logro o no
+     */
     public void alTerminarConsulta(Boolean[] logros){
         int nLogros = 0;
 

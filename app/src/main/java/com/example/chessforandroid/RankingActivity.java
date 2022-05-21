@@ -15,6 +15,9 @@ import com.example.chessforandroid.util.RankingItem;
 
 import java.util.ArrayList;
 
+/**
+ * RankingActivity. Activity que se encarga de solicitar al servidor y mostrar el ranking
+ */
 public class RankingActivity extends AppCompatActivity {
 
     private RankingAdapter adapter;
@@ -50,6 +53,10 @@ public class RankingActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Metodo que se invoca cuando se ha terminado de recibir la clasificacion
+     * @param datos ArrayList con los datos de los usuarios
+     */
     public void alRecibirDatos(ArrayList<RankingItem> datos) {
 
         tvCargando.setVisibility(View.INVISIBLE);

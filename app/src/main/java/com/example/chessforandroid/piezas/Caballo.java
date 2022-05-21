@@ -2,6 +2,9 @@ package com.example.chessforandroid.piezas;
 
 import com.example.chessforandroid.R;
 
+/**
+ * Clase Caballo.
+ */
 public class Caballo extends Pieza {
     public Caballo(boolean blancas) {
         this.blancas = blancas;

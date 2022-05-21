@@ -8,7 +8,11 @@ import android.util.Log;
 
 import com.example.chessforandroid.util.Cliente;
 
+/**
+ * OnlineWaitingActivity, envia al servidor la peticion de buscar partida online
+ */
 public class OnlineWaitingActivity extends AppCompatActivity {
+    private final static String TAG = Cliente.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +25,7 @@ public class OnlineWaitingActivity extends AppCompatActivity {
         if (c.isConectado()){
             c.online(this, this, token);
         } else {
-            Log.i ("************************", "error");
+            Log.i (TAG, "Error al buscar partida online");
         }
     }
 }

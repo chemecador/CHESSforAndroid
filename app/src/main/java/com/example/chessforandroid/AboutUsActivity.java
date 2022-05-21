@@ -7,13 +7,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+/**
+ * Activity AboutUsActivity.
+ * Muestra la informacion acerca del desarrollador y cuenta el numero
+ *  de toques que se ha realizado sobre el texto de la version.
+ *  Si llega a 7, lanza el AdvancedActivity.
+ */
 public class AboutUsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int i;
+    private int contador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        i = 0;
+        contador = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
         TextView tv = findViewById(R.id.txtVersion);
@@ -23,8 +29,8 @@ public class AboutUsActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.txtVersion) {
-            i++;
-            if (i > 7) {
+            contador++;
+            if (contador > 7) {
                 startActivity(new Intent(this, AdvancedActivity.class));
             }
         }

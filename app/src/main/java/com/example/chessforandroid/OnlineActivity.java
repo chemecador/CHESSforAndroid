@@ -2,6 +2,7 @@ package com.example.chessforandroid;
 
 import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
+import static com.example.chessforandroid.util.Constantes.puertoPartida;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -34,10 +35,13 @@ import com.example.chessforandroid.util.Cliente;
 import com.example.chessforandroid.util.Juez;
 
 
+/**
+ * OnlineActivity, activity encargado de gestionar la partida online
+ */
 public class OnlineActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String TAG = OnlineActivity.class.getSimpleName();
 
-    //layout
+    // atributos de layout
     private GridLayout oGameBoard;
     private LinearLayout oGameBoardShell;
     private Button tablas;
@@ -49,12 +53,12 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     public String yo;
     public String token;
 
-    //tablero
+    // atributos de tablero
     private boolean haySeleccionada;
     private boolean fin;
     private Casilla quieroMover;
 
-    //elementos de juego
+    // elementos de juego
     private int nMovs;
     private int contadorTablas;
     private boolean soyBlancas;
@@ -78,18 +82,20 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_friend);
         crearCasillas();
 
-        this.oGameBoardShell = this.findViewById(R.id.shellGameBoardOnline);
-        this.oGameBoard = this.findViewById(R.id.gridGameBoardOnline);
+        oGameBoardShell = findViewById(R.id.shellGameBoardOnline);
+        oGameBoard = findViewById(R.id.gridGameBoardOnline);
         Tablero t = new Tablero();
         t.execute();
 
-        cliente = new Cliente(5567);
+        cliente = new Cliente(puertoPartida);
 
     }
 
 
     @Override
     public void onClick(View view) {
+
+        // idem que en OfflineActivity
 
         if (fin)
             return;
@@ -121,7 +127,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         }
         if (view.getId() == R.id.bRendirseOnline) {
 
-
             if (cliente.isConectado()) {
                 cliente.enviarMov(this, this, "rendirse", movs.toString());
                 miTurno = false;
@@ -131,42 +136,65 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
+        // la casilla que se acaba de tocar
         Casilla casSelec = (Casilla) view;
 
         if (!haySeleccionada) {
-            if (casSelec.getPieza() == null)
-                return;
-            if (casSelec.getPieza().isBlancas() != soyBlancas)
-                return;
+            // si no hay ninguna casilla seleccionada...
 
+            if (casSelec.getPieza() == null) {
+
+                // si la casilla seleccionada no contiene ninguna pieza, no devuelve nada
+                return;
+            }
+            if (casSelec.getPieza().isBlancas() != soyBlancas) {
+
+                // si contiene una pieza pero es del rival, se notifica y no devuelve nada
+                return;
+            }
+
+            // se colorea la casilla seleccionada para identificarla mejor
             casSelec.setBackgroundColor(Color.parseColor("#459CCD"));
+
+            // se guarda la casilla en una variable
             quieroMover = casSelec;
             tag = quieroMover.getPieza().getTag();
             quieroMover.setPieza(casSelec.getPieza());
         } else {
+            // si ya habia casilla seleccionada...
 
+            // se pinta el fondo para borrar la casilla coloreada
             pintarFondo();
+
+            // se comprueba si el movimiento es valido
             if (juez.esValido(juez.casillas, quieroMover, casSelec)) {
+
+                // el movimiento es valido, por tanto no hay tablas
                 quieroTablas = false;
+
                 tablas.setBackgroundColor(Color.parseColor("#646464"));
                 juez.captura = casSelec.getPieza() != null;
                 juez.mover(quieroMover, casSelec);
                 quieroMover.setBackgroundColor(Color.parseColor("#AECDDF"));
                 casSelec.setBackgroundColor(Color.parseColor("#8DC5E5"));
+
                 if (nMovs > 0 && nMovs % 3 == 0) {
                     movs.append("\n");
                     tvMovs.setText(movs);
                 }
                 nMovs++;
+
                 actualizarTxt(casSelec.getFila(), casSelec.getColumna());
                 juez.sTablero = juez.casillasToString();
+
                 if (cliente.isConectado()) {
+                    // se envia el movimiento al rival
                     cliente.enviarMov(this, this, juez.casillasToString(), movs.toString());
                     miTurno = false;
                     actualizarTurno();
                 }
             } else {
-                Log.e("************************", "error");
+                Log.e(TAG, "error");
             }
 
         }
@@ -174,70 +202,37 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
+    /**
+     * Metodo que se ejecuta cuando el rival ha respondido a la propuesta de tablas
+     *
+     * @param aceptadas True (aceptadas), False (rechazadas)
+     */
     public void trasOfrecerTablas(boolean aceptadas) {
+
         if (aceptadas) {
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
             builder.setMessage(R.string.draw_accepted);
-
             builder.setPositiveButton(R.string.accept, null);
             Dialog dialog = builder.create();
             dialog.show();
             tablas.setBackgroundColor(Color.GREEN);
             fin = true;
+
         } else {
-            Toast.makeText(this, "El rival rechaza las tablas", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(this, R.string.draw_declined, Toast.LENGTH_SHORT).show();
             miTurno = true;
             tablas.setBackgroundColor(Color.parseColor("#646464"));
             contadorTablas++;
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        onResumes++;
-        if (onResumes == 2) {
-            Toast.makeText(this, "Has perdido por abandono", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (cliente.isConectado()) {
-            Log.i("**", "socket cerrado en onPause()");
-            cliente.abandonar();
-        } else {
-            Log.i("**", "cliente ya no conectado en onPause()");
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (cliente.isConectado()) {
-            Log.i("**", "socket cerrado en onDestroy()");
-            cliente.abandonar();
-        } else {
-            Log.i("**", "cliente ya no conectado en onDestroy()");
-        }
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (cliente.isConectado()) {
-            Log.i("**", "socket cerrado en onStop()");
-            cliente.abandonar();
-        } else {
-            Log.i("**", "cliente ya no conectado en onStop()");
-        }
-    }
-
-
+    /**
+     * Metodo que se ejecuta cuando se ha recibido movimiento
+     *
+     * @param objects Vector de informacion relacionada con el movimiento
+     */
     public void trasRecibirMov(Object[] objects) {
 
         String s0 = (String) objects[0];
@@ -261,23 +256,23 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-        //tablero
+        // posicion de las fichas
         juez.sTablero = s0;
-        //movs actualizados
+        // string con los movimientos
         String s1 = (String) objects[1];
         tvMovs.setText(s1);
-        //es jaque mate?
+        // es jaque mate?
         fin = (boolean) objects[2];
         if (fin) {
             gestionarFinal(miTurno == soyBlancas);
             return;
         }
-        //es jaque?
+        // es jaque?
         juez.jaque = (boolean) objects[3];
         if (juez.jaque) {
             Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
         }
-        //puede mover?
+        // puede mover?
         juez.puedeMover = (boolean) objects[4];
 
 
@@ -287,9 +282,16 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         actualizarTurno();
     }
 
+    /**
+     * Metodo que se encarga de gestionar el final de la partida y notificar el ganador
+     *
+     * @param ganoBlancas True (ganaron las blancas), False (ganaron las negras), Null (tablas)
+     */
     public void gestionarFinal(Boolean ganoBlancas) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String ganador = null;
+
         if (ganoBlancas == null) {
             builder.setMessage(R.string.draw_accepted);
 
@@ -299,29 +301,36 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             tablas.setBackgroundColor(Color.GREEN);
             return;
         }
+
         if (ganoBlancas && soyBlancas) {
             builder.setTitle(R.string.you_win);
             ganador = yo;
         }
+
         if (ganoBlancas && !soyBlancas) {
             builder.setTitle(R.string.you_lose);
             ganador = rival;
         }
+
         if (!ganoBlancas && soyBlancas) {
             builder.setTitle(R.string.you_lose);
             ganador = rival;
         }
+
         if (!ganoBlancas && !soyBlancas) {
             builder.setTitle(R.string.you_win);
             ganador = yo;
         }
+
         builder.setMessage("El ganador es " + ganador);
         builder.setPositiveButton(R.string.accept, null);
         Dialog dialog = builder.create();
         dialog.show();
-
     }
 
+    /**
+     * Metodo que se encarga de gestionar una propuesta de tablas
+     */
     private void propuestaTablas() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.draw_offered);
@@ -344,31 +353,40 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         dialog.show();
     }
 
+    /**
+     * Metodo que se ejecuta cuando se ha terminado de enviar el movimiento al rival
+     *
+     * @param objects Vector con informacion de la partida tras el movimiento
+     */
     public void trasEnviarMov(Object[] objects) {
 
+        // si el vector es nulo, la partida ha terminado
         if (objects[0] == null) {
             return;
         }
-        //es jaque mate?
+        // es jaque mate?
         fin = (boolean) objects[0];
         if (fin) {
             gestionarFinal(miTurno != soyBlancas);
             return;
         }
-        //es jaque?
+        // es jaque?
         juez.jaque = (boolean) objects[1];
         if (juez.jaque) {
             Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
         }
-        //puede mover?
+        // puede mover?
         juez.puedeMover = (boolean) objects[2];
 
         juez.inTablero = juez.stringToInt(juez.sTablero);
         juez.actualizarCasillas(juez.inTablero);
+
         esperarMov();
     }
 
-
+    /**
+     * Metodo que espera movimiento del rival
+     */
     private void esperarMov() {
         if (fin)
             return;
@@ -410,12 +428,168 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         rival = (String) o[1];
         miTurno = soyBlancas;
         if (soyBlancas) {
-            vs.setText("(B) " + yo + " vs " + rival + " (N)");
+            vs.setText("(Blancas) " + yo + " vs " + rival + " (Negras)");
             Toast.makeText(this, "Juegas con blancas", Toast.LENGTH_SHORT).show();
         } else {
-            vs.setText("(B) " + rival + " vs " + yo + " (N)");
+            vs.setText("(Blancas) " + rival + " vs " + yo + " (Negras)");
             Toast.makeText(this, "Juegas con negras", Toast.LENGTH_SHORT).show();
             esperarMov();
+        }
+    }
+
+    /**
+     * Metodo que pinta las casillas blancas y negras
+     */
+    private void pintarFondo() {
+        boolean cambiar = false;
+        int x = 0;
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+                if (x % 8 == 0) {
+                    cambiar = !cambiar;
+                }
+                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
+                    //casillas negras
+                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
+                } else {
+
+                    //casillas blancas
+                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#DDDDDD"));
+                }
+                x++;
+            }
+        }
+    }
+
+    /**
+     * Metodo que actualiza el texto con el turno
+     */
+    private void actualizarTurno() {
+        if (soyBlancas == miTurno)
+            tvMueven.setText(R.string.white_move);
+        else
+            tvMueven.setText(R.string.black_move);
+    }
+
+
+    /**
+     * Metodo que actualiza el texto con los movimientos
+     *
+     * @param fila Fila del movimiento
+     * @param col  Columna del movimiento
+     */
+    private void actualizarTxt(int fila, int col) {
+
+        char[] cs = juez.coorToChar(fila, col);
+        char c1 = cs[0];
+        char c2 = cs[1];
+        movs = new StringBuilder(tvMovs.getText().toString());
+        movs.append("   ").append(nMovs).append(". ");
+        switch (tag) {
+            case "REY":
+                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8') {
+                    movs.append("O-O-O");
+                    return;
+                }
+                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8') {
+                    movs.append("O-O");
+                    return;
+                }
+                movs.append("R");
+                break;
+            case "DAMA":
+                movs.append("D");
+                break;
+            case "ALFIL":
+                movs.append("A");
+                break;
+            case "CABALLO":
+                movs.append("C");
+                break;
+            case "TORRE":
+                movs.append("T");
+                break;
+        }
+        if (juez.captura)
+            movs.append("x");
+
+        movs.append(c1).append(c2);
+        if (juez.jaque)
+            movs.append("+");
+
+        tvMovs.setText(movs);
+    }
+
+    /**
+     * Metodo que crea las casillas
+     */
+    public void crearCasillas() {
+        boolean cambiar = false;
+        int x = 0;
+        for (int i = 0; i < NUM_FILAS; i++) {
+            for (int j = 0; j < NUM_COLUMNAS; j++) {
+
+                if (x % 8 == 0) {
+                    cambiar = !cambiar;
+                }
+                Casilla b = new Casilla(this, i, j);
+                b.setClickable(true);
+                //piezas negras
+                if (x == 0 || x == 7) {
+                    b.setPieza(new Torre(false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 1 || x == 6) {
+                    b.setPieza(new Caballo(false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 2 || x == 5) {
+                    b.setPieza(new Alfil(false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 3) {
+                    b.setPieza(new Dama(false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 4) {
+                    b.setPieza(new Rey(false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x > 7 && x < 16) {
+                    b.setPieza(new Peon(false));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+
+                //piezas blancas
+                if (x == 56 || x == 63) {
+                    b.setPieza(new Torre(true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 57 || x == 62) {
+                    b.setPieza(new Caballo(true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 58 || x == 61) {
+                    b.setPieza(new Alfil(true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 59) {
+                    b.setPieza(new Dama(true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x == 60) {
+                    b.setPieza(new Rey(true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                if (x > 47 && x < 56) {
+                    b.setPieza(new Peon(true));
+                    b.setImageResource(b.getPieza().getDrawable());
+                }
+                b.setPadding(0, 0, 0, 0);
+
+                juez.casillas[i][j] = b;
+                x++;
+            }
         }
     }
 
@@ -489,144 +663,42 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void pintarFondo() {
-        boolean cambiar = false;
-        int x = 0;
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-                if (x % 8 == 0) {
-                    cambiar = !cambiar;
-                }
-                if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
-                    //casillas negras
-                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
-                } else {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        onResumes++;
+        if (onResumes == 2) {
+            Toast.makeText(this, "Has perdido por abandono", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
 
-                    //casillas blancas
-                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#DDDDDD"));
-                }
-                x++;
-            }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (cliente.isConectado()) {
+            cliente.enviarMensaje("abandonar");
+            cliente.cerrarConexion();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cliente.isConectado()) {
+            cliente.enviarMensaje("abandonar");
+            cliente.cerrarConexion();
         }
     }
 
 
-    private void actualizarTurno() {
-        if (soyBlancas == miTurno)
-            tvMueven.setText(R.string.white_move);
-        else
-            tvMueven.setText(R.string.black_move);
-    }
-
-    private void actualizarTxt(int fila, int col) {
-
-        char[] cs = juez.coorToChar(fila, col);
-        char c1 = cs[0];
-        char c2 = cs[1];
-        movs = new StringBuilder(tvMovs.getText().toString());
-        movs.append("   ").append(nMovs).append(". ");
-        switch (tag) {
-            case "REY":
-                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8') {
-                    movs.append("O-O-O");
-                    return;
-                }
-                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8') {
-                    movs.append("O-O");
-                    return;
-                }
-                movs.append("R");
-                break;
-            case "DAMA":
-                movs.append("D");
-                break;
-            case "ALFIL":
-                movs.append("A");
-                break;
-            case "CABALLO":
-                movs.append("C");
-                break;
-            case "TORRE":
-                movs.append("T");
-                break;
-        }
-        if (juez.captura)
-            movs.append("x");
-
-        movs.append(c1).append(c2);
-        if (juez.jaque)
-            movs.append("+");
-
-        tvMovs.setText(movs);
-    }
-
-    public void crearCasillas() {
-        boolean cambiar = false;
-        int x = 0;
-        for (int i = 0; i < NUM_FILAS; i++) {
-            for (int j = 0; j < NUM_COLUMNAS; j++) {
-
-                if (x % 8 == 0) {
-                    cambiar = !cambiar;
-                }
-                Casilla b = new Casilla(this, i, j);
-                b.setClickable(true);
-                //piezas negras
-                if (x == 0 || x == 7) {
-                    b.setPieza(new Torre(false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 1 || x == 6) {
-                    b.setPieza(new Caballo(false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 2 || x == 5) {
-                    b.setPieza(new Alfil(false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 3) {
-                    b.setPieza(new Dama(false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 4) {
-                    b.setPieza(new Rey(false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x > 7 && x < 16) {
-                    b.setPieza(new Peon(false));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-
-                //piezas blancas
-                if (x == 56 || x == 63) {
-                    b.setPieza(new Torre(true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 57 || x == 62) {
-                    b.setPieza(new Caballo(true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 58 || x == 61) {
-                    b.setPieza(new Alfil(true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 59) {
-                    b.setPieza(new Dama(true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x == 60) {
-                    b.setPieza(new Rey(true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                if (x > 47 && x < 56) {
-                    b.setPieza(new Peon(true));
-                    b.setImageResource(b.getPieza().getDrawable());
-                }
-                b.setPadding(0, 0, 0, 0);
-
-                juez.casillas[i][j] = b;
-                x++;
-            }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (cliente.isConectado()) {
+            cliente.enviarMensaje("abandonar");
+            cliente.cerrarConexion();
         }
     }
+
 }
