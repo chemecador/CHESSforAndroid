@@ -26,5 +26,5 @@ public class Constantes {
     /**
      * modo debug para ejecutar el servidor en local
      */
-    public static boolean debug = true;
+    public static boolean debug = false;
 }

@@ -197,7 +197,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         onResumes++;
-        if(onResumes == 2) {
+        if (onResumes == 2) {
             Toast.makeText(this, "Has perdido por abandono", Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -387,7 +387,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         TextView vs = findViewById(R.id.txtVs);
         tvMovs = findViewById(R.id.txtMovsOnline);
         tvMovs.setMovementMethod(new ScrollingMovementMethod());
-        
+
         Object[] o = null;
         if (cliente.isConectado()) {
             o = cliente.getDatosIniciales(this, token);
