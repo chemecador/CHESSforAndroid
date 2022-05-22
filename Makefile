@@ -12,7 +12,7 @@ run:
 docker: build
 	docker build . -t chessserver:$(VERSION)
 
-docker-release: build
+docker-release:
 	docker buildx build . -f build.Dockerfile \
 		--platform linux/arm64 \
 		--tag ghcr.io/chemecador/chessserver:$(VERSION) \
