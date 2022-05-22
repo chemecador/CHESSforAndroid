@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -20,12 +19,16 @@ import juego.Lobby;
 import db.DB;
 import util.Hash;
 
+/**
+ * Clase ClientHandler. Se encarga de gestionar las peticiones de cada cliente en un hilo diferente.
+ */
 public class ClientHandler extends Thread {
     private static final Logger logger = LogManager.getLogger();
 
+    // atributos de conexion
+    private Socket socket;
     private DataOutputStream out;
     private DataInputStream in;
-    private Socket socket;
 
     public ClientHandler(Socket cliente) {
         this.socket = cliente;
@@ -35,12 +38,12 @@ public class ClientHandler extends Thread {
             in = new DataInputStream(cliente.getInputStream());
         } catch (IOException e) {
             logger.error("Conexion interrumpida " + e.getMessage());
-            return;
         }
     }
 
     @Override
     public void run() {
+        // cada hilo gestiona una peticion
         try {
             String peticion = in.readUTF();
 
@@ -53,42 +56,58 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Metodo encargado de llamar a otros metodos que realicen la tarea que desea el cliente
+     * @param peticion Peticion en clave de la tarea que quieren hacer
+     * @throws Exception Excepcion
+     */
     private void procesarPeticion(String peticion) throws Exception {
+
         switch (peticion) {
+
             case "registro":
                 registro();
                 cerrarConexion();
                 break;
+
             case "login":
                 inicioSesion();
                 cerrarConexion();
                 break;
+
             case "cambiarpass":
                 out.writeBoolean(cambiarPass());
                 cerrarConexion();
                 break;
+
             case "pedirdatos":
                 pedirDatos();
                 cerrarConexion();
                 break;
+
             case "online":
                 jugarOnline();
                 break;
+
             case "crearsala":
                 crearSala();
                 break;
+
             case "unirse":
                 unirse();
                 cerrarConexion();
                 break;
+
             case "elo":
                 rankingElo();
                 cerrarConexion();
                 break;
+
             case "nivel":
                 rankingNivel();
                 cerrarConexion();
                 break;
+
             case "consultarlogros":
                 consultarLogros();
                 cerrarConexion();
@@ -96,9 +115,16 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Metodo encargado de consultar y devolver la informacion acerca de los logros de un jugador.
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     */
     private void consultarLogros() throws IOException, SQLException {
-        //se recibe un token, el token se transforma a id y se envia como parametro
+        // se recibe un token, el token se transforma a id y se envia como parametro
         Boolean[] datos = DB.consultarLogros(DB.getIdFromToken(in.readUTF()));
+
+        // se envia cada dato devuelto por el metodo
         out.writeBoolean(datos[0]);
         out.writeBoolean(datos[1]);
         out.writeBoolean(datos[2]);
@@ -108,7 +134,13 @@ public class ClientHandler extends Thread {
         out.writeBoolean(datos[6]);
     }
 
+    /**
+     * Metodo que consulta y devuelve la clasificacion de los usuarios ordenada por nivel
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     */
     private void rankingNivel() throws IOException, SQLException {
+
         ArrayList<String> users = DB.getRankingUsersByNivel();
         ArrayList<String> niveles = DB.getRankingNiveles();
 
@@ -128,6 +160,11 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Metodo que consulta y devuelve la clasificacion de los usuarios ordenada por ELO
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     */
     private void rankingElo() throws IOException, SQLException {
         ArrayList<String> users = DB.getRankingUsersByELO();
         ArrayList<String> elos = DB.getRankingElos();
@@ -148,28 +185,48 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Metodo encargado de cerrar la conexion con el servidor
+     * @throws IOException IOException
+     */
     public void cerrarConexion() throws IOException {
         socket.close();
     }
 
+    /**
+     * Metodo encargado de gestionar la peticion de un jugador de jugar online
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     */
     private void jugarOnline() throws IOException, SQLException {
         Parametros.NUM_JUGADORES++;
         logger.debug("Ahora hay {} jugadores ", Parametros.NUM_JUGADORES);
 
         if (Parametros.NUM_JUGADORES == 1) {
+            // si solo hay un jugador, se crea el lobby
             Jugador j1 = new Jugador(socket);
             Servidor.lobby = new Lobby(j1);
         } else if (Parametros.NUM_JUGADORES == 2) {
+
+            // si hay un jugador esperando, se une a ese lobby
             Parametros.NUM_JUGADORES = 0;
             Jugador j2 = new Jugador(socket);
             Servidor.lobby.setJugador(j2);
         } else {
+
+            // nunca deberia entrar aqui, si entra es que ha habido un error
             Jugador esp = new Jugador(socket);
             logger.error("El jugador {} ha solicitado jugar, pero hay {} jugadores", esp.getUser(), Parametros.NUM_JUGADORES);
             esp.enviarString("lleno");
         }
     }
 
+    /**
+     * Metodo que se encarga de gestionar la peticion del usuario de crear sala
+     * @return True (sala creada correctamente), False (error al crear la sala)
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     */
     private boolean crearSala() throws IOException, SQLException {
         int codigo;
         String caracteres = "0123456789";
@@ -189,6 +246,12 @@ public class ClientHandler extends Thread {
         return true;
     }
 
+    /**
+     * Metodo encargado de unirse a una sala online
+     * @return True (sala creada correctamente), False (error al crear la sala)
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     */
     private boolean unirse() throws IOException, SQLException {
         Jugador invitado = new Jugador(socket);
         int codigo = in.readInt();
@@ -207,6 +270,11 @@ public class ClientHandler extends Thread {
         return false;
     }
 
+    /**
+     * Metodo que se encarga de cambiar la contraseña de un teclado
+     * @return True (sala creada correctamente), False (error al crear la sala)
+     * @throws Exception
+     */
     private boolean cambiarPass() throws Exception {
 
         String user = in.readUTF();
@@ -224,6 +292,12 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Metodo que se encarga de realizar el inicio de sesion de un usuario
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     * @throws NoSuchAlgorithmException No existe el algoritmo de hash
+     */
     private void inicioSesion() throws IOException, SQLException, NoSuchAlgorithmException {
         String user, pass;
 
@@ -242,6 +316,10 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Metodo que se encarga de gestionar el registro de un usuario
+     * @throws Exception Excepcion que devuelve
+     */
     private void registro() throws Exception {
         String user, pass;
         user = in.readUTF();
@@ -269,6 +347,11 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Metodo que es encarga de pedir los datos de un usuario
+     * @throws IOException IOException
+     * @throws SQLException SQLException
+     */
     private void pedirDatos() throws IOException, SQLException {
         // se recibe un token, el token se transforma a id y se envia como parametro
         int[] datos = DB.pedirDatos(DB.getIdFromToken(in.readUTF()));
@@ -293,6 +376,10 @@ public class ClientHandler extends Thread {
         out.writeInt(datos[5]);
     }
 
+    /**
+     * Metodo que se encarga de generar un nuevo token aleatorio
+     * @return Token generado
+     */
     private String generarToken() {
         String caracteres = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         int size = 10;

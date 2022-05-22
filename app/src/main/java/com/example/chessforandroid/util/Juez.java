@@ -12,7 +12,7 @@ import com.example.chessforandroid.piezas.*;
  */
 public class Juez {
 
-    //atributos
+    // atributos
 
     public Casilla[][] casillas;
     public int[][] inTablero;
@@ -351,7 +351,7 @@ public class Juez {
             casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(false));
             casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
         } else {
-            //no coronan
+            // no coronan
             casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
             casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
         }
@@ -522,19 +522,21 @@ public class Juez {
         boolean izquierda = cInicial.getColumna() > cFinal.getColumna();
 
         for (int i = 1; i < dis; i++) {
-            //si estás pasando por encima de una pieza... arriba izquierda
+            
+            // si estas pasando por encima de una pieza... arriba izquierda
             if (arriba && izquierda && copia[cInicial.getFila() - i][cInicial.getColumna() - i].getPieza() != null) {
                 return false;
             }
-            //si estás pasando por encima de una pieza... arriba derecha
+            
+            // si estas pasando por encima de una pieza... arriba derecha
             if (arriba && !izquierda && copia[cInicial.getFila() - i][cInicial.getColumna() + i].getPieza() != null) {
                 return false;
             }
-            //si estás pasando por encima de una pieza... abajo izquierda
+            // si estas pasando por encima de una pieza... abajo izquierda
             if (!arriba && izquierda && copia[cInicial.getFila() + i][cInicial.getColumna() - i].getPieza() != null) {
                 return false;
             }
-            //si estás pasando por encima de una pieza... abajo derecha
+            // si estas pasando por encima de una pieza... abajo derecha
             if (!arriba && !izquierda && copia[cInicial.getFila() + i][cInicial.getColumna() + i].getPieza() != null) {
                 return false;
             }

@@ -11,6 +11,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
+/**
+ * Clase DB. Contiene todos los metodos necesarios para interactuar con la base de datos
+ */
 public class DB {
     private static final Logger logger = LogManager.getLogger();
     private static Connection conn;
@@ -54,20 +57,19 @@ public class DB {
      * Metodo que gestiona el registro en la base de datos.
      *
      * @param user Nombre de usuario
-     * @param pass Contrase�a (ya hasheada previamente)
+     * @param pass Clave (ya hasheada previamente)
      * @return int
      * @throws SQLException SQLException
      */
     public static int registro(String user, String pass) throws SQLException {
-        // conectar con la base de datos
 
         if (conn == null || conn.isClosed()) {
             return -1;
         }
 
-        if (comprobarUnica(user))
+        if (usuarioYaExiste(user))
             return 0;
-        // si no ha habido errores, se crea una consulta
+        // se crea una consulta
         String consulta = "INSERT INTO jugadores (user,pass) VALUES (?,?)";
         PreparedStatement sentencia = conn.prepareStatement(consulta);
         sentencia.setString(1, user);
@@ -78,8 +80,15 @@ public class DB {
 
     }
 
+    /***
+     * Metodo que gestiona el inicio de sesion en la base de datos.
+     *
+     * @param user Nombre de usuario
+     * @param pass Clave (ya hasheada previamente)
+     * @return int
+     * @throws SQLException SQLException
+     */
     public static int inicioSesion(String user, String pass) throws SQLException {
-        // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT * FROM jugadores WHERE user = ? AND pass = ?";
@@ -96,9 +105,14 @@ public class DB {
         return -1;
     }
 
+    /**
+     * Recibe un token y consulta su id
+     * @param token Token que recibe
+     * @return Id
+     * @throws SQLException SQLException
+     */
     public static int getIdFromToken(String token) throws SQLException {
-        // conecta con la base de datos
-
+        
         // realiza la consulta de la tabla actual
         String consulta = "SELECT idjugador FROM auth_tokens WHERE token = ?";
         PreparedStatement sentencia;
@@ -111,10 +125,14 @@ public class DB {
         }
         return -1;
     }
-
+    /**
+     * Recibe un id y consulta su nombre de usuario
+     * @param id Id que recibe
+     * @return Nombre de usuario
+     * @throws SQLException SQLException
+     */
     public static String getUserFromId(int id) throws SQLException {
-        // conecta con la base de datos
-
+        
         // realiza la consulta de la tabla actual
         String consulta = "SELECT user FROM jugadores WHERE idjugador = ?";
         PreparedStatement sentencia;
@@ -129,8 +147,14 @@ public class DB {
         return null;
     }
 
+    /**
+     * Recibe un nombre de usuario y consulta su id
+     * @param user Nombre de usuario que recibe
+     * @return Id
+     * @throws SQLException SQLException
+     */
     public static int getIdFromUser(String user) throws SQLException {
-        // conecta con la base de datos
+        
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT idjugador FROM jugadores WHERE user = ?";
@@ -147,6 +171,12 @@ public class DB {
         return -1;
     }
 
+    /**
+     * Consulta si un jugador ha completado un logro
+     * @param idJugador Jugador a comprobar
+     * @param idLogro Logro a comprobar
+     * @return True (si), False (no)
+     */
     public static boolean logroCompletado(int idJugador, int idLogro) {
         String consulta;
         PreparedStatement sentencia;
@@ -158,7 +188,7 @@ public class DB {
             if (conn.isClosed()) {
                 return false;
             }
-            // si no ha habido errores, se crea una consulta
+            // se crea una consulta
             consulta = "SELECT * FROM jugador_logro WHERE idjugador = ?";
             sentencia = conn.prepareStatement(consulta);
             // se sustituyen los datos en la consulta y se ejecuta
@@ -177,6 +207,11 @@ public class DB {
         return false;
     }
 
+    /**
+     * Comprueba si un jugador ha completado todos los logros
+     * @param id Id del jugador
+     * @return True (si), False (no)
+     */
     public static boolean juegoCompletado(int id) {
         String consulta;
         PreparedStatement sentencia;
@@ -188,7 +223,7 @@ public class DB {
             if (conn.isClosed()) {
                 return false;
             }
-            // si no ha habido errores, se crea una consulta
+            // se crea una consulta
             consulta = "SELECT COUNT(*) FROM jugador_logro WHERE idjugador = 2;";
             sentencia = conn.prepareStatement(consulta);
             // se sustituyen los datos en la consulta y se ejecuta
@@ -205,6 +240,47 @@ public class DB {
         return false;
     }
 
+
+    /**
+     * Metodo encargado de registrar que un jugador ha completado un logro
+     * @param idJugador Jugador que ha completado el logro
+     * @param idLogro Logro que ha completado el jugadopr
+     * @return True (registro correcto), False (error al registrar)
+     */
+    public static boolean completarLogro(int idJugador, int idLogro) {
+        String consulta;
+        PreparedStatement sentencia;
+
+        try {
+            if (conn == null) {
+                return false;
+            }
+
+            if (conn.isClosed()) {
+                return false;
+            }
+
+
+            // se crea una consulta
+            consulta = "INSERT INTO jugador_logro (idjugador, idlogro) VALUES (?,?)";
+            sentencia = conn.prepareStatement(consulta);
+            sentencia.setInt(1, idJugador);
+            sentencia.setInt(2, idLogro);
+            // se sustituyen los datos en la consulta y se ejecuta
+            sentencia.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    /**
+     * Metodo que se encarga de actualizar el nivel tras llegar a una nueva decena de victorias
+     * @param id Id del jugador
+     * @return True (nivel actualizado correctamente), False (error al actualizar)
+     */
     public static boolean actualizarNivel(int id) {
         String consulta;
         PreparedStatement sentencia;
@@ -219,38 +295,49 @@ public class DB {
             consulta = "SELECT * FROM jugadores WHERE jugadores.idjugador = ?";
             sentencia = conn.prepareStatement(consulta);
             sentencia.setInt(1, id);
+
             ResultSet res = sentencia.executeQuery();
+
             int numVictorias = -1;
             int nivel = -1;
+
             if (res.next()) {
                 numVictorias = res.getInt("victorias");
             }
             if (numVictorias % 10 != 0) {
+                // no se ha llegado a una nueva decena, se termina la ejecucion del metodo
                 return true;
             }
 
+            // los tres primeros logros son ganar 10, 20 y 30 partidas
             if (numVictorias == 10 || numVictorias == 20 || numVictorias == 30) {
+
+                // si no los ha completado el usuario, se completan ahora
                 if (!DB.logroCompletado(id, numVictorias / 10)) {
                     completarLogro(id, numVictorias / 10);
                 }
             }
 
             res = sentencia.executeQuery();
+
             if (res.next()) {
                 nivel = res.getInt("nivel");
             }
-            // si no ha habido errores, se crea una consulta
+            // se crea una consulta
             consulta = "UPDATE jugadores SET nivel = nivel + 1 WHERE idjugador = ?";
             sentencia = conn.prepareStatement(consulta);
             sentencia.setInt(1, id);
             // se sustituyen los datos en la consulta y se ejecuta
             sentencia.executeUpdate();
 
+            // si se ha alcanzado el nivel 5, se ha completado el logro 6
             if (nivel == 5) {
                 if (!DB.logroCompletado(id, 6)) {
                     completarLogro(id, 6);
                 }
             }
+
+            // si se ha alcanzado el nivel 10, se ha completado el logro 7
             if (nivel == 10) {
                 if (!DB.logroCompletado(id, 7)) {
                     completarLogro(id, 7);
@@ -263,33 +350,13 @@ public class DB {
         return false;
     }
 
-    public static boolean completarLogro(int idJugador, int idLogro) {
-        String consulta;
-        PreparedStatement sentencia;
-        try {
-            if (conn == null) {
-                return false;
-            }
-
-            if (conn.isClosed()) {
-                return false;
-            }
-
-
-            // si no ha habido errores, se crea una consulta
-            consulta = "INSERT INTO jugador_logro (idjugador, idlogro) VALUES (?,?)";
-            sentencia = conn.prepareStatement(consulta);
-            sentencia.setInt(1, idJugador);
-            sentencia.setInt(2, idLogro);
-            // se sustituyen los datos en la consulta y se ejecuta
-            sentencia.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
+    /**
+     * Metodo que se encarga de actualizar las estadisticas de un jugadory67t5u
+     * @param id1 Id del ganador
+     * @param id2 Id del perdedor
+     * @param tablas booleano que indica si ha habido tablas
+     * @return True (stats actualizadas correctamente), False (error al actualizar)
+     */
     public static boolean actualizarStats(int id1, int id2, boolean tablas) {
         String consulta;
         PreparedStatement sentencia;
@@ -303,7 +370,7 @@ public class DB {
             }
 
             if (tablas) {
-                // si no ha habido errores, se crea una consulta
+                // se crea una consulta
                 consulta = "UPDATE jugadores SET tablas = tablas + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
                 sentencia = conn.prepareStatement(consulta);
                 sentencia.setInt(1, id1);
@@ -312,7 +379,7 @@ public class DB {
 
                 consulta = "UPDATE jugadores SET tablas = tablas + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
             } else {
-                // si no ha habido errores, se crea una consulta
+                // se crea una consulta
                 consulta = "UPDATE jugadores SET elo = elo + 10, victorias = victorias + 1, jugadas = jugadas + 1 WHERE idjugador = ?";
                 sentencia = conn.prepareStatement(consulta);
                 sentencia.setInt(1, id1);
@@ -333,6 +400,14 @@ public class DB {
         return false;
     }
 
+    /**
+     * Metodo que se encarga de actualizar el resultado de una partida
+     * @param movs String con los movimientos del tablero
+     * @param id1 Id del ganador
+     * @param id2 Id del perdedor
+     * @param tablas booleano que indica si ha habido tablas
+     * @return True (stats actualizadas correctamente), False (error al actualizar)
+     */
     public static boolean registrarResultado(String movs, int id1, int id2, boolean tablas) {
         try {
             if (conn == null) {
@@ -343,7 +418,7 @@ public class DB {
                 return false;
             }
 
-            // si no ha habido errores, se crea una consulta
+            // se crea una consulta
             String consulta = "INSERT INTO partidas (movimientos, idanfitrion, idinvitado, idganador, idperdedor) VALUES (?,?,?,?,?)";
             PreparedStatement sentencia = conn.prepareStatement(consulta);
             sentencia.setString(1, movs);
@@ -365,47 +440,75 @@ public class DB {
         return false;
     }
 
-    public static boolean comprobarUnica(String user) throws SQLException {
-
-        // conecta con la base de datos
+    /**
+     * Metodo que comprueba si el usuario ya existre
+     * @param user Nombre del usuario a comprobar
+     * @return True (ya existe), False (no existe)
+     * @throws SQLException SQLException
+     */
+    public static boolean usuarioYaExiste(String user) throws SQLException {
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT * FROM jugadores WHERE user = ?";
         PreparedStatement sentencia;
+
         // realiza la consulta y la ejecuta
         sentencia = conn.prepareStatement(consulta);
         sentencia.setString(1, user);
         ResultSet res = sentencia.executeQuery();
+
+        // si existe, res.next() devolvera true; si no, devolvera false
         return res.next();
     }
 
+    /**
+     * Metodo que comprueba si un usuario ya tiene asignado un token
+     * @param id Id del usuario
+     * @return True (ya lo tiene asignado), False (no lo tiene)
+     * @throws SQLException SQLException
+     */
     public static boolean existeToken(int id) throws SQLException {
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT token FROM auth_tokens WHERE idjugador = ?";
         PreparedStatement sentencia;
+
         // realiza la consulta y la ejecuta
         sentencia = conn.prepareStatement(consulta);
         sentencia.setInt(1, id);
+
         ResultSet res = sentencia.executeQuery();
+
         if (res.next()) {
             return res.getString("token").length() > 0;
         }
         return false;
     }
 
-    public static boolean borrarToken(int id) throws SQLException {
+    /**
+     * Metodo que elimina el token de un usuario
+     * @param id Id del usuario
+     * @throws SQLException SQLException
+     */
+    public static void borrarToken(int id) throws SQLException {
 
         // realiza la consulta de la tabla actual
         String consulta = "DELETE FROM auth_tokens WHERE idjugador = ?";
         PreparedStatement sentencia;
+
         // realiza la consulta y la ejecuta
         sentencia = conn.prepareStatement(consulta);
         sentencia.setInt(1, id);
         sentencia.executeUpdate();
-        return true;
+
     }
 
+    /**
+     * Metodo que devuelve un vector con los logros completados por un jugador
+     * @param idJugador Id del jugador a comprobar
+     * @return Vector de booleanos con un true por cada logro completado
+     * @throws SQLException SQLException
+     */
     public static Boolean[] consultarLogros(int idJugador) throws SQLException {
         Boolean[] logros = new Boolean[7];
         for (int i = 0; i < logros.length; i++) {
@@ -415,29 +518,39 @@ public class DB {
         // realiza la consulta de la tabla actual
         String consulta = "SELECT * FROM jugador_logro WHERE idjugador = ?";
         PreparedStatement sentencia;
+
         // realiza la consulta y la ejecuta
         sentencia = conn.prepareStatement(consulta);
         sentencia.setInt(1, idJugador);
+
         ResultSet res = sentencia.executeQuery();
+
         while (res.next()) {
+
             if (res.getInt("idlogro") == 1) {
                 logros[0] = true;
             }
+
             if (res.getInt("idlogro") == 2) {
                 logros[1] = true;
             }
+
             if (res.getInt("idlogro") == 3) {
                 logros[2] = true;
             }
+
             if (res.getInt("idlogro") == 4) {
                 logros[3] = true;
             }
+
             if (res.getInt("idlogro") == 5) {
                 logros[4] = true;
             }
+
             if (res.getInt("idlogro") == 6) {
                 logros[5] = true;
             }
+
             if (res.getInt("idlogro") == 7) {
                 logros[6] = true;
             }
@@ -446,7 +559,14 @@ public class DB {
         return logros;
     }
 
+    /**
+     * Metodo encargado de pedir los datos de un jugador
+     * @param idJugador Id del jugador
+     * @return Datos de la cuenta del jugador
+     * @throws SQLException
+     */
     public static int[] pedirDatos(int idJugador) throws SQLException {
+
         int[] datos = new int[6];
 
         // realiza la consulta de la tabla actual
@@ -456,6 +576,7 @@ public class DB {
         sentencia = conn.prepareStatement(consulta);
         sentencia.setInt(1, idJugador);
         ResultSet res = sentencia.executeQuery();
+
         if (res.next()) {
             datos[0] = res.getInt("nivel");
             datos[1] = res.getInt("elo");
@@ -468,8 +589,14 @@ public class DB {
         return datos;
     }
 
+    /**
+     * Metodo encargado de guardar un token en la base de datos
+     * @param token Token a guardar
+     * @param id Id del jugador al que le corresponde
+     * @return String con el token que ha guardado, o null si no lo ha podido guardar
+     * @throws SQLException SQLException
+     */
     public static String guardarToken(String token, int id) throws SQLException {
-        // conectar con la base de datos
 
         if (conn == null || conn.isClosed()) {
             return null;
@@ -478,7 +605,7 @@ public class DB {
         if (existeToken(id)) {
             borrarToken(id);
         }
-        // si no ha habido errores, se crea una consulta
+        // se crea una consulta
         String consulta = "INSERT INTO auth_tokens VALUES (?,?)";
         PreparedStatement sentencia = conn.prepareStatement(consulta);
         sentencia.setInt(1, id);
@@ -492,6 +619,14 @@ public class DB {
         return null;
     }
 
+    /**
+     * Metodo encargado de cambiar la contraseña de un usuario
+     * @param user Nombre de usuario
+     * @param oldPass Clave antigua
+     * @param newPass Clave nueva
+     * @return True (clave cambiada correctamente), False (error al cambiar la clave)
+     * @throws SQLException SQLException
+     */
     public static boolean cambiarPass(String user, String oldPass, String newPass) throws SQLException {
         int id = inicioSesion(user, oldPass);
         if (id < 1) {
@@ -505,11 +640,12 @@ public class DB {
             return false;
         }
 
-        // si no ha habido errores, se crea una consulta
+        // se crea una consulta
         String consulta = "UPDATE jugadores SET pass = ? WHERE idjugador = ?";
         PreparedStatement sentencia = conn.prepareStatement(consulta);
         sentencia.setString(1, newPass);
         sentencia.setInt(2, id);
+
         // se sustituyen los datos en la consulta y se ejecuta
         sentencia.executeUpdate();
         sentencia.close();
@@ -518,8 +654,13 @@ public class DB {
     }
 
 
+    /**
+     * Metodo que devuelve los nombres de los usuarios ordenados por nivel
+     * @return ArrayList de Strings con los nombres
+     * @throws SQLException SQLException
+     */
     public static ArrayList<String> getRankingUsersByNivel() throws SQLException {
-        // conecta con la base de datos
+        
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT user FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.nivel DESC";
@@ -535,8 +676,12 @@ public class DB {
         return datos;
     }
 
+    /**
+     * Metodo que devuelve los nombres de los usuarios ordenados por ELO
+     * @return ArrayList de Strings con los nombres
+     * @throws SQLException SQLException
+     */
     public static ArrayList<String> getRankingUsersByELO() throws SQLException {
-        // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT user FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.elo DESC";
@@ -552,8 +697,12 @@ public class DB {
         return datos;
     }
 
+    /**
+     * Metodo que devuelve el nivel de los usuarios ordenados de manera descendente
+     * @return ArrayList de Strings con los niveles
+     * @throws SQLException SQLException
+     */
     public static ArrayList<String> getRankingNiveles() throws SQLException {
-        // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT nivel FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.nivel DESC";
@@ -569,8 +718,12 @@ public class DB {
         return datos;
     }
 
+    /**
+     * Metodo que devuelve el ELO de los usuarios ordenados de manera descendente
+     * @return ArrayList de Strings con los ELOs
+     * @throws SQLException SQLException
+     */
     public static ArrayList<String> getRankingElos() throws SQLException {
-        // conecta con la base de datos
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT elo FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.elo DESC";

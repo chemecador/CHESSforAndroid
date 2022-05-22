@@ -14,25 +14,29 @@ import org.apache.logging.log4j.core.config.Configurator;
 import juego.FriendLobby;
 import juego.Lobby;
 import db.DB;
+import juego.Parametros;
 
 /**
  * Clase Servidor.
  */
 public class Servidor {
     private static final Logger logger = LogManager.getLogger();
-    /**
-     * TODO: Comentario
-     */
-    public static ArrayList<Socket> conexiones;
 
+    /**
+     * Lobby de partida online
+     */
     public static Lobby lobby;
+
+    /**
+     * ArrayList de Lobbies de partidas entre amigos.
+     * A diferencia de las partidas online, aqui si se debe guardar en un ArrayList para poder
+     * acceder a la partida con un codigo en concreto
+     */
     public static ArrayList<FriendLobby> friendLobbies;
 
     public Servidor() {
         ServerSocket ss = null;
-        int port = 5566;
 
-        conexiones = new ArrayList<>();
         friendLobbies = new ArrayList<>();
 
 
@@ -44,10 +48,10 @@ public class Servidor {
         }
 
         try {
-            ss = new ServerSocket(port);
+            ss = new ServerSocket();
             new SocketHandler();
         } catch (Exception e) {
-            logger.fatal("Error al inicializar el socket de escucha en el puerto '{}'", port, e);
+            logger.fatal("Error al inicializar el socket de escucha en el puerto '{}'", Parametros.PUERTO, e);
             System.exit(-1);
         }
         logger.info("Servidor iniciado y listo para recibir conexiones.");
@@ -55,9 +59,6 @@ public class Servidor {
         while (true) {
             try {
                 Socket cliente = ss.accept();
-
-                // TODO: comentario
-                conexiones.add(cliente);
 
                 // se lanza un hilo de la clase ClientHandler que gestiona la conexion de manera
                 // independiente a esta clase.
@@ -67,18 +68,7 @@ public class Servidor {
                 logger.error("Se ha producido un error al aceptar una conexion", e);
             }
         }
-        /**
-         * TODO: cerrar la conexion con la bbdd
-         *
-         * try {
-         *             DB.desconectar();
-         *         } catch (SQLException e) {
-         *             logger.fatal("Error al cerrar la conexion con la base de datos", e);
-         *         }
-         */
-
     }
-
 
     /**
      * Metodo principal.

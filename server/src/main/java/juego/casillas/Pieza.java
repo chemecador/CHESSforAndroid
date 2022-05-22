@@ -1,5 +1,9 @@
 package juego.casillas;
 
+/**
+ * Clase abstracta Pieza. Contiene los elementos propios de una pieza,
+ * que seran heredados por cada pieza del tablero.
+ */
 public abstract class Pieza {
     protected boolean blancas;
     protected String tag = "";

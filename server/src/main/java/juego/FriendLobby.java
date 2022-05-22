@@ -8,6 +8,9 @@ import java.net.ServerSocket;
 
 import servidor.Servidor;
 
+/**
+ * Lobby que gestiona una partida amistosa
+ */
 public class FriendLobby {
     private static final Logger logger = LogManager.getLogger();
 
@@ -22,6 +25,11 @@ public class FriendLobby {
     }
 
 
+    /**
+     * Metodo que se encarga de establecer el segundo jugador (invitado)
+     * @param j2 Nuevo jugador
+     * @throws IOException IOException
+     */
     public void setJugador(Jugador j2) throws IOException {
         this.invitado = j2;
 

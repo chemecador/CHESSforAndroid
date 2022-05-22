@@ -7,20 +7,28 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import juego.Parametros;
+
+/**
+ * Clase SocketHandler. Se encarga de entregar un socket a la clase que se lo pide.
+ */
 public class SocketHandler {
     private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * ServerSocket del que se aceptaran los sockets.
+     */
     private static ServerSocket ss;
 
     public SocketHandler() throws IOException {
-        int port = 5567;
-        ss = new ServerSocket(port);
+        ss = new ServerSocket(Parametros.PUERTO_PARTIDA);
     }
 
     public static Socket getSocket(){
         try {
             return ss.accept();
         } catch (IOException e) {
+
             logger.error("Error al recibir nuevo socket de jugador");
             e.printStackTrace();
         }

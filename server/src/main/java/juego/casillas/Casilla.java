@@ -1,6 +1,10 @@
 package juego.casillas;
 
+/**
+ * Clase Casilla. Contiene los elementos propios de una casilla.
+ */
 public class Casilla {
+
     private final int fila;
     private final int columna;
     private Pieza pieza;
@@ -11,6 +15,10 @@ public class Casilla {
         this.pieza = null;
     }
 
+    /**
+     * Crea y devuelve una copia de esta casilla.
+     * @return Casilla
+     */
     public Casilla clonarCasilla(){
         Casilla clon = new Casilla(fila,columna);
         if (this.getPieza() != null) {

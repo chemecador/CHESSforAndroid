@@ -6,9 +6,15 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
+/**
+ * Clase Jugador.
+ */
 public class Jugador {
+
+    // atributos de jugador
     private String user;
     private int id;
+    // atributos  para interaccionar con el
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
