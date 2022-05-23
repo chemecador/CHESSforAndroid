@@ -11,6 +11,10 @@ public class Parametros {
      * Tiempo de espera hasta que se encuentra rival
      */
     public static final int TIEMPO_ESPERA_RIVAL = 10;
+    /**
+     * Tiempo de espera hasta que se encuentra rival
+     */
+    public static final int TIEMPO_ESPERA_AMIGO = 30;
 
     /**
      * Puerto en el que escucha las peticiones el ServerSocket

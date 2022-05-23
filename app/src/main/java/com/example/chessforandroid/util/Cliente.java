@@ -2,9 +2,7 @@ package com.example.chessforandroid.util;
 
 import static com.example.chessforandroid.util.Constantes.debug;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -25,7 +23,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -40,7 +37,7 @@ public class Cliente {
     private DataInputStream in; // flujo de entrada
     private DataOutputStream out; // flujo de salida
     private String host = Constantes.ip; // direccion IP del servidor
-    private int puerto = Constantes.puerto; // puerto en el que escucha el servidor
+    private int puerto = Constantes.PUERTO; // puerto en el que escucha el servidor
 
     // otros atributos
     private boolean conectado;
@@ -78,12 +75,31 @@ public class Cliente {
 
     /**
      * Sobrecarga del constructor.
+     *
      * @param nuevoPuerto Puerto en el que escucha las peticiones el servidor.
      */
     public Cliente(int nuevoPuerto) {
+        StrictMode.ThreadPolicy policy = new
+                StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try {
+            // inicializamos el socket, dis y dos
+            conn = new Socket();
+            if (debug) {
+                host = Constantes.ipLocal;
+            } else {
+                host = Constantes.ip;
+            }
+            conn.connect(new InetSocketAddress(host, nuevoPuerto), 1200);
+            in = new DataInputStream(conn.getInputStream());
+            out = new DataOutputStream(conn.getOutputStream());
+            conectado = true;
 
-        this.puerto = nuevoPuerto;
-        new Cliente();
+        } catch (Exception e) {
+            // ha saltado alguna excepcion, la conexion no se ha realizado correctamente
+            conectado = false;
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -101,9 +117,10 @@ public class Cliente {
 
     /**
      * Metodo que realiza la tarea de registrarse en la aplicacion.
+     *
      * @param context Contexto de la Activity
-     * @param user Nombre de usuario
-     * @param pass Clave
+     * @param user    Nombre de usuario
+     * @param pass    Clave
      */
     public void registrarse(Context context, String user, String pass) {
         this.context = context;
@@ -113,9 +130,10 @@ public class Cliente {
 
     /**
      * Metodo que realiza la tarea de iniciar sesion en la aplicacion.
+     *
      * @param context Contexto de la Activity
-     * @param user Nombre de usuario
-     * @param pass Clave
+     * @param user    Nombre de usuario
+     * @param pass    Clave
      */
     public void iniciarSesion(Context context, String user, String pass) {
         this.context = context;
@@ -124,6 +142,7 @@ public class Cliente {
 
     /**
      * Metodo que realiza la tarea de cambiar la contraseña en la aplicacion.
+     *
      * @param context Contexto de la Activity
      * @param oldPass Clave antigua
      * @param newPass Clave nueva
@@ -135,9 +154,10 @@ public class Cliente {
 
     /**
      * Metodo que realiza la tarea de pedir los datos de un jugador.
+     *
      * @param context Contexto de la Activity
-     * @param user Nombre de usuario
-     * @param token Token unico del usuario
+     * @param user    Nombre de usuario
+     * @param token   Token unico del usuario
      */
     public void pedirDatos(Context context, String user, String token) {
         this.context = context;
@@ -148,9 +168,10 @@ public class Cliente {
 
     /**
      * Metodo que realiza la tarea de consultar los logros de un jugador.
+     *
      * @param context Contexto de la Activity
-     * @param aa Callback de la Activity que lo invoca
-     * @param token Token unico del usuario
+     * @param aa      Callback de la Activity que lo invoca
+     * @param token   Token unico del usuario
      */
     public void consultarLogros(Context context, AchievementsActivity aa, String token) {
         this.context = context;
@@ -160,8 +181,9 @@ public class Cliente {
 
     /**
      * Metodo que se encarga de crear sala
+     *
      * @param context Contexto de la Activity
-     * @param token Token unico del usuario
+     * @param token   Token unico del usuario
      */
     public void crearSala(Context context, String token) {
         this.context = context;
@@ -171,9 +193,10 @@ public class Cliente {
 
     /**
      * Metodo que se encarga de unirse a una sala
+     *
      * @param context Contexto de la Activity
-     * @param token Token unico del usuario
-     * @param codigo Codigo de la sala
+     * @param token   Token unico del usuario
+     * @param codigo  Codigo de la sala
      */
     public void unirse(Context context, String token, String codigo) {
         this.context = context;
@@ -184,9 +207,10 @@ public class Cliente {
 
     /**
      * Metodo que se encarga de buscar partida online
+     *
      * @param context Contexto de la Activity
-     * @param lla Callback de la Activity que lo invoca
-     * @param token Token unico del usuario
+     * @param lla     Callback de la Activity que lo invoca
+     * @param token   Token unico del usuario
      */
     public void online(Context context, OnlineWaitingActivity lla, String token) {
         this.context = context;
@@ -196,8 +220,9 @@ public class Cliente {
 
     /**
      * Metodo que se encarga de esperar el movimiento del rival
+     *
      * @param context Contexto de la Activity
-     * @param oa Callback de la Activity que lo invoca
+     * @param oa      Callback de la Activity que lo invoca
      */
     public void esperarMov(Context context, OnlineActivity oa) {
         this.context = context;
@@ -206,10 +231,11 @@ public class Cliente {
 
     /**
      * Metodo que se encarga de enviar el movimiento al rival
-     * @param context Contexto de la Activity
-     * @param oa Callback de la Activity que lo invoca
+     *
+     * @param context  Contexto de la Activity
+     * @param oa       Callback de la Activity que lo invoca
      * @param casillas Posicion de las casillas en el tablero tras el movimiento
-     * @param movs Movimientos escritos en texto
+     * @param movs     Movimientos escritos en texto
      */
     public void enviarMov(Context context, OnlineActivity oa, String casillas, String movs) {
         this.context = context;
@@ -218,8 +244,9 @@ public class Cliente {
 
     /**
      * Metodo que se encarga de ofrecer tablas al rival
+     *
      * @param context Contexto de la Activity
-     * @param oa Callback de la Activity que lo invoca
+     * @param oa      Callback de la Activity que lo invoca
      */
     public void ofrecerTablas(Context context, OnlineActivity oa) {
         this.context = context;
@@ -228,6 +255,7 @@ public class Cliente {
 
     /**
      * Metodo que se encarga de enviar uno o varios strings al servidor
+     *
      * @param s Strings a enviar al servidor
      */
     public void enviarMensaje(String... s) {
@@ -237,7 +265,8 @@ public class Cliente {
 
     /**
      * Metodo que se encarga de recibir el ranking de los jugadores mejor clasificados
-     * @param ra Callback de la Activity que lo invoca
+     *
+     * @param ra   Callback de la Activity que lo invoca
      * @param pref Preferencia de ordenacion
      */
     public void getRanking(RankingActivity ra, String pref) {
@@ -245,20 +274,22 @@ public class Cliente {
     }
 
     /**
-     * Metodo que se encarga de esperar rival
+     * Metodo que se encarga de esperar a su amigo
+     *
      * @param context Contexto de la Activity
-     * @param token Token unico del usuario
+     * @param token   Token unico del usuario
      */
-    public void esperarRival(Context context, String token) {
+    public void esperarAmigo(Context context, String token) {
         this.context = context;
         this.token = token;
-        new EsperarRival().execute();
+        new EsperarAmigo().execute();
     }
 
     /**
      * Clase bloqueante que recibe los datos iniciales
+     *
      * @param context Contexto de la Activity
-     * @param token Token unico del usuario
+     * @param token   Token unico del usuario
      * @return
      */
     public Object[] getDatosIniciales(Context context, String token) {
@@ -275,9 +306,9 @@ public class Cliente {
 
 
     /**
-     * Clase EsperarRival.
+     * Clase EsperarAmigo.
      */
-    public class EsperarRival extends AsyncTask<Void, Void, String> {
+    public class EsperarAmigo extends AsyncTask<Void, Void, String> {
 
 
         @Override
@@ -286,7 +317,7 @@ public class Cliente {
                 // espera el string de "jugar" cuando el servidor me asigne un rival
                 return in.readUTF();
             } catch (IOException e) {
-                Toast.makeText(context, "Error al esperar rival", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error al esperar amigo", Toast.LENGTH_SHORT).show();
                 ((Activity) context).finish();
                 e.printStackTrace();
             }
@@ -301,6 +332,8 @@ public class Cliente {
                 Intent localIntent = new Intent(context, OnlineActivity.class);
                 localIntent.putExtra("token", token);
                 context.startActivity(localIntent);
+            } else if (s.equalsIgnoreCase("norivales")) {
+                Toast.makeText(context, "Tiempo de espera agotado.", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "Error inesperado", Toast.LENGTH_SHORT).show();
             }
@@ -739,6 +772,7 @@ public class Cliente {
             lobbyIntent.putExtra("id", codigo);
             lobbyIntent.putExtra("token", token);
             context.startActivity(lobbyIntent);
+            cerrarConexion();
         }
     }
 
@@ -1010,6 +1044,7 @@ public class Cliente {
 
     /**
      * Metodo que devuelve un booleano que representa si la conexion ha sido correcta o no
+     *
      * @return True (correcta), False (incorrecta)
      */
     public boolean isConectado() {
