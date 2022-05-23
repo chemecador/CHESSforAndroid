@@ -28,7 +28,7 @@ public class FriendWaitingActivity extends AppCompatActivity {
         int idPartida = intent.getIntExtra("id", -1);
 
         TextView txt = findViewById(R.id.txtLobby);
-        txt.setText("Tu código es " + idPartida);
+        txt.setText(R.string.your_code_is + " " + idPartida);
 
         if (idPartida == -1) {
             Toast.makeText(this, "Ha habido un error en la creación de la sala", Toast.LENGTH_SHORT).show();

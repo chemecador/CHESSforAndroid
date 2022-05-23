@@ -52,7 +52,7 @@ public class ClientHandler extends Thread {
 
             procesarPeticion(peticion);
         } catch (Exception e) {
-            logger.error("Error al procesar la peticion ", e);
+            logger.info("El cliente ha abandonado el servidor");
         }
     }
 
