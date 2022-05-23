@@ -73,5 +73,9 @@
     <string name="NOT_DONE"> ❌</string>
     <string name="total_achievements">Logros completados:</string>
     <string name="your_code_is">Tu código es</string>
+    <string name="customize_board">Personalizar tablero</string>
+    <string name="must_reach_level_2">Debes alcanzar el nivel 2 para desbloquearlo</string>
+    <string name="white_squares_color">Color de las casillas blancas</string>
+    <string name="black_squares_color">Color de las casillas negras</string>
 
 </resources>

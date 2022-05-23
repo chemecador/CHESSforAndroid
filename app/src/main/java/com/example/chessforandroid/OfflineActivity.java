@@ -21,13 +21,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.chessforandroid.piezas.Alfil;
-import com.example.chessforandroid.piezas.Caballo;
-import com.example.chessforandroid.piezas.Dama;
-import com.example.chessforandroid.piezas.Peon;
-import com.example.chessforandroid.piezas.Rey;
-import com.example.chessforandroid.piezas.Torre;
+import com.example.chessforandroid.piezas.*;
 import com.example.chessforandroid.juego.Casilla;
+import com.example.chessforandroid.util.Constantes;
 import com.example.chessforandroid.util.Juez;
 
 
@@ -35,6 +31,7 @@ import com.example.chessforandroid.util.Juez;
  * Clase OfflineActivity. Gestiona la partida local entre dos jugadores.
  */
 public class OfflineActivity extends AppCompatActivity implements View.OnClickListener {
+    private final static String TAG = OfflineActivity.class.getSimpleName();
 
     // atributos de layout
     private GridLayout oGameBoard;
@@ -369,12 +366,12 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                     cambiar = !cambiar;
                 }
                 if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
-                    //casillas negras
-                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
-                } else {
 
+                    //casillas negras
+                    juez.casillas[i][j].setBackgroundColor(Constantes.COLOR_NEGRAS);
+                } else {
                     //casillas blancas
-                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#DDDDDD"));
+                    juez.casillas[i][j].setBackgroundColor(Constantes.COLOR_BLANCAS);
                 }
                 x++;
             }

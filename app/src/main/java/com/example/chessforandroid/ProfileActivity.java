@@ -3,6 +3,7 @@ package com.example.chessforandroid;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,9 +16,10 @@ import android.widget.Toast;
  */
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView victorias;
+    private TextView victorias, nivel;
     private String user;
     private String token;
+    private Button personalizar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         Button cerrarSesion, cambiarPass;
         ImageButton ibMisiones;
-        TextView username, nivel, elo, jugadas, tablas, derrotas;
+        TextView username, elo, jugadas, tablas, derrotas;
 
 
         Intent intent = getIntent();
@@ -60,6 +62,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         ibMisiones = findViewById(R.id.ibLogros);
         ibMisiones.setOnClickListener(this);
+
+        personalizar = findViewById(R.id.bPersonalizarTablero);
+        personalizar.setOnClickListener(this);
+        if (Integer.parseInt(nivel.getText().toString()) > 1){
+            personalizar.setBackgroundColor(Color.parseColor("#358C0E"));
+        }
     }
 
     @Override
@@ -81,6 +89,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             i.putExtra("token", token);
             i.putExtra("victorias", victorias.getText().toString());
             startActivity(i);
+        }
+        if (view.getId() == R.id.bPersonalizarTablero) {
+           if (Integer.parseInt(nivel.getText().toString()) > 1){
+               startActivity(new Intent(this, CustomActivity.class));
+           } else {
+               Toast.makeText(this, R.string.must_reach_level_2, Toast.LENGTH_SHORT).show();
+            }
+
         }
 
     }

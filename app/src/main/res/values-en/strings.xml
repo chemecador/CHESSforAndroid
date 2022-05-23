@@ -73,5 +73,9 @@
     <string name="NOT_DONE"> ❌</string>
     <string name="total_achievements">Achievements completed:</string>
     <string name="your_code_is">Your code is</string>
+    <string name="customize_board">Personalizar tablero</string>
+    <string name="must_reach_level_2">You must reach level 2 to unlock this</string>
+    <string name="white_squares_color">White squares color</string>
+    <string name="black_squares_color">Black squares color</string>
 
 </resources>

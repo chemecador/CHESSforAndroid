@@ -1,5 +1,7 @@
 package com.example.chessforandroid.util;
 
+import android.graphics.Color;
+
 public class Constantes {
     /**
      * Número de filas del tablero
@@ -29,7 +31,36 @@ public class Constantes {
     public static int PUERTO_PARTIDA = 5567;
 
     /**
-     * modo debug para ejecutar el servidor en local
+     * Modo debug para ejecutar el servidor en local
      */
     public static boolean debug = false;
+
+    /**
+     * Color de las casillas blancas por defecto
+     */
+    public static final int BLANCAS_POR_DEFECTO = Color.parseColor("#DDDDDD");
+
+    /**
+     * Color de las casillas negras por defecto
+     */
+    public static final int NEGRAS_POR_DEFECTO = Color.parseColor("#A4552A");
+
+    /**
+     * Color de las casillas blancas elegido por el usuario
+     */
+    public static int COLOR_BLANCAS = BLANCAS_POR_DEFECTO;
+
+    /**
+     * Color de las casillas negras elegido por el usuario
+     */
+    public static int COLOR_NEGRAS = NEGRAS_POR_DEFECTO;
+    /**
+     * Posicion en el combobox del color de las casillas blancas elegido por el usuario
+     */
+    public static int COLOR_BLANCAS_POSICION = 0;
+
+    /**
+     * Posicion en el combobox del color de las casillas negras elegido por el usuario
+     */
+    public static int COLOR_NEGRAS_POSICION = 0;
 }

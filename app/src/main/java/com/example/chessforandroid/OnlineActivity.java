@@ -450,11 +450,11 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
                 }
                 if ((x % 2 == 0 && !cambiar) || x % 2 != 0 && cambiar) {
                     //casillas negras
-                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#A4552A"));
+                    juez.casillas[i][j].setBackgroundColor(Constantes.COLOR_NEGRAS);
                 } else {
 
                     //casillas blancas
-                    juez.casillas[i][j].setBackgroundColor(Color.parseColor("#DDDDDD"));
+                    juez.casillas[i][j].setBackgroundColor(Constantes.COLOR_BLANCAS);
                 }
                 x++;
             }
