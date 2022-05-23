@@ -22,10 +22,10 @@ public class OnlineWaitingActivity extends AppCompatActivity {
         String token = intent.getStringExtra("token");
 
         Cliente c = new Cliente();
-        if (c.isConectado()){
+        if (c.isConectado()) {
             c.online(this, this, token);
         } else {
-            Log.i (TAG, "Error al buscar partida online");
+            Log.i(TAG, "Error al buscar partida online");
         }
     }
 }

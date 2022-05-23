@@ -20,11 +20,11 @@ public class SocketHandler {
      */
     private static ServerSocket ss;
 
-    public SocketHandler() throws IOException {
-        ss = new ServerSocket(Parametros.PUERTO_PARTIDA);
+    public SocketHandler(int puerto) throws IOException {
+        ss = new ServerSocket(puerto);
     }
 
-    public static Socket getSocket(){
+    public static Socket getSocket() {
         try {
             return ss.accept();
         } catch (IOException e) {

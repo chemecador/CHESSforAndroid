@@ -2,7 +2,6 @@ package com.example.chessforandroid;
 
 import static com.example.chessforandroid.util.Constantes.NUM_COLUMNAS;
 import static com.example.chessforandroid.util.Constantes.NUM_FILAS;
-import static com.example.chessforandroid.util.Constantes.puertoPartida;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -32,6 +31,7 @@ import com.example.chessforandroid.piezas.Rey;
 import com.example.chessforandroid.piezas.Torre;
 import com.example.chessforandroid.juego.Casilla;
 import com.example.chessforandroid.util.Cliente;
+import com.example.chessforandroid.util.Constantes;
 import com.example.chessforandroid.util.Juez;
 
 
@@ -87,7 +87,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         Tablero t = new Tablero();
         t.execute();
 
-        cliente = new Cliente(puertoPartida);
+        cliente = new Cliente(Constantes.PUERTO_PARTIDA);
 
     }
 

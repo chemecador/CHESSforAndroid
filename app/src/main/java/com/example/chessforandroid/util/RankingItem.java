@@ -19,7 +19,8 @@ public class RankingItem {
      */
     private String elo;
 
-    public RankingItem(){}
+    public RankingItem() {
+    }
 
     public RankingItem(int position, String user, String elo) {
         this.position = position;

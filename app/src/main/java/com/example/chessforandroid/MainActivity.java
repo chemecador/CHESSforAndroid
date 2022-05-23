@@ -15,15 +15,13 @@ import android.widget.Button;
 import com.example.chessforandroid.util.Cliente;
 
 /**
- *
  * TAREA ACTUAL:
  * todas las misiones completadas, ¿que ocurre?
- *
+ * <p>
  * BUGS CONOCIDOS:
- *
+ * <p>
  * TAREAS EXTRA:
  * poder seleccionar el idioma
- *
  */
 
 /**

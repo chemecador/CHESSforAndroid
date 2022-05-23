@@ -56,7 +56,7 @@ public class FriendActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.bUnirse:
-                if (codigo.getText().toString().length() < 1){
+                if (codigo.getText().toString().length() < 1) {
                     Toast.makeText(this, "Código incorrecto", Toast.LENGTH_SHORT).show();
                 }
                 c = new Cliente();

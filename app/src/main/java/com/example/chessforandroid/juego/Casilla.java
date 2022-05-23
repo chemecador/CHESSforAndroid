@@ -24,6 +24,7 @@ public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
 
     /**
      * Crea y devuelve una copia de esta casilla.
+     *
      * @return Casilla
      */
     public Casilla clonarCasilla(){

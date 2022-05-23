@@ -13,9 +13,8 @@ public class Hash {
     /**
      * Genera un hash utilizando el algoritmo SHA-512 el string que recibe como
      * parametro.
-     * 
+     *
      * @param s Texto a hashear
-     * 
      * @return Texto hasheado
      * @throws NoSuchAlgorithmException Excepcion que se lanza si no es posible utilizar SHA-512
      */
@@ -29,10 +28,9 @@ public class Hash {
     /**
      * Metodo que comprueba si el hash del texto s (segundo parametro) es igual al
      * hash (primer parametro)
-     * 
+     *
      * @param hash Supuesto hash de s
      * @param s    Texto a hashear y verificar con hash
-     * 
      * @return True (son iguales), False (no son iguales)
      * @throws NoSuchAlgorithmException Excepcion que se lanza si no es posible utilizar SHA-512
      */

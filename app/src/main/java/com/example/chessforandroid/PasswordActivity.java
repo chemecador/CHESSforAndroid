@@ -14,7 +14,7 @@ import com.example.chessforandroid.util.Cliente;
 /**
  * PasswordActivity. Activity encargado de gestionar el cambio de contraseña
  */
-public class PasswordActivity extends AppCompatActivity implements View.OnClickListener{
+public class PasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText oldPass;
     private EditText newPass;
@@ -39,7 +39,7 @@ public class PasswordActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
 
-        if(view.getId() == R.id.bOk){
+        if (view.getId() == R.id.bOk) {
             Cliente c = new Cliente();
             if (c.isConectado()) {
                 c.cambiarPass(this, user, oldPass.getText().toString(), newPass.getText().toString());

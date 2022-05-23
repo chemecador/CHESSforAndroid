@@ -18,7 +18,7 @@ public class Juez {
     boolean jaqueMate;
     boolean puedeMover;
 
-    public Juez(){
+    public Juez() {
         casillas = new Casilla[NUM_FILAS][NUM_COLUMNAS];
         tablero = new int[NUM_FILAS][NUM_COLUMNAS];
         jaqueMate = false;
@@ -29,12 +29,13 @@ public class Juez {
 
     /**
      * Metodo que actualiza la matriz de casillas
+     *
      * @param t Matriz de enteros a convertir en matriz de casillas
      */
-    public void actualizarCasillas(int[][] t){
+    public void actualizarCasillas(int[][] t) {
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-                switch (t[i][j]){
+                switch (t[i][j]) {
                     case 0:
                         casillas[i][j].setPieza(null);
                         break;
@@ -81,20 +82,21 @@ public class Juez {
             }
         }
     }
-    
+
     /**
      * Metodo que recibe el tablero en forma de string y lo convierte a matriz de enteros
+     *
      * @param s String con la posicion de las fichas
      * @return Matriz de enteros con la posicion de las fichas
      */
-    public int[][] stringToInt(String s){
+    public int[][] stringToInt(String s) {
         int[][] t = new int[NUM_FILAS][NUM_COLUMNAS];
         int x = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 if (s.charAt(x) == '-') {
                     t[i][j] = Integer.parseInt(s.substring(x, x + 2));
-                    x = x+2;
+                    x = x + 2;
                 } else {
                     t[i][j] = Integer.parseInt(s.substring(x, x + 1));
                     x++;
@@ -103,9 +105,10 @@ public class Juez {
         }
         return t;
     }
-    
+
     /**
      * Metodo que comprueba si hay jaque
+     *
      * @param copia Matriz de casillas donde comprobar si hay jaque
      * @return True (hay jaque), False (no hay jaque)
      */
@@ -125,12 +128,13 @@ public class Juez {
         }
         return false;
     }
-    
+
     /**
      * Metodo que comprueba si un movimiento es valido
-     * @param copia Matriz de casillas donde comprobar el movimiento
+     *
+     * @param copia    Matriz de casillas donde comprobar el movimiento
      * @param cInicial Casilla inicial que contiene la pieza a mover
-     * @param cFinal Casilla final donde se quiere mover la pieza
+     * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True (movimiento valido), False (movimiento no valido)
      */
     public boolean esValido(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
@@ -158,14 +162,15 @@ public class Juez {
 
     /**
      * Metodo que busca el rey en el tablero
+     *
      * @param casillas Matriz de casillas donde buscar el rey
-     * @param blancas True si es el rey de las blancas, False si es el de las negras
+     * @param blancas  True si es el rey de las blancas, False si es el de las negras
      * @return Casilla en la que se encuentra el rey, o null si no se encuentra en el tablero
      */
     public Casilla buscarRey(Casilla[][] casillas, boolean blancas) {
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-               
+
                 if (casillas[i][j].getPieza() != null &&
                         casillas[i][j].getPieza().getTag().equalsIgnoreCase("REY") &&
                         casillas[i][j].getPieza().isBlancas() == blancas) {
@@ -176,10 +181,11 @@ public class Juez {
         }
         return null;
     }
-    
+
     /**
      * Metodo que comprueba si un jugador puede mover alguna ficha
-     * @param copia Tablero sobre el que comprobar si hay algun movimiento posible
+     *
+     * @param copia   Tablero sobre el que comprobar si hay algun movimiento posible
      * @param blancas True si el jugador es blancas, False si es negras
      * @return True si hay algun movimiento, False si no
      */
@@ -187,15 +193,15 @@ public class Juez {
         Casilla c, copy;
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
-               
+
                 if (copia[i][j].getPieza() != null && copia[i][j].getPieza().isBlancas() == blancas) {
-                    
+
                     c = copia[i][j];
                     copy = c.clonarCasilla();
-                   
+
                     for (int x = 0; x < NUM_FILAS; x++) {
                         for (int y = 0; y < NUM_COLUMNAS; y++) {
-                            
+
                             if (esValido(copia, copy, copia[x][y])) {
                                 return true;
                             }
@@ -209,8 +215,9 @@ public class Juez {
 
     /**
      * Metodo que comprueba si el movimiento del rey es legal
+     *
      * @param cInicial Casilla inicial que contiene la pieza a mover
-     * @param cFinal Casilla final donde se quiere mover la pieza
+     * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True si es legal, False si no lo es
      */
     public boolean esValidoRey(Casilla cInicial, Casilla cFinal) {
@@ -256,11 +263,12 @@ public class Juez {
         return Math.abs(cInicial.getFila() - cFinal.getFila()) < 2 &&
                 Math.abs(cInicial.getColumna() - cFinal.getColumna()) < 2;
     }
-    
+
     /**
      * Metodo que comprueba si el movimiento del caballo es legal
+     *
      * @param cInicial Casilla inicial que contiene la pieza a mover
-     * @param cFinal Casilla final donde se quiere mover la pieza
+     * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True si es legal, False si no lo es
      */
     public boolean esValidoCaballo(Casilla cInicial, Casilla cFinal) {
@@ -274,9 +282,10 @@ public class Juez {
 
     /**
      * Metodo que comprueba si el movimiento del alfil es legal
-     * @param copia Tablero donde comprobar el movimiento del alfil
+     *
+     * @param copia    Tablero donde comprobar el movimiento del alfil
      * @param cInicial Casilla inicial que contiene la pieza a mover
-     * @param cFinal Casilla final donde se quiere mover la pieza
+     * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True si es legal, False si no lo es
      */
     public boolean esValidoAlfil(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
@@ -291,12 +300,12 @@ public class Juez {
         boolean izquierda = cInicial.getColumna() > cFinal.getColumna();
 
         for (int i = 1; i < dis; i++) {
-            
+
             // si estas pasando por encima de una pieza... arriba izquierda
             if (arriba && izquierda && copia[cInicial.getFila() - i][cInicial.getColumna() - i].getPieza() != null) {
                 return false;
             }
-            
+
             // si estas pasando por encima de una pieza... arriba derecha
             if (arriba && !izquierda && copia[cInicial.getFila() - i][cInicial.getColumna() + i].getPieza() != null) {
                 return false;
@@ -316,9 +325,10 @@ public class Juez {
 
     /**
      * Metodo que comprueba si el movimiento de la torre es legal
-     * @param copia Tablero donde comprobar el movimiento del alfil
+     *
+     * @param copia    Tablero donde comprobar el movimiento del alfil
      * @param cInicial Casilla inicial que contiene la pieza a mover
-     * @param cFinal Casilla final donde se quiere mover la pieza
+     * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True si es legal, False si no lo es
      */
     public boolean esValidoTorre(Casilla[][] copia, Casilla cInicial, Casilla cFinal) {
@@ -362,8 +372,9 @@ public class Juez {
 
     /**
      * Metodo que comprueba si el movimiento de un peon es legal
+     *
      * @param cInicial Casilla inicial que contiene la pieza a mover
-     * @param cFinal Casilla final donde se quiere mover la pieza
+     * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True si es legal, False si no lo es
      */
     public boolean esValidoPeon(Casilla cInicial, Casilla cFinal) {

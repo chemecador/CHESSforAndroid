@@ -55,6 +55,7 @@ public class RankingActivity extends AppCompatActivity {
 
     /**
      * Metodo que se invoca cuando se ha terminado de recibir la clasificacion
+     *
      * @param datos ArrayList con los datos de los usuarios
      */
     public void alRecibirDatos(ArrayList<RankingItem> datos) {

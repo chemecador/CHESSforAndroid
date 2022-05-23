@@ -11,16 +11,17 @@ public class Casilla {
 
     public Casilla(int x, int y) {
         this.fila = x;
-        this.columna= y;
+        this.columna = y;
         this.pieza = null;
     }
 
     /**
      * Crea y devuelve una copia de esta casilla.
+     *
      * @return Casilla
      */
-    public Casilla clonarCasilla(){
-        Casilla clon = new Casilla(fila,columna);
+    public Casilla clonarCasilla() {
+        Casilla clon = new Casilla(fila, columna);
         if (this.getPieza() != null) {
             switch (this.getPieza().getTag()) {
                 case "REY":

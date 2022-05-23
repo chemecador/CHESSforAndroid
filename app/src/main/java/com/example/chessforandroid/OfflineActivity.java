@@ -61,7 +61,6 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         nMovs = 0;
 
 
-
         setContentView(R.layout.activity_offline);
         crearCasillas();
 
@@ -112,7 +111,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         if (!haySeleccionada) {
             // si no hay ninguna casilla seleccionada...
 
-            if (casSelec.getPieza() == null){
+            if (casSelec.getPieza() == null) {
                 // si la casilla seleccionada no contiene ninguna pieza, no devuelve nada
                 return;
             }
@@ -219,8 +218,9 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
     /**
      * Metodo que actualiza el texto con los movimientos
+     *
      * @param fila Fila del movimiento
-     * @param col Columna del movimiento
+     * @param col  Columna del movimiento
      */
     private void actualizarTxt(int fila, int col) {
 
@@ -230,11 +230,11 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         movs.append("   ").append(nMovs).append(". ");
         switch (tag) {
             case "REY":
-                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8'){
+                if ((c1 == 'c' && c2 == '1') || c1 == 'c' && c2 == '8') {
                     movs.append("O-O-O");
                     return;
                 }
-                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8'){
+                if ((c1 == 'g' && c2 == '1') || c1 == 'g' && c2 == '8') {
                     movs.append("O-O");
                     return;
                 }

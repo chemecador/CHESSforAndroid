@@ -107,12 +107,13 @@ public class DB {
 
     /**
      * Recibe un token y consulta su id
+     *
      * @param token Token que recibe
      * @return Id
      * @throws SQLException SQLException
      */
     public static int getIdFromToken(String token) throws SQLException {
-        
+
         // realiza la consulta de la tabla actual
         String consulta = "SELECT idjugador FROM auth_tokens WHERE token = ?";
         PreparedStatement sentencia;
@@ -125,14 +126,16 @@ public class DB {
         }
         return -1;
     }
+
     /**
      * Recibe un id y consulta su nombre de usuario
+     *
      * @param id Id que recibe
      * @return Nombre de usuario
      * @throws SQLException SQLException
      */
     public static String getUserFromId(int id) throws SQLException {
-        
+
         // realiza la consulta de la tabla actual
         String consulta = "SELECT user FROM jugadores WHERE idjugador = ?";
         PreparedStatement sentencia;
@@ -149,12 +152,13 @@ public class DB {
 
     /**
      * Recibe un nombre de usuario y consulta su id
+     *
      * @param user Nombre de usuario que recibe
      * @return Id
      * @throws SQLException SQLException
      */
     public static int getIdFromUser(String user) throws SQLException {
-        
+
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT idjugador FROM jugadores WHERE user = ?";
@@ -173,8 +177,9 @@ public class DB {
 
     /**
      * Consulta si un jugador ha completado un logro
+     *
      * @param idJugador Jugador a comprobar
-     * @param idLogro Logro a comprobar
+     * @param idLogro   Logro a comprobar
      * @return True (si), False (no)
      */
     public static boolean logroCompletado(int idJugador, int idLogro) {
@@ -209,6 +214,7 @@ public class DB {
 
     /**
      * Comprueba si un jugador ha completado todos los logros
+     *
      * @param id Id del jugador
      * @return True (si), False (no)
      */
@@ -243,8 +249,9 @@ public class DB {
 
     /**
      * Metodo encargado de registrar que un jugador ha completado un logro
+     *
      * @param idJugador Jugador que ha completado el logro
-     * @param idLogro Logro que ha completado el jugadopr
+     * @param idLogro   Logro que ha completado el jugadopr
      * @return True (registro correcto), False (error al registrar)
      */
     public static boolean completarLogro(int idJugador, int idLogro) {
@@ -278,6 +285,7 @@ public class DB {
 
     /**
      * Metodo que se encarga de actualizar el nivel tras llegar a una nueva decena de victorias
+     *
      * @param id Id del jugador
      * @return True (nivel actualizado correctamente), False (error al actualizar)
      */
@@ -352,8 +360,9 @@ public class DB {
 
     /**
      * Metodo que se encarga de actualizar las estadisticas de un jugadory67t5u
-     * @param id1 Id del ganador
-     * @param id2 Id del perdedor
+     *
+     * @param id1    Id del ganador
+     * @param id2    Id del perdedor
      * @param tablas booleano que indica si ha habido tablas
      * @return True (stats actualizadas correctamente), False (error al actualizar)
      */
@@ -402,9 +411,10 @@ public class DB {
 
     /**
      * Metodo que se encarga de actualizar el resultado de una partida
-     * @param movs String con los movimientos del tablero
-     * @param id1 Id del ganador
-     * @param id2 Id del perdedor
+     *
+     * @param movs   String con los movimientos del tablero
+     * @param id1    Id del ganador
+     * @param id2    Id del perdedor
      * @param tablas booleano que indica si ha habido tablas
      * @return True (stats actualizadas correctamente), False (error al actualizar)
      */
@@ -442,6 +452,7 @@ public class DB {
 
     /**
      * Metodo que comprueba si el usuario ya existre
+     *
      * @param user Nombre del usuario a comprobar
      * @return True (ya existe), False (no existe)
      * @throws SQLException SQLException
@@ -463,6 +474,7 @@ public class DB {
 
     /**
      * Metodo que comprueba si un usuario ya tiene asignado un token
+     *
      * @param id Id del usuario
      * @return True (ya lo tiene asignado), False (no lo tiene)
      * @throws SQLException SQLException
@@ -487,6 +499,7 @@ public class DB {
 
     /**
      * Metodo que elimina el token de un usuario
+     *
      * @param id Id del usuario
      * @throws SQLException SQLException
      */
@@ -505,6 +518,7 @@ public class DB {
 
     /**
      * Metodo que devuelve un vector con los logros completados por un jugador
+     *
      * @param idJugador Id del jugador a comprobar
      * @return Vector de booleanos con un true por cada logro completado
      * @throws SQLException SQLException
@@ -561,9 +575,10 @@ public class DB {
 
     /**
      * Metodo encargado de pedir los datos de un jugador
+     *
      * @param idJugador Id del jugador
      * @return Datos de la cuenta del jugador
-     * @throws SQLException
+     * @throws SQLException SQLException
      */
     public static int[] pedirDatos(int idJugador) throws SQLException {
 
@@ -591,8 +606,9 @@ public class DB {
 
     /**
      * Metodo encargado de guardar un token en la base de datos
+     *
      * @param token Token a guardar
-     * @param id Id del jugador al que le corresponde
+     * @param id    Id del jugador al que le corresponde
      * @return String con el token que ha guardado, o null si no lo ha podido guardar
      * @throws SQLException SQLException
      */
@@ -621,7 +637,8 @@ public class DB {
 
     /**
      * Metodo encargado de cambiar la contraseña de un usuario
-     * @param user Nombre de usuario
+     *
+     * @param user    Nombre de usuario
      * @param oldPass Clave antigua
      * @param newPass Clave nueva
      * @return True (clave cambiada correctamente), False (error al cambiar la clave)
@@ -656,11 +673,12 @@ public class DB {
 
     /**
      * Metodo que devuelve los nombres de los usuarios ordenados por nivel
+     *
      * @return ArrayList de Strings con los nombres
      * @throws SQLException SQLException
      */
     public static ArrayList<String> getRankingUsersByNivel() throws SQLException {
-        
+
 
         // realiza la consulta de la tabla actual
         String consulta = "SELECT user FROM jugadores WHERE jugadas > 0 ORDER BY jugadores.nivel DESC";
@@ -678,6 +696,7 @@ public class DB {
 
     /**
      * Metodo que devuelve los nombres de los usuarios ordenados por ELO
+     *
      * @return ArrayList de Strings con los nombres
      * @throws SQLException SQLException
      */
@@ -699,6 +718,7 @@ public class DB {
 
     /**
      * Metodo que devuelve el nivel de los usuarios ordenados de manera descendente
+     *
      * @return ArrayList de Strings con los niveles
      * @throws SQLException SQLException
      */
@@ -720,6 +740,7 @@ public class DB {
 
     /**
      * Metodo que devuelve el ELO de los usuarios ordenados de manera descendente
+     *
      * @return ArrayList de Strings con los ELOs
      * @throws SQLException SQLException
      */

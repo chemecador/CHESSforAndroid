@@ -49,55 +49,56 @@ public class AchievementsActivity extends AppCompatActivity {
 
     /**
      * Metodo que se invoca cuando ha terminado la consulta al servidor
+     *
      * @param logros Vector de booleanos que informa si se ha completado cada logro o no
      */
-    public void alTerminarConsulta(Boolean[] logros){
+    public void alTerminarConsulta(Boolean[] logros) {
         int nLogros = 0;
 
-        if (logros[0]){
+        if (logros[0]) {
             win10.setText(R.string.DONE);
             nLogros++;
         } else {
             win10.setText(R.string.NOT_DONE);
         }
-        if (logros[1]){
+        if (logros[1]) {
             win20.setText(R.string.DONE);
             nLogros++;
         } else {
             win20.setText(R.string.NOT_DONE);
         }
-        if (logros[2]){
+        if (logros[2]) {
             win30.setText(R.string.DONE);
             nLogros++;
         } else {
             win30.setText(R.string.NOT_DONE);
         }
-        if (logros[3]){
+        if (logros[3]) {
             movs10.setText(R.string.DONE);
             nLogros++;
         } else {
             movs10.setText(R.string.NOT_DONE);
         }
-        if (logros[4]){
+        if (logros[4]) {
             movs40.setText(R.string.DONE);
             nLogros++;
         } else {
             movs40.setText(R.string.NOT_DONE);
         }
-        if (logros[5]){
+        if (logros[5]) {
             level5.setText(R.string.DONE);
             nLogros++;
         } else {
             level5.setText(R.string.NOT_DONE);
         }
-        if (logros[6]){
+        if (logros[6]) {
             level10.setText(R.string.DONE);
             nLogros++;
         } else {
             level10.setText(R.string.NOT_DONE);
         }
-        cantidadLogros.setText(nLogros+"/7");
-        for (Boolean b : logros){
+        cantidadLogros.setText(nLogros + "/7");
+        for (Boolean b : logros) {
             if (!b)
                 return;
         }

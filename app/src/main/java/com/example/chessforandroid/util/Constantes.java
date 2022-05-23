@@ -21,12 +21,12 @@ public class Constantes {
     /**
      * Puerto en el que escucha
      */
-    public static int puerto = 5566;
+    public static int PUERTO = 5566;
 
     /**
      * Puerto en el que escucha para gestionar una partida
      */
-    public static int puertoPartida = 5567;
+    public static int PUERTO_PARTIDA = 5567;
 
     /**
      * modo debug para ejecutar el servidor en local

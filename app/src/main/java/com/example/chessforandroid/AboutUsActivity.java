@@ -10,8 +10,8 @@ import android.widget.TextView;
 /**
  * Activity AboutUsActivity.
  * Muestra la informacion acerca del desarrollador y cuenta el numero
- *  de toques que se ha realizado sobre el texto de la version.
- *  Si llega a 7, lanza el AdvancedActivity.
+ * de toques que se ha realizado sobre el texto de la version.
+ * Si llega a 7, lanza el AdvancedActivity.
  */
 public class AboutUsActivity extends AppCompatActivity implements View.OnClickListener {
 

@@ -30,17 +30,17 @@ public class FriendWaitingActivity extends AppCompatActivity {
         TextView txt = findViewById(R.id.txtLobby);
         txt.setText("Tu código es " + idPartida);
 
-        if (idPartida == -1){
+        if (idPartida == -1) {
             Toast.makeText(this, "Ha habido un error en la creación de la sala", Toast.LENGTH_SHORT).show();
             finish();
         }
 
-        Cliente c = new Cliente(Constantes.puertoPartida);
+        Cliente c = new Cliente(Constantes.PUERTO_PARTIDA);
 
         if (c.isConectado()) {
-            c.esperarRival(this, token);
+            c.esperarAmigo(this, token);
         } else {
-            Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error al esperar amigo", Toast.LENGTH_SHORT).show();
         }
     }
 }

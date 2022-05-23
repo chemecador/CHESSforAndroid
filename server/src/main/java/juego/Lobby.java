@@ -65,6 +65,7 @@ public class Lobby {
 
     /**
      * Metodo que se encarga de establecer el segundo jugador (invitado)
+     *
      * @param j2 Nuevo jugador
      * @throws IOException IOException
      */

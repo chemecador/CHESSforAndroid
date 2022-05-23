@@ -47,7 +47,7 @@ public class AdvancedActivity extends AppCompatActivity implements View.OnClickL
         }
 
         ip.setText(Constantes.ip);
-        puerto.setText(String.valueOf(Constantes.puerto));
+        puerto.setText(String.valueOf(Constantes.PUERTO));
 
         if (!cbDeveloper.isChecked()) {
             ocultar();
@@ -86,7 +86,7 @@ public class AdvancedActivity extends AppCompatActivity implements View.OnClickL
         }
         if (view.getId() == R.id.bConfirmar) {
             Constantes.ip = ip.getText().toString();
-            Constantes.puerto = Integer.parseInt(puerto.getText().toString());
+            Constantes.PUERTO = Integer.parseInt(puerto.getText().toString());
             Constantes.debug = false;
             finish();
         }

@@ -48,8 +48,8 @@ public class Servidor {
         }
 
         try {
-            ss = new ServerSocket();
-            new SocketHandler();
+            ss = new ServerSocket(Parametros.PUERTO);
+            new SocketHandler(Parametros.PUERTO_PARTIDA);
         } catch (Exception e) {
             logger.fatal("Error al inicializar el socket de escucha en el puerto '{}'", Parametros.PUERTO, e);
             System.exit(-1);

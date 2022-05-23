@@ -58,6 +58,7 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo encargado de llamar a otros metodos que realicen la tarea que desea el cliente
+     *
      * @param peticion Peticion en clave de la tarea que quieren hacer
      * @throws Exception Excepcion
      */
@@ -117,7 +118,8 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo encargado de consultar y devolver la informacion acerca de los logros de un jugador.
-     * @throws IOException IOException
+     *
+     * @throws IOException  IOException
      * @throws SQLException SQLException
      */
     private void consultarLogros() throws IOException, SQLException {
@@ -136,7 +138,8 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo que consulta y devuelve la clasificacion de los usuarios ordenada por nivel
-     * @throws IOException IOException
+     *
+     * @throws IOException  IOException
      * @throws SQLException SQLException
      */
     private void rankingNivel() throws IOException, SQLException {
@@ -162,7 +165,8 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo que consulta y devuelve la clasificacion de los usuarios ordenada por ELO
-     * @throws IOException IOException
+     *
+     * @throws IOException  IOException
      * @throws SQLException SQLException
      */
     private void rankingElo() throws IOException, SQLException {
@@ -187,6 +191,7 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo encargado de cerrar la conexion con el servidor
+     *
      * @throws IOException IOException
      */
     public void cerrarConexion() throws IOException {
@@ -195,7 +200,8 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo encargado de gestionar la peticion de un jugador de jugar online
-     * @throws IOException IOException
+     *
+     * @throws IOException  IOException
      * @throws SQLException SQLException
      */
     private void jugarOnline() throws IOException, SQLException {
@@ -223,8 +229,9 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo que se encarga de gestionar la peticion del usuario de crear sala
+     *
      * @return True (sala creada correctamente), False (error al crear la sala)
-     * @throws IOException IOException
+     * @throws IOException  IOException
      * @throws SQLException SQLException
      */
     private boolean crearSala() throws IOException, SQLException {
@@ -248,8 +255,9 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo encargado de unirse a una sala online
+     *
      * @return True (sala creada correctamente), False (error al crear la sala)
-     * @throws IOException IOException
+     * @throws IOException  IOException
      * @throws SQLException SQLException
      */
     private boolean unirse() throws IOException, SQLException {
@@ -272,6 +280,7 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo que se encarga de cambiar la contraseña de un teclado
+     *
      * @return True (sala creada correctamente), False (error al crear la sala)
      * @throws Exception
      */
@@ -294,8 +303,9 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo que se encarga de realizar el inicio de sesion de un usuario
-     * @throws IOException IOException
-     * @throws SQLException SQLException
+     *
+     * @throws IOException              IOException
+     * @throws SQLException             SQLException
      * @throws NoSuchAlgorithmException No existe el algoritmo de hash
      */
     private void inicioSesion() throws IOException, SQLException, NoSuchAlgorithmException {
@@ -318,6 +328,7 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo que se encarga de gestionar el registro de un usuario
+     *
      * @throws Exception Excepcion que devuelve
      */
     private void registro() throws Exception {
@@ -349,7 +360,8 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo que es encarga de pedir los datos de un usuario
-     * @throws IOException IOException
+     *
+     * @throws IOException  IOException
      * @throws SQLException SQLException
      */
     private void pedirDatos() throws IOException, SQLException {
@@ -378,6 +390,7 @@ public class ClientHandler extends Thread {
 
     /**
      * Metodo que se encarga de generar un nuevo token aleatorio
+     *
      * @return Token generado
      */
     private String generarToken() {
