@@ -24,6 +24,7 @@
     <string name="cancel">Cancelar</string>
     <string name="accept">Aceptar</string>
     <string name="confirm">Confirmar</string>
+    <string name="exit">Salir</string>
     <string name="draw">Tablas</string>
     <string name="resign">Rendirse</string>
     <string name="create_room">Crear una nueva sala</string>
@@ -34,11 +35,15 @@
     <string name="waiting">Esperando jugadores...</string>
     <string name="matchmaking">Buscar partida</string>
     <string name="turn">Comienzan las blancas</string>
+    <string name="white">Blancas</string>
+    <string name="black">Negras</string>
     <string name="white_move">Mueven las blancas</string>
     <string name="you_win">¡Has ganado!</string>
     <string name="you_lose">¡Has perdido!</string>
     <string name="black_move">Mueven las negras</string>
-    <string name="winner">El ganador es </string>
+    <string name="black_win">Ganan las negras</string>
+    <string name="white_win">Ganan las blancas</string>
+    <string name="winner_is">El ganador es</string>
     <string name="draw_offered">El rival ofrece tablas</string>
     <string name="draw_declined">"El rival rechaza las tablas"</string>
     <string name="draw_accepted">Tablas por mutuo acuerdo</string>
@@ -77,5 +82,15 @@
     <string name="must_reach_level_2">Debes alcanzar el nivel 2 para desbloquearlo</string>
     <string name="white_squares_color">Color de las casillas blancas</string>
     <string name="black_squares_color">Color de las casillas negras</string>
+    <string name="check">Jaque</string>
+    <string name="checkmate">Jaque mate</string>
+    <string name="stalemate">Rey ahogado</string>
+    <string name="play_white">Juegas con blancas</string>
+    <string name="play_black">Juegas con negras</string>
+    <string name="forfeit">Has perdido por abandono</string>
+    <string name="deciding">El rival está decidiendo si acepta las tablas</string>
+    <string name="already_offered">Ya has ofrecido tablas 3 veces</string>
+    <string name="not_valid">Eso movimiento no es legal</string>
+
 
 </resources>

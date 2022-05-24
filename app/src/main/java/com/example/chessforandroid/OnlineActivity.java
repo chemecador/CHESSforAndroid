@@ -101,24 +101,28 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             return;
 
         if (quieroTablas && !miTurno) {
-            Toast.makeText(this, "El rival está decidiendo si acepta las tablas", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.deciding, Toast.LENGTH_SHORT).show();
             return;
         }
 
+        if (!miTurno && soyBlancas) {
+            Toast.makeText(this, R.string.black_move, Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!miTurno) {
-            Toast.makeText(this, "Turno del rival", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.white_move, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (view.getId() == R.id.bTablasOnline) {
-            if (contadorTablas > 3) {
-                Toast.makeText(this, "Ya has solicitado tablas 3 veces", Toast.LENGTH_SHORT).show();
+            if (contadorTablas > 2) {
+                Toast.makeText(this, R.string.already_offered, Toast.LENGTH_SHORT).show();
                 return;
             }
 
             quieroTablas = true;
             tablas.setBackgroundColor(Color.GREEN);
-            Toast.makeText(this, "Tablas ofrecidas al rival", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.draw_offered, Toast.LENGTH_SHORT).show();
             if (cliente.isConectado()) {
                 cliente.ofrecerTablas(this, this);
                 miTurno = false;
@@ -194,7 +198,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
                     actualizarTurno();
                 }
             } else {
-                Log.e(TAG, "error");
+                Toast.makeText(this, R.string.not_valid, Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -214,6 +218,9 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.draw_accepted);
             builder.setPositiveButton(R.string.accept, null);
+            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
+                finish();
+            });
             Dialog dialog = builder.create();
             dialog.show();
             tablas.setBackgroundColor(Color.GREEN);
@@ -238,7 +245,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         String s0 = (String) objects[0];
         if (s0 != null && s0.equalsIgnoreCase("rendirse")) {
 
-            Toast.makeText(this, "¡Has ganado por abandono del rival!", Toast.LENGTH_SHORT).show();
             gestionarFinal(soyBlancas);
             fin = true;
             return;
@@ -270,7 +276,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         // es jaque?
         juez.jaque = (boolean) objects[3];
         if (juez.jaque) {
-            Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.check, Toast.LENGTH_SHORT).show();
         }
         // puede mover?
         juez.puedeMover = (boolean) objects[4];
@@ -296,6 +302,9 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             builder.setMessage(R.string.draw_accepted);
 
             builder.setPositiveButton(R.string.accept, null);
+            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
+                finish();
+            });
             Dialog dialog = builder.create();
             dialog.show();
             tablas.setBackgroundColor(Color.GREEN);
@@ -322,8 +331,11 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             ganador = yo;
         }
 
-        builder.setMessage("El ganador es " + ganador);
+        builder.setMessage(getString(R.string.winner_is) + " " + ganador);
         builder.setPositiveButton(R.string.accept, null);
+        builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
+            finish();
+        });
         Dialog dialog = builder.create();
         dialog.show();
     }
@@ -345,7 +357,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> {
             if (cliente.isConectado()) {
                 cliente.enviarMensaje("rechazadas");
-                Toast.makeText(OnlineActivity.this, "Tablas rechazadas", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OnlineActivity.this, R.string.draw_declined, Toast.LENGTH_SHORT).show();
             }
             esperarMov();
         });
@@ -373,7 +385,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         // es jaque?
         juez.jaque = (boolean) objects[1];
         if (juez.jaque) {
-            Toast.makeText(this, "JAQUE", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.check, Toast.LENGTH_SHORT).show();
         }
         // puede mover?
         juez.puedeMover = (boolean) objects[2];
@@ -393,7 +405,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         if (cliente.isConectado()) {
             cliente.esperarMov(this, this);
         } else {
-            Log.e("************************", "Error al esperar movimiento");
+            Log.e(TAG, "Error al esperar movimiento");
         }
     }
 
@@ -410,7 +422,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         if (cliente.isConectado()) {
             o = cliente.getDatosIniciales(this, token);
         } else {
-            Log.e("************************", "Error al recibir los datos iniciales");
+            Log.e(TAG, "Error al recibir los datos iniciales");
         }
 
         tablas = findViewById(R.id.bTablasOnline);
@@ -428,11 +440,11 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         rival = (String) o[1];
         miTurno = soyBlancas;
         if (soyBlancas) {
-            vs.setText("(Blancas) " + yo + " vs " + rival + " (Negras)");
-            Toast.makeText(this, "Juegas con blancas", Toast.LENGTH_SHORT).show();
+            vs.setText("(" + getString(R.string.white) + ") " + yo + " vs " + rival + " (" + getString(R.string.black) + ")");
+            Toast.makeText(this, R.string.play_white, Toast.LENGTH_SHORT).show();
         } else {
-            vs.setText("(Blancas) " + rival + " vs " + yo + " (Negras)");
-            Toast.makeText(this, "Juegas con negras", Toast.LENGTH_SHORT).show();
+            vs.setText("(" + getString(R.string.white) + ") " + rival + " vs " + yo + " (" + getString(R.string.black) + ")");
+            Toast.makeText(this, R.string.play_black, Toast.LENGTH_SHORT).show();
             esperarMov();
         }
     }
@@ -668,7 +680,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         super.onResume();
         onResumes++;
         if (onResumes == 2) {
-            Toast.makeText(this, "Has perdido por abandono", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.forfeit, Toast.LENGTH_SHORT).show();
             finish();
         }
     }

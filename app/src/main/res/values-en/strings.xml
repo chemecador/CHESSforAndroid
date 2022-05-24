@@ -24,6 +24,7 @@
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
     <string name="confirm">Confirm</string>
+    <string name="exit">Exit</string>
     <string name="draw">Draw</string>
     <string name="resign">Resign</string>
     <string name="create_room">Create new room</string>
@@ -35,10 +36,14 @@
     <string name="matchmaking">Search game</string>
     <string name="turn">White begin</string>
     <string name="white_move">White to move</string>
+    <string name="white">White</string>
+    <string name="black">Black</string>
     <string name="you_win">You win!</string>
     <string name="you_lose">You lose!</string>
     <string name="black_move">Black to move</string>
-    <string name="winner">The winner is</string>
+    <string name="winner_is">The winner is</string>
+    <string name="black_win">Ganan las negras</string>
+    <string name="white_win">Ganan las blancas</string>
     <string name="draw_offered">The opponent offered draw</string>
     <string name="draw_declined">Draw offer was declined</string>
     <string name="draw_accepted">Draw accepted</string>
@@ -77,5 +82,13 @@
     <string name="must_reach_level_2">You must reach level 2 to unlock this</string>
     <string name="white_squares_color">White squares color</string>
     <string name="black_squares_color">Black squares color</string>
-
+    <string name="check">Check</string>
+    <string name="checkmate">Checkmate</string>
+    <string name="stalemate">Stalemate</string>
+    <string name="play_white">You play white</string>
+    <string name="play_black">You play black</string>
+    <string name="forfeit">You lost by forfeit</string>
+    <string name="deciding">The opponent is deciding...</string>
+    <string name="already_offered">You have already offered draw 3 times</string>
+    <string name="not_valid">That move is not valid</string>
 </resources>

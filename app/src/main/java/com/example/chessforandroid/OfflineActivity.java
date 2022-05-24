@@ -81,9 +81,11 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
             // se lanza un AlertDialog mostrando el resultado de tablas
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Tablas");
-            builder.setMessage("Tablas de mutuo acuerdo");
+            builder.setMessage(R.string.draw_accepted);
             builder.setPositiveButton(R.string.accept, null);
+            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
+                finish();
+            });
             Dialog dialog = builder.create();
             dialog.show();
             fin = true;
@@ -92,12 +94,20 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
         if (view.getId() == R.id.bRendirseOffline) {
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
             // gana el jugador que no era su turno
             if (juez.turno) {
-                Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
+                builder.setMessage(R.string.black_win);
             } else {
-                Toast.makeText(this, "Ganan las blancas", Toast.LENGTH_SHORT).show();
+                builder.setMessage(R.string.white_win);
             }
+            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
+                finish();
+            });
+            builder.setPositiveButton(R.string.accept, null);
+            Dialog dialog = builder.create();
+            dialog.show();
             fin = true;
             return;
         }
@@ -117,9 +127,9 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
             if (casSelec.getPieza().isBlancas() != juez.turno) {
                 // si contiene una pieza pero es del rival, se notifica y no devuelve nada
                 if (juez.turno)
-                    Toast.makeText(this, "Mueven las blancas", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.white_move, Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(this, "Mueven las negras", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.black_move, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -165,11 +175,21 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 // si se han comido el rey, (jaque mate)...
                 if (juez.buscarRey(juez.casillas, juez.turno) == null) {
                     // se notifica quien ha ganado
-                    if (juez.turno)
-                        Toast.makeText(this, "Ganan las negras", Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(this, "Ganan las blancas", Toast.LENGTH_SHORT).show();
 
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                    // gana el jugador que no era su turno
+                    if (juez.turno) {
+                        builder.setMessage(R.string.black_win);
+                    } else {
+                        builder.setMessage(R.string.white_win);
+                    }
+                    builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
+                        finish();
+                    });
+                    builder.setPositiveButton(R.string.accept, null);
+                    Dialog dialog = builder.create();
+                    dialog.show();
                     fin = true;
                     return;
                 }
@@ -185,29 +205,33 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
                 if (juez.jaque) {
                     // si hay jaque, se ilumina la casilla y se muestra por pantalla
-                    Toast.makeText(this, "Jaque", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.check, Toast.LENGTH_SHORT).show();
                     juez.buscarRey(juez.casillas, juez.turno).setBackgroundColor(Color.RED);
                 } else {
                     if (!juez.puedeMover) {
                         // no hay jaque y no puede mover, rey ahogado
-                        Toast.makeText(this, "REY AHOGADO" + juez.turno, Toast.LENGTH_SHORT).show();
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle("Tablas");
-                        builder.setMessage("Tablas por ahogado");
+                        builder.setTitle(R.string.draw);
+                        builder.setMessage(R.string.stalemate);
                         builder.setPositiveButton(R.string.accept, null);
+                        builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
+                            finish();
+                        });
                         Dialog dialog = builder.create();
                         dialog.show();
                         fin = true;
                         return;
                     }
                 }
+            } else {
+                Toast.makeText(this, R.string.not_valid, Toast.LENGTH_SHORT).show();
             }
             // se notifica el cambio de turno
             if (juez.turno)
-                mueven.setText("Mueven las blancas");
+                mueven.setText(R.string.white_move);
             else
-                mueven.setText("Mueven las negras");
+                mueven.setText(R.string.black_move);
 
         }
         haySeleccionada = !haySeleccionada;
