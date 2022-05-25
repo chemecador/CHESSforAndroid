@@ -1,7 +1,6 @@
 package com.example.chessforandroid;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +17,6 @@ import java.util.ArrayList;
  */
 public class RankingAdapter extends BaseAdapter {
     /**
-     * La activity en la que se este usando
-     */
-    private Context context;
-    /**
      * Lista de elementos de la clasificacion
      */
     private ArrayList<RankingItem> lista;
@@ -31,9 +26,8 @@ public class RankingAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
     public RankingAdapter(Activity context, ArrayList<RankingItem> lista) {
-        this.context = context;
         this.lista = lista;
-        this.inflater = LayoutInflater.from(context);//El inflater será el mismo que se esté encargando de la interfaz general de la activity
+        this.inflater = LayoutInflater.from(context);
     }
 
     /**
@@ -64,7 +58,7 @@ public class RankingAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
 
-        // el id de cada item en la lista coincide con su posición
+        // el id de cada item en la lista coincide con su posicion
         return position;
     }
 
@@ -72,7 +66,7 @@ public class RankingAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // metodo que pinta un elemento de la lista
-        ViewHolder holder = null;
+        ViewHolder holder;
         if (convertView == null) {
 
             // si es nulo, sea establece el holder en la convertView

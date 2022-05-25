@@ -19,7 +19,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private TextView victorias, nivel;
     private String user;
     private String token;
-    private Button personalizar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         ibMisiones = findViewById(R.id.ibLogros);
         ibMisiones.setOnClickListener(this);
 
-        personalizar = findViewById(R.id.bPersonalizarTablero);
+        Button personalizar = findViewById(R.id.bPersonalizarTablero);
         personalizar.setOnClickListener(this);
         if (Integer.parseInt(nivel.getText().toString()) > 1){
             personalizar.setBackgroundColor(Color.parseColor("#358C0E"));

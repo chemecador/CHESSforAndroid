@@ -79,7 +79,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 Cliente c = new Cliente();
                 if (c.isConectado()) {
-                    Log.i("**", "user: " + user.getText().toString());
                     c.iniciarSesion(this, user.getText().toString(), pass.getText().toString());
                 } else {
                     Toast.makeText(this, "Error al conectar con el servidor", Toast.LENGTH_SHORT).show();

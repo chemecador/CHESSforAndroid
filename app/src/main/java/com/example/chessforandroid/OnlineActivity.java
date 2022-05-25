@@ -218,9 +218,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.draw_accepted);
             builder.setPositiveButton(R.string.accept, null);
-            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
-                finish();
-            });
+            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> finish());
             Dialog dialog = builder.create();
             dialog.show();
             tablas.setBackgroundColor(Color.GREEN);
@@ -302,9 +300,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
             builder.setMessage(R.string.draw_accepted);
 
             builder.setPositiveButton(R.string.accept, null);
-            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
-                finish();
-            });
+            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> finish());
             Dialog dialog = builder.create();
             dialog.show();
             tablas.setBackgroundColor(Color.GREEN);
@@ -333,9 +329,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
 
         builder.setMessage(getString(R.string.winner_is) + " " + ganador);
         builder.setPositiveButton(R.string.accept, null);
-        builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
-            finish();
-        });
+        builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> finish());
         Dialog dialog = builder.create();
         dialog.show();
     }

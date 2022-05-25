@@ -14,7 +14,6 @@ import com.example.chessforandroid.util.Cliente;
  * AchievementsActivity. Solicita al servidor y muestra los logros conseguidos por cada usuario
  */
 public class AchievementsActivity extends AppCompatActivity {
-    private String token;
     private TextView cantidadLogros, win10, win20, win30,
             movs10, movs40, level5, level10, gameOver;
 
@@ -24,7 +23,7 @@ public class AchievementsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_achievements);
 
         Intent i = getIntent();
-        token = i.getStringExtra("token");
+        String token = i.getStringExtra("token");
 
         cantidadLogros = findViewById(R.id.txtCantidadLogros);
         win10 = findViewById(R.id.txtWin10);
@@ -98,10 +97,7 @@ public class AchievementsActivity extends AppCompatActivity {
             level10.setText(R.string.NOT_DONE);
         }
         cantidadLogros.setText(nLogros + "/7");
-        for (Boolean b : logros) {
-            if (!b)
-                return;
-        }
-        gameOver.setVisibility(View.VISIBLE);
+        if (nLogros == 7)
+            gameOver.setVisibility(View.VISIBLE);
     }
 }

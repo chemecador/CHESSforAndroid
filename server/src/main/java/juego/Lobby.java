@@ -1,14 +1,11 @@
 package juego;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-
-import servidor.Servidor;
 
 /**
  * Metodo que se encarga de gestionar el lobby de las partidas online

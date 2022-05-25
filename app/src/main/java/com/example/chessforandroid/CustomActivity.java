@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,10 +15,8 @@ import com.example.chessforandroid.util.Constantes;
  * CustomActivity, que se encarga de personalizar las casillas si el usuario ha alcanzado el nivel 2.
  */
 public class CustomActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static String TAG = OnlineActivity.class.getSimpleName();
 
     private Spinner spinner1, spinner2;
-    private Button bConfirmar, bCancelar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +24,8 @@ public class CustomActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_custom);
 
 
-        bConfirmar = findViewById(R.id.bConfirmarPersonalizar);
-        bCancelar = findViewById(R.id.bCancelarPersonalizar);
+        Button bConfirmar = findViewById(R.id.bConfirmarPersonalizar);
+        Button bCancelar = findViewById(R.id.bCancelarPersonalizar);
 
         bConfirmar.setOnClickListener(this);
         bCancelar.setOnClickListener(this);

@@ -91,6 +91,8 @@
     <string name="deciding">El rival está decidiendo si acepta las tablas</string>
     <string name="already_offered">Ya has ofrecido tablas 3 veces</string>
     <string name="not_valid">Eso movimiento no es legal</string>
+    <string name="congrats">¡Has completado todos los logros!</string>
+    <string name="version">Version 1.0.0</string>
 
 
 </resources>

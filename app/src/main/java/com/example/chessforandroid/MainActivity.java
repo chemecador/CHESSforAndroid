@@ -6,23 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.chessforandroid.util.Cliente;
-
-/**
- * TAREA ACTUAL:
- * todas las misiones completadas, ¿que ocurre?
- * <p>
- * BUGS CONOCIDOS:
- * <p>
- * TAREAS EXTRA:
- * poder seleccionar el idioma
- */
 
 /**
  * MainActivity. Activity principal donde el usuario decide lo que quiere hacer en la app.

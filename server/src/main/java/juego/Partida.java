@@ -80,7 +80,7 @@ public class Partida {
     /**
      * Metodo que se encarga de leer los movimientos de un jugador y enviarselos al otro, asi como
      * de hacer las comprobaciones de que esos movimientos son legales y los posibles jaques
-     * @throws IOException
+     * @throws IOException IOException
      */
     private void jugar() throws IOException {
         String mensaje;

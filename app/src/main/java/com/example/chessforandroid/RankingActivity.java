@@ -20,11 +20,9 @@ import java.util.ArrayList;
  */
 public class RankingActivity extends AppCompatActivity {
 
-    private RankingAdapter adapter;
     private ListView lvRanking;
     private ProgressBar pb;
-    private TextView tvCargando, tvElo;
-    private SharedPreferences prefs;
+    private TextView tvCargando;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +30,11 @@ public class RankingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ranking);
         Cliente cliente = new Cliente();
         lvRanking = findViewById(R.id.lvRanking);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 
         tvCargando = findViewById(R.id.txtLoadingData);
-        tvElo = findViewById(R.id.txtColElo);
+        TextView tvElo = findViewById(R.id.txtColElo);
         pb = findViewById(R.id.progressBarRanking);
 
         if (prefs.getBoolean("preferencias_elo", true)) {
@@ -63,7 +61,7 @@ public class RankingActivity extends AppCompatActivity {
         tvCargando.setVisibility(View.INVISIBLE);
         pb.setVisibility(View.INVISIBLE);
         pb.setEnabled(false);
-        adapter = new RankingAdapter(this, datos);
+        RankingAdapter adapter = new RankingAdapter(this, datos);
         lvRanking.setAdapter(adapter);
     }
 }

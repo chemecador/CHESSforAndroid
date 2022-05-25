@@ -31,7 +31,6 @@ import com.example.chessforandroid.util.Juez;
  * Clase OfflineActivity. Gestiona la partida local entre dos jugadores.
  */
 public class OfflineActivity extends AppCompatActivity implements View.OnClickListener {
-    private final static String TAG = OfflineActivity.class.getSimpleName();
 
     // atributos de layout
     private GridLayout oGameBoard;
@@ -83,9 +82,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.draw_accepted);
             builder.setPositiveButton(R.string.accept, null);
-            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
-                finish();
-            });
+            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> finish());
             Dialog dialog = builder.create();
             dialog.show();
             fin = true;
@@ -102,9 +99,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
             } else {
                 builder.setMessage(R.string.white_win);
             }
-            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
-                finish();
-            });
+            builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> finish());
             builder.setPositiveButton(R.string.accept, null);
             Dialog dialog = builder.create();
             dialog.show();
@@ -184,9 +179,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                     } else {
                         builder.setMessage(R.string.white_win);
                     }
-                    builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
-                        finish();
-                    });
+                    builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> finish());
                     builder.setPositiveButton(R.string.accept, null);
                     Dialog dialog = builder.create();
                     dialog.show();
@@ -215,9 +208,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                         builder.setTitle(R.string.draw);
                         builder.setMessage(R.string.stalemate);
                         builder.setPositiveButton(R.string.accept, null);
-                        builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> {
-                            finish();
-                        });
+                        builder.setNegativeButton(R.string.exit, (dialogInterface, i) -> finish());
                         Dialog dialog = builder.create();
                         dialog.show();
                         fin = true;

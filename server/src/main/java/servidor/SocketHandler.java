@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import juego.Parametros;
 
 /**
  * Clase SocketHandler. Se encarga de entregar un socket a la clase que se lo pide.

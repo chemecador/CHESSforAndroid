@@ -91,4 +91,5 @@
     <string name="deciding">The opponent is deciding...</string>
     <string name="already_offered">You have already offered draw 3 times</string>
     <string name="not_valid">That move is not valid</string>
+    <string name="congrats">You completed all the achievements!</string>
 </resources>
