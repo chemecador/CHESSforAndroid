@@ -766,7 +766,7 @@ public class Cliente {
         @Override
         protected void onPostExecute(Integer codigo) {
             super.onPostExecute(codigo);
-
+            Log.i(TAG, "El codigo recibido es " + codigo);
             // se lanza el activity encargado de esperar al rival con el codigo de la sala
             Intent lobbyIntent = new Intent(context, FriendWaitingActivity.class);
             lobbyIntent.putExtra("id", codigo);

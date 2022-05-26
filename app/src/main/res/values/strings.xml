@@ -31,8 +31,8 @@
     <string name="create">Crear partida</string>
     <string name="join_room">Unirse a una sala</string>
     <string name="join">Unirse</string>
-    <string name="write_code">Escribe aquí el código...</string>
-    <string name="waiting">Esperando jugadores...</string>
+    <string name="write_code">Escribe aquí el código…</string>
+    <string name="waiting">Esperando jugadores…</string>
     <string name="matchmaking">Buscar partida</string>
     <string name="turn">Comienzan las blancas</string>
     <string name="white">Blancas</string>
@@ -44,7 +44,8 @@
     <string name="black_win">Ganan las negras</string>
     <string name="white_win">Ganan las blancas</string>
     <string name="winner_is">El ganador es</string>
-    <string name="draw_offered">El rival ofrece tablas</string>
+    <string name="draw_offered">Tablas ofrecidas al rival</string>
+    <string name="rival_offered_draw">El rival ofrece tablas</string>
     <string name="draw_declined">"El rival rechaza las tablas"</string>
     <string name="draw_accepted">Tablas por mutuo acuerdo</string>
     <string name="change_pass">Cambiar contraseña</string>
@@ -65,7 +66,7 @@
     <string name="play">Jugar</string>
     <string name="ranking">Ranking</string>
     <string name="show_ranking">Mostrar clasificación</string>
-    <string name="loading_data">Cargando datos...</string>
+    <string name="loading_data">Cargando datos…</string>
     <string name="position">Posición</string>
     <string name="player">Jugador</string>
     <string name="elo">ELO</string>

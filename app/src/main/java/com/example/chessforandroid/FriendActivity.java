@@ -14,6 +14,7 @@ import com.example.chessforandroid.util.Cliente;
 
 /**
  * FriendActivity. Activity que se lanza cuando el usuario ha elegido jugar con un amigo.
+ * Muestra las diferentes opciones que tiene.
  */
 public class FriendActivity extends AppCompatActivity implements View.OnClickListener {
 

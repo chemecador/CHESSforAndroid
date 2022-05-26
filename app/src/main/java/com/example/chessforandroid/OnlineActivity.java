@@ -339,7 +339,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
      */
     private void propuestaTablas() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.draw_offered);
+        builder.setMessage(R.string.rival_offered_draw);
         builder.setPositiveButton(R.string.accept, (dialogInterface, i) -> {
             if (cliente.isConectado()) {
                 cliente.enviarMensaje("aceptadas");

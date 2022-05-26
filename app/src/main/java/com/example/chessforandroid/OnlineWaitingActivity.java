@@ -9,7 +9,7 @@ import android.util.Log;
 import com.example.chessforandroid.util.Cliente;
 
 /**
- * OnlineWaitingActivity, envia al servidor la peticion de buscar partida online
+ * OnlineWaitingActivity, envia al servidor la peticion de buscar partida online y espera al rival.
  */
 public class OnlineWaitingActivity extends AppCompatActivity {
     private final static String TAG = Cliente.class.getSimpleName();
