@@ -3,12 +3,16 @@ package db;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 
 /**
@@ -18,40 +22,6 @@ public class DB {
     private static final Logger logger = LogManager.getLogger();
     private static Connection conn;
 
-
-    /**
-     * Metodo que conecta con la base de datos.
-     */
-    public static void conectar() throws SQLException {
-        String url;
-        String user;
-        String passw;
-
-        String host = System.getenv("MYSQL_HOST");
-        if (host == null) {
-            url = "jdbc:mysql://localhost/chessforandroid";
-            user = "chess4android";
-            passw = "ttDfdqxmf3ynnSozTMYSzH7H2ncfwD";
-        } else {
-            user = System.getenv("MYSQL_USER");
-            passw = System.getenv("MYSQL_PASSWORD");
-            url = "jdbc:mysql://" + host + "/" + System.getenv("MYSQL_DB");
-        }
-        // MYSQL_DB
-        // MYSQL_USER
-        // MYSQL_PASSWORD
-
-        conn = null;
-        // conexion con localhost a trav�s de mi puerto
-        conn = DriverManager.getConnection(url, user, passw);
-    }
-
-    /**
-     * Metodo que desconecta de la base de datos
-     */
-    public static void desconectar() throws SQLException {
-        conn.close();
-    }
 
     /***
      * Metodo que gestiona el registro en la base de datos.
@@ -760,5 +730,46 @@ public class DB {
         return datos;
     }
 
+    /**
+     * Metodo que conecta con la base de datos.
+     */
+    public static void conectar() throws SQLException {
+        String url = null;
+        String user = null;
+        String passw = null;
 
+        String host = System.getenv("MYSQL_HOST");
+        if (host == null) {
+            FileInputStream f = null;
+            try {
+                f = new FileInputStream("conf/conf.properties");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Properties p = new Properties();
+            try {
+                p.load(f);
+                url = p.getProperty("server.url");
+                user = p.getProperty("server.user");
+                passw = p.getProperty("server.password");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            url = "jdbc:mysql://" + host + "/" + System.getenv("MYSQL_DB");
+            user = System.getenv("MYSQL_USER");
+            passw = System.getenv("MYSQL_PASSWORD");
+        }
+
+        conn = null;
+        // conexion con localhost a traves de mi puerto
+        conn = DriverManager.getConnection(url, user, passw);
+    }
+
+    /**
+     * Metodo que desconecta de la base de datos
+     */
+    public static void desconectar() throws SQLException {
+        conn.close();
+    }
 }
