@@ -14,6 +14,10 @@ services:
     networks:
       - db_network
     deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 256M
       restart_policy:
         condition: on-failure
         delay: 30s
