@@ -8,4 +8,5 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - 5566:5566/tcp
+      - 5567:5567/tcp
     restart: unless-stopped
