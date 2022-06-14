@@ -94,4 +94,5 @@
     <string name="not_valid">That move is not valid</string>
     <string name="congrats">You completed all the achievements!</string>
     <string name="version">Version 1.0.0</string>
+    <string name="game_started">Game started</string>
 </resources>

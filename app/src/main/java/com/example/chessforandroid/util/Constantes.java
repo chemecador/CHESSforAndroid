@@ -33,7 +33,7 @@ public class Constantes {
     /**
      * Modo debug para ejecutar el servidor en local
      */
-    public static boolean debug = false;
+    public static boolean debug = true;
 
     /**
      * Color de las casillas blancas por defecto

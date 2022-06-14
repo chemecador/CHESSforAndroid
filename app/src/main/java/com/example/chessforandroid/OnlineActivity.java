@@ -433,6 +433,22 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         yo = (String) o[0];
         rival = (String) o[1];
         miTurno = soyBlancas;
+
+        String mensajeInicial = "";
+        if (soyBlancas) {
+            mensajeInicial = getString(R.string.white) + ": " + yo + "\n" +
+                    getString(R.string.black) + ": " + rival;
+        } else {
+            mensajeInicial = getString(R.string.white) + ": " + rival + "\n" +
+                    getString(R.string.black) + ": " + yo;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.game_started);
+        builder.setMessage(mensajeInicial);
+        builder.setPositiveButton(R.string.accept, null);
+        Dialog dialog = builder.create();
+        dialog.show();
+
         if (soyBlancas) {
             vs.setText("(" + getString(R.string.white) + ") " + yo + " vs " + rival + " (" + getString(R.string.black) + ")");
             Toast.makeText(this, R.string.play_white, Toast.LENGTH_SHORT).show();

@@ -94,6 +94,7 @@
     <string name="not_valid">Eso movimiento no es legal</string>
     <string name="congrats">¡Has completado todos los logros!</string>
     <string name="version">Version 1.0.0</string>
+    <string name="game_started">Partida comenzada</string>
 
 
 </resources>
