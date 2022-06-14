@@ -158,7 +158,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 tag = quieroMover.getPieza().getTag();
 
                 // se realiza el movmimiento
-                juez.mover(quieroMover, casSelec);
+                juez.mover(quieroMover, casSelec, true);
 
                 // se iluminan las dos casillas implicadas en el movimiento para una mayor claridad
                 quieroMover.setBackgroundColor(Color.parseColor("#AECDDF"));
@@ -409,53 +409,53 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 b.setClickable(true);
                 //piezas negras
                 if (x == 0 || x == 7) {
-                    b.setPieza(new Torre(false));
+                    b.setPieza(new Torre(false, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 1 || x == 6) {
-                    b.setPieza(new Caballo(false));
+                    b.setPieza(new Caballo(false, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 2 || x == 5) {
-                    b.setPieza(new Alfil(false));
+                    b.setPieza(new Alfil(false, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 3) {
-                    b.setPieza(new Dama(false));
+                    b.setPieza(new Dama(false, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 4) {
-                    b.setPieza(new Rey(false));
+                    b.setPieza(new Rey(false, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x > 7 && x < 16) {
-                    b.setPieza(new Peon(false));
+                    b.setPieza(new Peon(false, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
 
                 //piezas blancas
                 if (x == 56 || x == 63) {
-                    b.setPieza(new Torre(true));
+                    b.setPieza(new Torre(true, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 57 || x == 62) {
-                    b.setPieza(new Caballo(true));
+                    b.setPieza(new Caballo(true, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 58 || x == 61) {
-                    b.setPieza(new Alfil(true));
+                    b.setPieza(new Alfil(true, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 59) {
-                    b.setPieza(new Dama(true));
+                    b.setPieza(new Dama(true, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 60) {
-                    b.setPieza(new Rey(true));
+                    b.setPieza(new Rey(true, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x > 47 && x < 56) {
-                    b.setPieza(new Peon(true));
+                    b.setPieza(new Peon(true, true));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 b.setPadding(0, 0, 0, 0);

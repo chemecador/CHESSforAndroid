@@ -49,51 +49,51 @@ public class Juez {
                         casillas[i][j].setImageResource(0);
                         break;
                     case 1:
-                        casillas[i][j].setPieza(new Rey(true));
+                        casillas[i][j].setPieza(new Rey(true, false));
                         casillas[i][j].setImageResource(R.drawable.brey);
                         break;
                     case -1:
-                        casillas[i][j].setPieza(new Rey(false));
+                        casillas[i][j].setPieza(new Rey(false, false));
                         casillas[i][j].setImageResource(R.drawable.nrey);
                         break;
                     case 2:
-                        casillas[i][j].setPieza(new Dama(true));
+                        casillas[i][j].setPieza(new Dama(true, false));
                         casillas[i][j].setImageResource(R.drawable.bdama);
                         break;
                     case -2:
-                        casillas[i][j].setPieza(new Dama(false));
+                        casillas[i][j].setPieza(new Dama(false, false));
                         casillas[i][j].setImageResource(R.drawable.ndama);
                         break;
                     case 3:
-                        casillas[i][j].setPieza(new Torre(true));
+                        casillas[i][j].setPieza(new Torre(true, false));
                         casillas[i][j].setImageResource(R.drawable.btorre);
                         break;
                     case -3:
-                        casillas[i][j].setPieza(new Torre(false));
+                        casillas[i][j].setPieza(new Torre(false ,false));
                         casillas[i][j].setImageResource(R.drawable.ntorre);
                         break;
                     case 4:
-                        casillas[i][j].setPieza(new Alfil(true));
+                        casillas[i][j].setPieza(new Alfil(true, false));
                         casillas[i][j].setImageResource(R.drawable.balfil);
                         break;
                     case -4:
-                        casillas[i][j].setPieza(new Alfil(false));
+                        casillas[i][j].setPieza(new Alfil(false, false));
                         casillas[i][j].setImageResource(R.drawable.nalfil);
                         break;
                     case 5:
-                        casillas[i][j].setPieza(new Caballo(true));
+                        casillas[i][j].setPieza(new Caballo(true ,false));
                         casillas[i][j].setImageResource(R.drawable.bcaballo);
                         break;
                     case -5:
-                        casillas[i][j].setPieza(new Caballo(false));
+                        casillas[i][j].setPieza(new Caballo(false ,false));
                         casillas[i][j].setImageResource(R.drawable.ncaballo);
                         break;
                     case 6:
-                        casillas[i][j].setPieza(new Peon(true));
+                        casillas[i][j].setPieza(new Peon(true ,false));
                         casillas[i][j].setImageResource(R.drawable.bpeon);
                         break;
                     case -6:
-                        casillas[i][j].setPieza(new Peon(false));
+                        casillas[i][j].setPieza(new Peon(false ,false));
                         casillas[i][j].setImageResource(R.drawable.npeon);
                         break;
 
@@ -206,7 +206,7 @@ public class Juez {
      * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True (movimiento correcto), False (error al mover)
      */
-    public boolean mover(Casilla cInicial, Casilla cFinal) {
+    public boolean mover(Casilla cInicial, Casilla cFinal, boolean local) {
 
         if (!cInicial.getPieza().getTag().equalsIgnoreCase("PEON")) {
             for (int i = 0; i < NUM_FILAS; i++) {
@@ -348,12 +348,12 @@ public class Juez {
         if (cInicial.getFila() == 1 &&
                 casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
                 casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
-            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(true));
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(true, local));
             casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
         } else if (cInicial.getFila() == 6 &&
                 casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
                 !casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
-            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(false));
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(false, local));
             casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
         } else {
             // no coronan

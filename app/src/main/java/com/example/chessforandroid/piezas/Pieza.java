@@ -6,6 +6,7 @@ package com.example.chessforandroid.piezas;
  */
 public abstract class Pieza {
     protected boolean blancas;
+    protected boolean local;
     protected int drawable;
     protected String tag = "";
 
@@ -13,9 +14,16 @@ public abstract class Pieza {
         return blancas;
     }
 
-
     public void setBlancas(boolean blancas) {
         this.blancas = blancas;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
     }
 
     public int getDrawable() {
@@ -29,5 +37,7 @@ public abstract class Pieza {
     public String getTag() {
         return tag;
     }
+
+
 
 }

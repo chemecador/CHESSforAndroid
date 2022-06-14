@@ -9,14 +9,21 @@ public class Torre extends Pieza {
      */
     public boolean haMovido;
 
-    public Torre(boolean blancas) {
+    public Torre(boolean blancas, boolean local) {
+
         this.blancas = blancas;
         this.tag = "TORRE";
         this.haMovido = false;
+        this.local = local;
+
         if (blancas) {
             this.drawable = R.drawable.btorre;
         } else {
-            this.drawable = R.drawable.ntorre;
+            if (local) {
+                this.drawable = R.drawable.lntorre;
+            } else {
+                this.drawable = R.drawable.ntorre;
+            }
         }
     }
 }

@@ -6,13 +6,20 @@ import com.example.chessforandroid.R;
  * Clase Dama.
  */
 public class Dama extends Pieza {
-    public Dama(boolean blancas) {
+
+    public Dama(boolean blancas, boolean local) {
+
         this.blancas = blancas;
         this.tag = "DAMA";
+        this.local = local;
         if (blancas) {
             this.drawable = R.drawable.bdama;
         } else {
-            this.drawable = R.drawable.ndama;
+            if (local) {
+                this.drawable = R.drawable.lndama;
+            } else {
+                this.drawable = R.drawable.ndama;
+            }
         }
     }
 }

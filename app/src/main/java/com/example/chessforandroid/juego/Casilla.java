@@ -32,22 +32,22 @@ public class Casilla extends androidx.appcompat.widget.AppCompatImageButton {
         if (this.getPieza() != null) {
             switch (this.getPieza().getTag()) {
                 case "REY":
-                    clon.setPieza(new Rey(this.getPieza().isBlancas()));
+                    clon.setPieza(new Rey(this.getPieza().isBlancas(), this.getPieza().isLocal()));
                     break;
                 case "DAMA":
-                    clon.setPieza(new Dama(this.getPieza().isBlancas()));
+                    clon.setPieza(new Dama(this.getPieza().isBlancas(), this.getPieza().isLocal()));
                     break;
                 case "ALFIL":
-                    clon.setPieza(new Alfil(this.getPieza().isBlancas()));
+                    clon.setPieza(new Alfil(this.getPieza().isBlancas(), this.getPieza().isLocal()));
                     break;
                 case "CABALLO":
-                    clon.setPieza(new Caballo(this.getPieza().isBlancas()));
+                    clon.setPieza(new Caballo(this.getPieza().isBlancas(), this.getPieza().isLocal()));
                     break;
                 case "TORRE":
-                    clon.setPieza(new Torre(this.getPieza().isBlancas()));
+                    clon.setPieza(new Torre(this.getPieza().isBlancas(), this.getPieza().isLocal()));
                     break;
                 case "PEON":
-                    clon.setPieza(new Peon(this.getPieza().isBlancas()));
+                    clon.setPieza(new Peon(this.getPieza().isBlancas(), this.getPieza().isLocal()));
                     break;
             }
         }

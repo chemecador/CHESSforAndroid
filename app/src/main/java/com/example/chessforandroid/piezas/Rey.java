@@ -12,14 +12,21 @@ public class Rey extends Pieza {
      */
     public boolean haMovido;
 
-    public Rey(boolean blancas) {
+    public Rey(boolean blancas, boolean local) {
+
         this.blancas = blancas;
         this.tag = "REY";
         this.haMovido = false;
+        this.local = local;
+
         if (blancas) {
             this.drawable = R.drawable.brey;
         } else {
-            this.drawable = R.drawable.nrey;
+            if (local) {
+                this.drawable = R.drawable.lnrey;
+            } else {
+                this.drawable = R.drawable.nrey;
+            }
         }
     }
 }

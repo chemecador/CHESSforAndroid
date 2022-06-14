@@ -12,14 +12,20 @@ public class Peon extends Pieza {
      */
     public boolean pasable;
 
-    public Peon(boolean blancas) {
+    public Peon(boolean blancas, boolean local) {
+
         this.blancas = blancas;
         this.tag = "PEON";
         this.pasable = false;
+        this.local = local;
         if (blancas) {
             this.drawable = R.drawable.bpeon;
         } else {
-            this.drawable = R.drawable.npeon;
+            if (local) {
+                this.drawable = R.drawable.lnpeon;
+            } else {
+                this.drawable = R.drawable.npeon;
+            }
         }
     }
 }

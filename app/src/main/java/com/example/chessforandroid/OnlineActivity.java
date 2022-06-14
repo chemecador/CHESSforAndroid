@@ -178,7 +178,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
 
                 tablas.setBackgroundColor(Color.parseColor("#646464"));
                 juez.captura = casSelec.getPieza() != null;
-                juez.mover(quieroMover, casSelec);
+                juez.mover(quieroMover, casSelec, false);
                 quieroMover.setBackgroundColor(Color.parseColor("#AECDDF"));
                 casSelec.setBackgroundColor(Color.parseColor("#8DC5E5"));
 
@@ -542,53 +542,53 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
                 b.setClickable(true);
                 //piezas negras
                 if (x == 0 || x == 7) {
-                    b.setPieza(new Torre(false));
+                    b.setPieza(new Torre(false, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 1 || x == 6) {
-                    b.setPieza(new Caballo(false));
+                    b.setPieza(new Caballo(false, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 2 || x == 5) {
-                    b.setPieza(new Alfil(false));
+                    b.setPieza(new Alfil(false, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 3) {
-                    b.setPieza(new Dama(false));
+                    b.setPieza(new Dama(false, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 4) {
-                    b.setPieza(new Rey(false));
+                    b.setPieza(new Rey(false, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x > 7 && x < 16) {
-                    b.setPieza(new Peon(false));
+                    b.setPieza(new Peon(false, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
 
                 //piezas blancas
                 if (x == 56 || x == 63) {
-                    b.setPieza(new Torre(true));
+                    b.setPieza(new Torre(true, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 57 || x == 62) {
-                    b.setPieza(new Caballo(true));
+                    b.setPieza(new Caballo(true, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 58 || x == 61) {
-                    b.setPieza(new Alfil(true));
+                    b.setPieza(new Alfil(true, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 59) {
-                    b.setPieza(new Dama(true));
+                    b.setPieza(new Dama(true, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 60) {
-                    b.setPieza(new Rey(true));
+                    b.setPieza(new Rey(true, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x > 47 && x < 56) {
-                    b.setPieza(new Peon(true));
+                    b.setPieza(new Peon(true, false));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 b.setPadding(0, 0, 0, 0);
