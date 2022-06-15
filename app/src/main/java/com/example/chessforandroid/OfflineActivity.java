@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     public static TextView tvMovs;
     private TextView mueven;
     public static StringBuilder movs;
+    private boolean invertido;
 
     // atributos de la partida
     private boolean haySeleccionada;
@@ -55,6 +57,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         juez = new Juez();
         haySeleccionada = false;
         nMovs = 0;
+        invertido = false;
 
 
         setContentView(R.layout.activity_offline);
@@ -72,6 +75,18 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     @SuppressLint("SetTextI18n")
     @Override
     public void onClick(View view) {
+
+        if (view.getId() == R.id.ibInvertirOff) {
+
+            invertido = !invertido;
+            if (invertido)
+                Toast.makeText(this, "Ahora estoy invertido", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, "Ahora no estoy invertido", Toast.LENGTH_SHORT).show();
+
+
+            return;
+        }
 
         if (fin)
             return;
@@ -158,7 +173,11 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 tag = quieroMover.getPieza().getTag();
 
                 // se realiza el movmimiento
-                juez.mover(quieroMover, casSelec, true);
+                if (invertido){
+                    juez.moverInvertido(quieroMover, casSelec, true);
+                } else {
+                    juez.mover(quieroMover, casSelec, true);
+                }
 
                 // se iluminan las dos casillas implicadas en el movimiento para una mayor claridad
                 quieroMover.setBackgroundColor(Color.parseColor("#AECDDF"));
@@ -291,8 +310,10 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
         Button tablas = findViewById(R.id.bTablasOffline);
         Button rendirse = findViewById(R.id.bRendirseOffline);
+        ImageButton rotar = findViewById(R.id.ibInvertirOff);
         tablas.setOnClickListener(this);
         rendirse.setOnClickListener(this);
+        rotar.setOnClickListener(this);
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 juez.casillas[i][j].setOnClickListener(this);

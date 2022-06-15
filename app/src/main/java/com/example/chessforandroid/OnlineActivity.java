@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     public String rival;
     public String yo;
     public String token;
+    private boolean invertido;
 
     // atributos de tablero
     private boolean haySeleccionada;
@@ -73,13 +75,14 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         haySeleccionada = false;
         quieroTablas = false;
+        invertido = false;
         nMovs = 0;
         contadorTablas = 0;
         onResumes = 0;
         juez = new Juez();
         Intent i = getIntent();
         token = i.getStringExtra("token");
-        setContentView(R.layout.activity_friend);
+        setContentView(R.layout.activity_online);
         crearCasillas();
 
         oGameBoardShell = findViewById(R.id.shellGameBoardOnline);
@@ -96,6 +99,18 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
 
         // idem que en OfflineActivity
+
+        if (view.getId() == R.id.ibInvertirOn) {
+
+            invertido = !invertido;
+            if (invertido)
+                Toast.makeText(this, "Ahora estoy invertido", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, "Ahora no estoy invertido", Toast.LENGTH_SHORT).show();
+
+
+            return;
+        }
 
         if (fin)
             return;
@@ -178,7 +193,11 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
 
                 tablas.setBackgroundColor(Color.parseColor("#646464"));
                 juez.captura = casSelec.getPieza() != null;
-                juez.mover(quieroMover, casSelec, false);
+                if (invertido) {
+                    juez.mover(quieroMover, casSelec, false);
+                } else {
+                    juez.moverInvertido(quieroMover, casSelec, false);
+                }
                 quieroMover.setBackgroundColor(Color.parseColor("#AECDDF"));
                 casSelec.setBackgroundColor(Color.parseColor("#8DC5E5"));
 
@@ -343,7 +362,6 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         builder.setPositiveButton(R.string.accept, (dialogInterface, i) -> {
             if (cliente.isConectado()) {
                 cliente.enviarMensaje("aceptadas");
-                //Toast.makeText(OnlineActivity.this, "Tablas aceptadas", Toast.LENGTH_SHORT).show();
                 fin = true;
                 gestionarFinal(null);
             }
@@ -421,8 +439,10 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
 
         tablas = findViewById(R.id.bTablasOnline);
         Button rendirse = findViewById(R.id.bRendirseOnline);
+        ImageButton invertir = findViewById(R.id.ibInvertirOn);
         tablas.setOnClickListener(this);
         rendirse.setOnClickListener(this);
+        invertir.setOnClickListener(this);
         for (int i = 0; i < NUM_FILAS; i++) {
             for (int j = 0; j < NUM_COLUMNAS; j++) {
                 juez.casillas[i][j].setOnClickListener(this);
@@ -434,7 +454,7 @@ public class OnlineActivity extends AppCompatActivity implements View.OnClickLis
         rival = (String) o[1];
         miTurno = soyBlancas;
 
-        String mensajeInicial = "";
+        String mensajeInicial;
         if (soyBlancas) {
             mensajeInicial = getString(R.string.white) + ": " + yo + "\n" +
                     getString(R.string.black) + ": " + rival;

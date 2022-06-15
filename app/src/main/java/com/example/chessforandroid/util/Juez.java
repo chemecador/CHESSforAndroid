@@ -366,6 +366,173 @@ public class Juez {
     }
 
     /**
+     * Metodo que mueve la pieza de la casilla inicial a la casilla final
+     *
+     * @param cInicial Casilla inicial que contiene la pieza a mover
+     * @param cFinal   Casilla final donde se quiere mover la pieza
+     * @return True (movimiento correcto), False (error al mover)
+     */
+    public boolean moverInvertido(Casilla cInicial, Casilla cFinal, boolean local) {
+
+        if (!cInicial.getPieza().getTag().equalsIgnoreCase("PEON")) {
+            for (int i = 0; i < NUM_FILAS; i++) {
+                if (casillas[3][i].getPieza() != null &&
+                        casillas[3][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    Peon p = (Peon) casillas[3][i].getPieza();
+                    p.pasable = false;
+                }
+                if (casillas[4][i].getPieza() != null &&
+                        casillas[4][i].getPieza().getTag().equalsIgnoreCase("PEON")) {
+                    Peon p = (Peon) casillas[4][i].getPieza();
+                    p.pasable = false;
+                }
+            }
+        }
+
+        // si ha movido la torre o el rey, no puede enrocar
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("TORRE")) {
+            Torre t = (Torre) cInicial.getPieza();
+            t.haMovido = true;
+        }
+
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY")) {
+            Rey r = (Rey) cInicial.getPieza();
+            r.haMovido = true;
+        }
+
+        // enroque corto negras
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
+                cInicial.getFila() == 0 && cInicial.getColumna() == 4 &&
+                cFinal.getFila() == 0 && cFinal.getColumna() == 6) {
+            casillas[0][6].setPieza(casillas[0][4].getPieza());
+            casillas[0][6].setImageResource(casillas[0][4].getPieza().getDrawable());
+
+            casillas[0][5].setPieza(casillas[0][7].getPieza());
+            casillas[0][5].setImageResource(casillas[0][7].getPieza().getDrawable());
+
+            casillas[0][7].setPieza(null);
+            casillas[0][7].setImageResource(0);
+
+            casillas[0][4].setPieza(null);
+            casillas[0][4].setImageResource(0);
+            return true;
+        }
+        // enroque largo negras
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
+                cInicial.getFila() == 0 && cInicial.getColumna() == 4 &&
+                cFinal.getFila() == 0 && cFinal.getColumna() == 2) {
+            casillas[0][2].setPieza(casillas[0][4].getPieza());
+            casillas[0][2].setImageResource(casillas[0][4].getPieza().getDrawable());
+
+            casillas[0][3].setPieza(casillas[0][7].getPieza());
+            casillas[0][3].setImageResource(casillas[0][7].getPieza().getDrawable());
+
+            casillas[0][0].setPieza(null);
+            casillas[0][0].setImageResource(0);
+
+            casillas[0][4].setPieza(null);
+            casillas[0][4].setImageResource(0);
+            return true;
+        }
+
+        // enroque corto blancas
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
+                cInicial.getFila() == 7 && cInicial.getColumna() == 4 &&
+                cFinal.getFila() == 7 && cFinal.getColumna() == 6) {
+            casillas[7][6].setPieza(casillas[7][4].getPieza());
+            casillas[7][6].setImageResource(casillas[7][4].getPieza().getDrawable());
+
+            casillas[7][5].setPieza(casillas[7][7].getPieza());
+            casillas[7][5].setImageResource(casillas[7][7].getPieza().getDrawable());
+
+            casillas[7][7].setPieza(null);
+            casillas[7][7].setImageResource(0);
+
+            casillas[7][4].setPieza(null);
+            casillas[7][4].setImageResource(0);
+            return true;
+        }
+
+        // enroque largo blancas
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("REY") &&
+                cInicial.getFila() == 7 && cInicial.getColumna() == 4 &&
+                cFinal.getFila() == 7 && cFinal.getColumna() == 2) {
+            casillas[7][2].setPieza(casillas[7][4].getPieza());
+            casillas[7][2].setImageResource(casillas[7][4].getPieza().getDrawable());
+
+            casillas[7][3].setPieza(casillas[7][7].getPieza());
+            casillas[7][3].setImageResource(casillas[7][7].getPieza().getDrawable());
+
+            casillas[7][0].setPieza(null);
+            casillas[7][0].setImageResource(0);
+
+            casillas[7][4].setPieza(null);
+            casillas[7][4].setImageResource(0);
+            return true;
+        }
+
+        // captura al paso blancas
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("PEON") &&
+                cInicial.getPieza().isBlancas() && cInicial.getFila() == 3) {
+            if (casillas[3][cFinal.getColumna()].getPieza() != null &&
+                    !casillas[3][cFinal.getColumna()].getPieza().isBlancas() &&
+                    casillas[3][cFinal.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON")) {
+
+                casillas[2][cFinal.getColumna()].setPieza(casillas[3][cInicial.getColumna()].getPieza());
+                casillas[2][cFinal.getColumna()].setImageResource(casillas[3][cInicial.getColumna()].getPieza().getDrawable());
+
+                casillas[3][cInicial.getColumna()].setPieza(null);
+                casillas[3][cInicial.getColumna()].setImageResource(0);
+
+                casillas[3][cFinal.getColumna()].setPieza(null);
+                casillas[3][cFinal.getColumna()].setImageResource(0);
+                return true;
+            }
+        }
+
+        // captura al paso negras
+        if (cInicial.getPieza().getTag().equalsIgnoreCase("PEON") &&
+                !cInicial.getPieza().isBlancas() && cInicial.getFila() == 4) {
+            if (casillas[4][cFinal.getColumna()].getPieza() != null &&
+                    casillas[4][cFinal.getColumna()].getPieza().isBlancas() &&
+                    casillas[4][cFinal.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON")) {
+
+                casillas[5][cFinal.getColumna()].setPieza(casillas[4][cInicial.getColumna()].getPieza());
+                casillas[5][cFinal.getColumna()].setImageResource(casillas[4][cInicial.getColumna()].getPieza().getDrawable());
+
+                casillas[4][cInicial.getColumna()].setPieza(null);
+                casillas[4][cInicial.getColumna()].setImageResource(0);
+
+                casillas[4][cFinal.getColumna()].setPieza(null);
+                casillas[4][cFinal.getColumna()].setImageResource(0);
+                return true;
+            }
+        }
+
+
+        // coronacion de peones
+        if (cInicial.getFila() == 1 &&
+                casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
+                casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(true, local));
+            casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
+        } else if (cInicial.getFila() == 6 &&
+                casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().getTag().equalsIgnoreCase("PEON") &&
+                !casillas[cInicial.getFila()][cInicial.getColumna()].getPieza().isBlancas()) {
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(new Dama(false, local));
+            casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(casillas[cFinal.getFila()][cFinal.getColumna()].getPieza().getDrawable());
+        } else {
+            // no coronan
+            casillas[cFinal.getFila()][cFinal.getColumna()].setPieza(cInicial.getPieza());
+            casillas[cFinal.getFila()][cFinal.getColumna()].setImageResource(cInicial.getPieza().getDrawable());
+        }
+        casillas[cInicial.getFila()][cInicial.getColumna()].setPieza(null);
+        casillas[cInicial.getFila()][cInicial.getColumna()].setImageResource(0);
+        return true;
+    }
+
+
+    /**
      * Metodo que comprueba si un movimiento es valido
      *
      * @param copia    Matriz de casillas donde comprobar el movimiento

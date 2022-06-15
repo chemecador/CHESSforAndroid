@@ -31,7 +31,7 @@ public class FriendActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_online);
+        setContentView(R.layout.activity_friend);
 
         Button crear = findViewById(R.id.bCrearPartida);
         Button unirse = findViewById(R.id.bUnirse);
