@@ -9,18 +9,20 @@ services:
       - 5567:5567/tcp
     environment:
       - MYSQL_HOST=db
-      - MYSQL_DB=
-      - MYSQL_USER=
-      - MYSQL_PASSWORD=
+      - MYSQL_DB=chessforandroid
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=putero
 
   db:
     image: mysql:8.0
     ports:
       - 3306:3306/tcp
     environment:
-      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=chessforandroid
+      - MYSQL_ROOT_PASSWORD=putero
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./server/sql/:/docker-entrypoint-initdb.d/:ro
 
 volumes:
   mysql_data: {}
