@@ -2,11 +2,25 @@ version: "3.8"
 
 services:
   server:
-    image: chessforandroid
     build:
       context: .
-      dockerfile: ./Dockerfile
     ports:
       - 5566:5566/tcp
       - 5567:5567/tcp
-    restart: unless-stopped
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DB=
+      - MYSQL_USER=
+      - MYSQL_PASSWORD=
+
+  db:
+    image: mysql:8.0
+    ports:
+      - 3306:3306/tcp
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data: {}
