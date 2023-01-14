@@ -9,21 +9,33 @@ public class Torre extends Pieza {
      */
     public boolean haMovido;
 
-    public Torre(boolean blancas, boolean local) {
+    public Torre(boolean blancas, boolean invertida) {
 
         this.blancas = blancas;
         this.tag = "TORRE";
         this.haMovido = false;
-        this.local = local;
+        this.invertida = invertida;
 
         if (blancas) {
             this.drawable = R.drawable.btorre;
         } else {
-            if (local) {
+            if (invertida) {
                 this.drawable = R.drawable.lntorre;
             } else {
                 this.drawable = R.drawable.ntorre;
             }
+        }
+    }
+
+    @Override
+    public void setNewDrawable() {
+        if (this.isBlancas()){
+            this.setDrawable(R.drawable.btorre);
+        }
+        else if (this.invertida){
+            this.setDrawable(R.drawable.lntorre);
+        } else {
+            this.setDrawable(R.drawable.ntorre);
         }
     }
 }

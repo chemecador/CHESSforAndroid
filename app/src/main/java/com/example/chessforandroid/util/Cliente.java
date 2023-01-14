@@ -907,7 +907,6 @@ public class Cliente {
                 }
                 return null;
             } catch (IOException e) {
-                Toast.makeText(context, "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
             return null;

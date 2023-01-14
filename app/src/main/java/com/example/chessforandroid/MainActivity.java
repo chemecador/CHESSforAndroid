@@ -10,8 +10,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.chessforandroid.util.Cliente;
+
+/*
+ *
+ * TAREAS:
+ *
+ * -recreate() para volver a empezar la partida
+ * -Mudar la base de datos a pg si es necesario
+ * -Cuando juegas online con negras, que las negras aparezcan abajo
+ * -Desarrollar algoritmo de jaque mate
+ * -Un único socket
+ * -Solucionar el problema de que cuando entra al catch, el servidor no puede atender a más peticiones
+ *
+ *
+ */
+
+
 
 /**
  * MainActivity. Activity principal donde el usuario decide lo que quiere hacer en la app.
@@ -86,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
 
@@ -120,8 +138,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rankingIntent.putExtra("token", token);
                     startActivity(rankingIntent);
                     break;
+                } else {
+                    Toast.makeText(this, "Inicia sesión para ver la clasificación", Toast.LENGTH_SHORT).show();
                 }
-                startActivity(new Intent(this, LoginActivity.class));
         }
     }
 }

@@ -8,10 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -38,7 +40,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout oGameBoardShell;
 
     // atributos de interfaz
-    public static TextView tvMovs;
+    public TextView tvMovs;
     private TextView mueven;
     public static StringBuilder movs;
     private boolean invertido;
@@ -65,7 +67,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
 
         this.oGameBoardShell = this.findViewById(R.id.shellGameBoardOffline);
         this.oGameBoard = this.findViewById(R.id.gridGameBoardOffline);
-        Tablero t = new Tablero();
+        TaskTablero t = new TaskTablero();
         t.execute();
 
 
@@ -79,10 +81,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
         if (view.getId() == R.id.ibInvertirOff) {
 
             invertido = !invertido;
-            if (invertido)
-                Toast.makeText(this, "Ahora estoy invertido", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(this, "Ahora no estoy invertido", Toast.LENGTH_SHORT).show();
+            invertirNegras();
 
 
             return;
@@ -248,6 +247,21 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
+     * Método que invierte las piezas negras
+     */
+   private void invertirNegras() {
+       for (int i = 0; i < juez.casillas[0].length; i++){
+           for (int j = 0; j < juez.casillas.length; j++){
+               if (juez.casillas[i][j].getPieza() != null && !juez.casillas[i][j].getPieza().isBlancas()){
+                   boolean estaInvertida = juez.casillas[i][j].getPieza().isInvertida();
+                   juez.casillas[i][j].getPieza().setInvertida(!estaInvertida);
+                   juez.casillas[i][j].setImageResource(juez.casillas[i][j].getPieza().getDrawable());
+               }
+           }
+       }
+    }
+
+    /**
      * Metodo que actualiza el texto con los movimientos
      *
      * @param fila Fila del movimiento
@@ -322,7 +336,7 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @SuppressLint("StaticFieldLeak")
-    public class Tablero extends AsyncTask<Void, Void, Void> {
+    public class TaskTablero extends AsyncTask<Void, Void, Void> {
 
         ViewTreeObserver.OnGlobalLayoutListener tablero;
 
@@ -418,6 +432,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
      * Metodo que crea las casillas
      */
     public void crearCasillas() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean invertida = prefs.getBoolean("pref_invertida", true);
         boolean cambiar = false;
         int x = 0;
         for (int i = 0; i < NUM_FILAS; i++) {
@@ -430,27 +446,27 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
                 b.setClickable(true);
                 //piezas negras
                 if (x == 0 || x == 7) {
-                    b.setPieza(new Torre(false, true));
+                    b.setPieza(new Torre(false, invertida));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 1 || x == 6) {
-                    b.setPieza(new Caballo(false, true));
+                    b.setPieza(new Caballo(false, invertida));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 2 || x == 5) {
-                    b.setPieza(new Alfil(false, true));
+                    b.setPieza(new Alfil(false, invertida));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 3) {
-                    b.setPieza(new Dama(false, true));
+                    b.setPieza(new Dama(false, invertida));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x == 4) {
-                    b.setPieza(new Rey(false, true));
+                    b.setPieza(new Rey(false, invertida));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
                 if (x > 7 && x < 16) {
-                    b.setPieza(new Peon(false, true));
+                    b.setPieza(new Peon(false, invertida));
                     b.setImageResource(b.getPieza().getDrawable());
                 }
 

@@ -9,5 +9,19 @@
             android:key="preferencias_elo"
             android:summary="@string/elo_summary"
             android:title="@string/order_by_elo" />
+
+        <CheckBoxPreference
+            android:id="@+id/cbPrefRotar"
+            android:defaultValue="false"
+            android:key="preferencias_rotar"
+            android:summary="@string/flip_summary"
+            android:title="@string/never_flip" />
+
+        <CheckBoxPreference
+            android:id="@+id/cbPrefInvert"
+            android:defaultValue="true"
+            android:key="pref_invertida"
+            android:summary="@string/invert_summary"
+            android:title="@string/never_invert" />
     </PreferenceCategory>
 </PreferenceScreen>

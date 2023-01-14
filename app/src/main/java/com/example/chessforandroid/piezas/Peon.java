@@ -12,20 +12,32 @@ public class Peon extends Pieza {
      */
     public boolean pasable;
 
-    public Peon(boolean blancas, boolean local) {
+    public Peon(boolean blancas, boolean invertida) {
 
         this.blancas = blancas;
         this.tag = "PEON";
         this.pasable = false;
-        this.local = local;
+        this.invertida = invertida;
         if (blancas) {
             this.drawable = R.drawable.bpeon;
         } else {
-            if (local) {
+            if (invertida) {
                 this.drawable = R.drawable.lnpeon;
             } else {
                 this.drawable = R.drawable.npeon;
             }
+        }
+    }
+
+    @Override
+    public void setNewDrawable() {
+        if (this.isBlancas()){
+            this.setDrawable(R.drawable.bpeon);
+        }
+        else if (this.invertida){
+            this.setDrawable(R.drawable.lnpeon);
+        } else {
+            this.setDrawable(R.drawable.npeon);
         }
     }
 }

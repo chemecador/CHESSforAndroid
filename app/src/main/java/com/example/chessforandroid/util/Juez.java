@@ -587,7 +587,7 @@ public class Juez {
     /**
      * Metodo que comprueba si un jugador puede mover alguna ficha
      *
-     * @param copia   Tablero sobre el que comprobar si hay algun movimiento posible
+     * @param copia   TaskTablero sobre el que comprobar si hay algun movimiento posible
      * @param blancas True si el jugador es blancas, False si es negras
      * @return True si hay algun movimiento, False si no
      */
@@ -683,7 +683,7 @@ public class Juez {
     /**
      * Metodo que comprueba si el movimiento del alfil es legal
      *
-     * @param copia    Tablero donde comprobar el movimiento del alfil
+     * @param copia    TaskTablero donde comprobar el movimiento del alfil
      * @param cInicial Casilla inicial que contiene la pieza a mover
      * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True si es legal, False si no lo es
@@ -726,7 +726,7 @@ public class Juez {
     /**
      * Metodo que comprueba si el movimiento de la torre es legal
      *
-     * @param copia    Tablero donde comprobar el movimiento del alfil
+     * @param copia    TaskTablero donde comprobar el movimiento del alfil
      * @param cInicial Casilla inicial que contiene la pieza a mover
      * @param cFinal   Casilla final donde se quiere mover la pieza
      * @return True si es legal, False si no lo es

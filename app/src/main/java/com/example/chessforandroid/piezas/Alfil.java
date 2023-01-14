@@ -7,19 +7,31 @@ import com.example.chessforandroid.R;
  */
 public class Alfil extends Pieza {
 
-    public Alfil(boolean blancas, boolean local) {
+    public Alfil(boolean blancas, boolean invertida) {
         this.blancas = blancas;
         this.tag = "ALFIL";
-        this.local = local;
+        this.invertida = invertida;
 
         if (blancas) {
             this.drawable = R.drawable.balfil;
         } else {
-            if (local) {
+            if (this.invertida) {
                 this.drawable = R.drawable.lnalfil;
             } else {
                 this.drawable = R.drawable.nalfil;
             }
+        }
+    }
+
+    @Override
+    public void setNewDrawable() {
+        if (this.isBlancas()){
+            this.setDrawable(R.drawable.balfil);
+        }
+        else if (this.invertida){
+            this.setDrawable(R.drawable.lnalfil);
+        } else {
+            this.setDrawable(R.drawable.nalfil);
         }
     }
 }

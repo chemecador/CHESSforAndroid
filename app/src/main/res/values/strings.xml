@@ -95,6 +95,10 @@
     <string name="congrats">¡Has completado todos los logros!</string>
     <string name="version">Version 1.0.0</string>
     <string name="game_started">Partida comenzada</string>
+    <string name="never_flip">Mostrar las blancas siempre abajo</string>
+    <string name="never_invert">Mostrar las negras invertidas en modo offline</string>
+    <string name="flip_summary">Por defecto, si juegas con las piezas negras, estas se mostrarán en la parte inferior</string>
+    <string name="invert_summary">Por defecto, en el modo Offline, las piezas negras se muestran invertidas</string>
 
 
 </resources>

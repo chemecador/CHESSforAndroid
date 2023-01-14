@@ -6,7 +6,7 @@ package com.example.chessforandroid.piezas;
  */
 public abstract class Pieza {
     protected boolean blancas;
-    protected boolean local;
+    protected boolean invertida;
     protected int drawable;
     protected String tag = "";
 
@@ -18,12 +18,13 @@ public abstract class Pieza {
         this.blancas = blancas;
     }
 
-    public boolean isLocal() {
-        return local;
+    public boolean isInvertida() {
+        return invertida;
     }
 
-    public void setLocal(boolean local) {
-        this.local = local;
+    public void setInvertida(boolean invertida) {
+        this.invertida = invertida;
+        setNewDrawable();
     }
 
     public int getDrawable() {
@@ -37,6 +38,8 @@ public abstract class Pieza {
     public String getTag() {
         return tag;
     }
+
+    public abstract void setNewDrawable();
 
 
 

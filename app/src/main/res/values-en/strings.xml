@@ -95,4 +95,8 @@
     <string name="congrats">You completed all the achievements!</string>
     <string name="version">Version 1.0.0</string>
     <string name="game_started">Game started</string>
+    <string name="never_flip">Always show white pieces down</string>
+    <string name="never_invert">Display black pieces inverted</string>
+    <string name="flip_summary">By default, if you play black, black pieces will be down and white pieces up</string>
+    <string name="invert_summary">By default, in offline mode, the black pieces will be displayed inverted</string>
 </resources>
